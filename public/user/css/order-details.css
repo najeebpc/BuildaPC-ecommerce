@@ -1,0 +1,567 @@
+/* ================================
+   Order Details Page
+================================ */
+
+.account-content {
+    max-width: 100%;
+}
+
+
+/* ================================
+   Order Header
+================================ */
+
+.order-header-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    min-height: 92px;
+
+    padding: 20px 24px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+
+    margin-bottom: 26px;
+}
+
+.order-header-left h1 {
+    margin: 0;
+
+    color: #111827;
+
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.order-header-left p {
+    margin: 12px 0 0;
+
+    color: #6b7280;
+
+    font-size: 13px;
+}
+
+.order-header-left p span {
+    margin-left: 12px;
+
+    color: #4b5563;
+}
+
+
+.order-header-actions {
+    display: flex;
+    align-items: center;
+
+    gap: 28px;
+}
+
+
+/* Print Invoice */
+
+.download-invoice-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #2563eb;
+    text-decoration: none;
+    font-family: inherit;
+    font-size: 13px;
+
+    cursor: pointer;
+}
+.download-invoice-btn:hover {
+    color: #1d4ed8;
+}
+.print-icon {
+    font-size: 17px;
+}
+
+
+/* Cancel */
+
+.cancel-order-detail-btn {
+    height: 42px;
+
+    padding: 0 18px;
+
+    border: 1px solid #2563eb;
+    border-radius: 6px;
+
+    background: #ffffff;
+
+    color: #2563eb;
+
+    font-family: inherit;
+    font-size: 13px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+.cancel-order-detail-btn:hover {
+    background: #eff6ff;
+}
+
+
+/* ================================
+   Order Summary
+================================ */
+
+.order-summary-section {
+    padding: 0 0 24px;
+
+    border-bottom: 1px solid #e5e7eb;
+
+    margin-bottom: 24px;
+}
+
+.order-section-title {
+    margin: 0 0 18px;
+
+    color: #111827;
+
+    font-size: 17px;
+    font-weight: 600;
+}
+
+
+/* Product list */
+
+.order-product-list {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.order-product-item {
+    display: flex;
+    align-items: center;
+
+    min-height: 112px;
+
+    padding: 12px 0;
+
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.order-product-item:last-child {
+    border-bottom: none;
+}
+
+
+/* Product image */
+
+.order-product-image {
+    width: 80px;
+    height: 80px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #e5e7eb;
+
+    background: #ffffff;
+
+    overflow: hidden;
+}
+
+.order-product-image img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+}
+
+
+/* Product info */
+
+.order-product-info {
+    flex: 1;
+
+    padding-left: 16px;
+}
+
+.order-product-info h3 {
+    margin: 0 0 8px;
+
+    color: #111827;
+
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.order-product-quantity {
+    margin: 8px 0 0;
+
+    color: #6b7280;
+
+    font-size: 12px;
+}
+
+
+.order-variant-details {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 10px;
+}
+
+.order-variant-details span {
+    color: #6b7280;
+
+    font-size: 11px;
+}
+
+
+/* Product price */
+
+.order-product-price {
+    min-width: 100px;
+
+    color: #111827;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    text-align: right;
+}
+
+
+/* ================================
+   Bottom Sections
+================================ */
+
+.order-bottom-section {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 24px;
+}
+
+
+/* ================================
+   Section Titles
+================================ */
+
+.order-info-title {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin: 0 0 14px;
+
+    color: #111827;
+
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.info-icon {
+    color: #4b5563;
+
+    font-size: 17px;
+}
+
+
+/* ================================
+   Shipping Information
+================================ */
+
+.shipping-info-box {
+    min-height: 190px;
+
+    padding: 20px;
+
+    background: #f8fafc;
+
+    border: 1px solid #edf0f3;
+    border-radius: 7px;
+}
+
+.shipping-info-box strong {
+    display: block;
+
+    margin-bottom: 12px;
+
+    color: #111827;
+
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.shipping-info-box p {
+    margin: 6px 0;
+
+    color: #5b6472;
+
+    font-size: 12px;
+
+    line-height: 1.6;
+}
+
+.shipping-phone {
+    margin-top: 12px !important;
+}
+
+
+.shipping-method {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 28px;
+
+    color: #5b6472;
+
+    font-size: 11px;
+}
+
+.shipping-truck {
+    font-size: 15px;
+}
+
+
+/* ================================
+   Billing Information
+================================ */
+
+.billing-info-box {
+    min-height: 190px;
+
+    padding: 18px 20px;
+
+    background: #f8fafc;
+
+    border: 1px solid #edf0f3;
+    border-radius: 7px;
+}
+
+
+.billing-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 17px;
+
+    color: #5b6472;
+
+    font-size: 12px;
+}
+
+.billing-row span:last-child {
+    color: #111827;
+}
+
+
+.free-shipping {
+    color: #16a34a !important;
+}
+
+
+.billing-total-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-top: 27px;
+    padding-top: 16px;
+
+    border-top: 1px solid #e5e7eb;
+
+    color: #111827;
+
+    font-size: 15px;
+}
+
+.billing-total-row strong:last-child {
+    color: #2563eb;
+}
+
+
+.payment-method-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 22px;
+    color: #5b6472;
+    font-size: 11px;
+}
+.payment-method-row span:last-child {
+    color: #4b5563;
+}
+
+.order-product-price {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+    min-width: 120px;
+    text-align: right;
+}
+
+.order-original-price {
+    color: #888;
+    font-size: 13px;
+    text-decoration: line-through;
+}
+
+.order-discounted-price {
+    color: #dc2626;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.order-regular-price {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.order-offer-badge {
+    display: inline-block;
+    padding: 3px 7px;
+    border-radius: 4px;
+    background: #dcfce7;
+    color: #15803d;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.order-product-line-total {
+    color: #555;
+    font-size: 12px;
+}
+
+.coupon-savings-row {
+    color: #15803d;
+}
+.cancel-item-btn {
+    margin-top: 2px;
+    padding: 7px 12px;
+    border: 1px solid #dc2626;
+    border-radius: 6px;
+    background: #fff;
+    color: #dc2626;
+    font-family: inherit;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.cancel-item-btn:hover {
+    background: #dc2626;
+    color: #fff;
+}
+
+.item-cancelled-status {
+    display: inline-block;
+    margin-top: 4px;
+    color: #dc2626;
+    font-size: 12px;
+    font-weight: 600;
+}
+/* Shared status badge */
+.order-status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+/* Order and item status variants */
+.status-pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-shipped,
+.status-out-for-delivery {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.status-delivered,
+.status-paid {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-cancelled,
+.status-failed,
+.status-return-rejected {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.status-return-requested {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-return-approved,
+.status-return-received {
+    background: #ede9fe;
+    color: #6d28d9;
+}
+
+.status-unpaid {
+    background: #f3f4f6;
+    color: #4b5563;
+}
+
+/* ================================
+   Responsive
+================================ */
+@media (max-width: 900px) {
+    .order-bottom-section {
+        grid-template-columns: 1fr;
+    }
+}
+@media (max-width: 700px) {
+    .order-header-card {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 18px;
+    }
+    .order-header-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+    .order-product-item {
+        align-items: flex-start;
+    }
+    .order-product-price {
+        min-width: auto;
+    }
+}
+@media (max-width: 500px) {
+    .order-header-actions {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .order-product-image {
+        width: 65px;
+        height: 65px;
+    }
+    .order-product-info {
+        padding-left: 10px;
+    }
+}

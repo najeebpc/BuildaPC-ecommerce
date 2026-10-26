@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Management</title>
+  <link rel="stylesheet" href="/admin/css/admin-base.css">
+  <link rel="stylesheet" href="/admin/css/users.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+</head>
+<body>
+
+<div class="admin-wrapper">
+
+  <!-- Sidebar -->
+  <%- include("../partials/admin/sidebar") %>
+
+  <!-- Content -->
+  <div class="admin-content">
+    <%- include('../partials/admin/topbar') %>
+    <!-- Top bar -->
+    <div class="top-bar">
+      <div>
+        <h1 class="page-title">User Management</h1>
+        <p class="page-subtitle">
+          Manage user accounts and permissions
+        </p>
+      </div>
+    </div>
+
+    <!-- Card -->
+    <div class="user-card">
+
+      <!-- Search -->
+      <div class="user-search">
+  <form method="GET" action="/admin/users" class="search-form">
+    <input
+      type="text"
+      name="search"
+      placeholder="Search users by name or email..."
+      value="<%= search || '' %>"
+    />
+    <button type="submit" class="search-btn">Search</button>
+    
+    <% if (search) { %>
+      <a href="/admin/users" class="clear-search">Cancel</a>
+    <% } %>
+  </form>
+</div>
+
+
+      <!-- Table -->
+      <table class="user-table">
+        <thead>
+          <tr>
+            <th>User ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Registration Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% if (users.length === 0) { %>
+            <tr>
+              <td colspan="5" class="empty-row">
+                No users found
+              </td>
+            </tr>
+          <% } %>
+
+          <% users.forEach((user, index) => { %>
+            <tr>
+              <td>#<%= index + 1 %></td>
+              <td><%= user.name %></td>
+              <td><%= user.email %></td>
+              <td>
+                <%= user.created_at
+                  ? new Date(user.created_at).toISOString().split("T")[0]
+                  : "—"
+                %>
+              </td>
+              <td class="actions">
+                <!-- <a href="#" class="view-link">View</a> -->
+
+                <% if (user.isBlocked) { %>
+                   <button 
+                   type="button"
+                   onclick="openModal('unblock','<%= user._id %>')"
+                   class="unblock-btn">
+                   Unblock</button>
+                  
+                <% } else { %>
+                   <button 
+                   type="button"
+                   onclick="openModal('block','<%= user._id %>')"
+                   class="block-btn">
+                   Block</button>
+                  
+                <% } %>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+
+    </div>
+    <div class="pagination">
+  <% for (let i = 1; i <= totalPages; i++) { %>
+    <a
+      href="/admin/users?page=<%= i %>&search=<%= search %>"
+      class="<%= currentPage === i ? 'active' : '' %>">
+      <%= i %>
+    </a>
+  <% } %>
+</div>
+  </div>
+  
+
+</div>
+<!-- Block / Unblock Modal -->
+<div class="modal-overlay" id="userModal">
+  <div class="modal-box">
+    
+    <div class="modal-header">
+      <h3 id="modalTitle">Block user</h3>
+      <button class="close-btn" onclick="closeModal()">×</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="warning-icon">⚠️</div>
+      <p id="modalText">Do you want to block user?</p>
+    </div>
+
+    <div class="modal-footer">
+      <button class="cancel-btn" onclick="closeModal()">Cancel</button>
+      <form id="modalForm" method="POST">
+        <button type="submit" class="confirm-btn" id="confirmBtn">
+          Block User
+        </button>
+      </form>
+    </div>
+
+  </div>
+</div>
+<script>
+  const modal = document.getElementById("userModal");
+  const modalForm = document.getElementById("modalForm");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalText = document.getElementById("modalText");
+  const confirmBtn = document.getElementById("confirmBtn");
+
+  function openModal(type, userId) {
+    modal.style.display = "flex";
+
+    if (type === "block") {
+      modalTitle.innerText = "Block user";
+      modalText.innerText = "Do you want to block user?";
+      confirmBtn.innerText = "Block User";
+      confirmBtn.className = "confirm-btn block";
+      modalForm.action = `/admin/users/block/${userId}`;
+    } else {
+      modalTitle.innerText = "Unblock user";
+      modalText.innerText = "Do you want to unblock user?";
+      confirmBtn.innerText = "Unblock User";
+      confirmBtn.className = "confirm-btn unblock";
+      modalForm.action = `/admin/users/unblock/${userId}`;
+    }
+  }
+
+  function closeModal() {
+    modal.style.display = "none";
+  }
+</script>
+
+</body>
+</html>

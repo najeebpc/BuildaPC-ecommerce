@@ -1,0 +1,61 @@
+<aside class="account-sidebar">
+  <h3 class="account-sidebar-title">My Account</h3>
+
+  <ul class="account-menu">
+
+    <li class="<%= active === 'account' ? 'active' : '' %>">
+      <a href="/account">
+        <img src="/user/icons/account.svg" alt="">
+        <span>Account Details</span>
+      </a>
+    </li>
+
+    <li class="<%= active === 'address' ? 'active' : '' %>">
+      <a href="/account/address">
+        <img src="/user/icons/address.svg" alt="">
+        <span>Address</span>
+      </a>
+    </li>
+
+    <li class="<%= active === 'orders' ? 'active' : '' %>">
+      <a href="/account/orders">
+        <img src="/user/icons/orders.svg" alt="">
+        <span>Orders</span>
+      </a>
+    </li>
+
+    <li class="<%= active === 'wishlist' ? 'active' : '' %>">
+      <a href="/account/wishlist">
+        <img src="/user/icons/wishlist.svg" alt="">
+        <span>Wishlist</span>
+      </a>
+    </li>
+
+    <li class="<%= active === 'coupons' ? 'active' : '' %>">
+      <a href="/account/coupons">
+        <img src="/user/icons/coupon.svg" alt="">
+        <span>My Coupons</span>
+      </a>
+    </li>
+    <li class="<%= active === 'wallet' ? 'active' : '' %>">
+      <a href="/account/wallet">
+        <img src="/user/icons/wallet.svg" alt="">
+        <span>Wallet</span>
+      </a>
+    </li>
+    <li class="<%= active === 'referral' ? 'active' : '' %>">
+      <a href="/account/referral">
+        <img src="/user/icons/referral.svg" alt="">
+        <span>Referral</span>
+      </a>
+    </li>
+    <li>
+      <a href="/logout">
+        <img src="/user/icons/logout.svg" alt="">
+        <span>Logout</span>
+      </a>
+    </li>
+
+  </ul>
+</aside>
+

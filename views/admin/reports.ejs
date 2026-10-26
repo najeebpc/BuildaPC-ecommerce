@@ -1,0 +1,247 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Reports</title>
+
+    <link rel="stylesheet" href="/admin/css/admin-base.css">
+    <link rel="stylesheet" href="/admin/css/reports.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+<div class="admin-wrapper">
+    <%- include("../partials/admin/sidebar", { active: 'reports' }) %>
+
+    <div class="admin-content">
+        <%- include('../partials/admin/topbar') %>
+
+        <div class="top-bar">
+            <div>
+                <h1 class="page-title">Sales Reports</h1>
+                <p class="page-subtitle">Track orders, sales and discounts</p>
+            </div>
+        </div>
+
+        <div class="reports-container">
+            <div class="report-filter-card">
+                <h2 class="report-section-title">Filter Report</h2>
+
+                <form action="/admin/reports" method="GET"
+                      class="report-filter-form" id="reportFilterForm">
+
+                    <div class="report-form-group">
+                        <label for="period">Report period</label>
+                        <select name="period" id="period">
+                            <option value="daily" <%= period === 'daily' ? 'selected' : '' %>>Daily</option>
+                            <option value="weekly" <%= period === 'weekly' ? 'selected' : '' %>>Weekly (last 7 days)</option>
+                            <option value="yearly" <%= period === 'yearly' ? 'selected' : '' %>>Yearly</option>
+                            <option value="custom" <%= period === 'custom' ? 'selected' : '' %>>Custom range</option>
+                        </select>
+                    </div>
+
+                    <div class="report-form-group custom-date">
+                        <label for="startDate">From</label>
+                        <input type="date" name="startDate" id="startDate"
+                               value="<%= startDate %>">
+                    </div>
+
+                    <div class="report-form-group custom-date">
+                        <label for="endDate">To</label>
+                        <input type="date" name="endDate" id="endDate"
+                               value="<%= endDate %>">
+                    </div>
+
+                    <button type="submit" class="report-btn report-btn-primary">
+                        <i class="fa-solid fa-filter"></i> Apply
+                    </button>
+                </form>
+            </div>
+
+            <div class="report-summary">
+                <div class="report-card">
+                    <div class="report-card-header">
+                        <p class="report-card-title">Total Sales</p>
+                        <span class="report-card-icon"><i class="fa-solid fa-indian-rupee-sign"></i></span>
+                    </div>
+                    <p class="report-card-value">₹<%= report.totalSales.toFixed(2) %></p>
+                </div>
+
+                <div class="report-card">
+                    <div class="report-card-header">
+                        <p class="report-card-title">Delivered Orders</p>
+                        <span class="report-card-icon"><i class="fa-solid fa-box"></i></span>
+                    </div>
+                    <p class="report-card-value"><%= report.totalOrders %></p>
+                </div>
+
+                <div class="report-card">
+                    <div class="report-card-header">
+                        <p class="report-card-title">Subtotal After Offers</p>
+                        <span class="report-card-icon"><i class="fa-solid fa-cart-shopping"></i></span>
+                    </div>
+                    <p class="report-card-value">₹<%= report.totalSubtotal.toFixed(2) %></p>
+                </div>
+
+                <div class="report-card">
+                    <div class="report-card-header">
+                        <p class="report-card-title">Coupon Discounts</p>
+                        <span class="report-card-icon"><i class="fa-solid fa-tag"></i></span>
+                    </div>
+                    <p class="report-card-value">₹<%= report.totalCouponDiscount.toFixed(2) %></p>
+                </div>
+            </div>
+
+            <div class="report-table-card">
+                <div class="report-table-header">
+                    <h2 class="report-section-title">Sales Details</h2>
+
+                    <div class="report-export-actions">
+                        <a class="report-btn report-btn-pdf"
+                           href="/admin/reports/export/pdf?period=<%= period %>&startDate=<%= startDate %>&endDate=<%= endDate %>">
+                            <i class="fa-solid fa-file-pdf"></i> Export PDF
+                        </a>
+
+                        <a class="report-btn report-btn-excel"
+                           href="/admin/reports/export/excel?period=<%= period %>&startDate=<%= startDate %>&endDate=<%= endDate %>">
+                            <i class="fa-solid fa-file-excel"></i> Export Excel
+                        </a>
+                    </div>
+                </div>
+
+                <div class="report-table-wrapper">
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Date</th>
+                                <th>Payment Method</th>
+                                <th>Subtotal</th>
+                                <th>Coupon Discount</th>
+                                <th>Total Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <% if (report.orders.length > 0) { %>
+                            <% report.orders.forEach(order => { %>
+                                <tr>
+                                    <td><%= order.orderId %></td>
+                                    <td><%= new Date(order.createdAt).toLocaleDateString('en-IN') %></td>
+                                    <td><%= order.paymentMethod.toUpperCase() %></td>
+                                    <td>₹<%= (order.subtotal||0).toFixed(2) %></td>
+                                    <td>₹<%= (order.couponDiscount||0)
+                                        .toFixed(2) %></td>
+                                    <td>₹<%= order.totalAmount.toFixed(2) %></td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="6" class="report-empty">
+                                    No delivered orders found for this period.
+                                </td>
+                            </tr>
+                        <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const period = document.getElementById('period');
+    const startDate = document.getElementById('startDate');
+    const endDate = document.getElementById('endDate');
+    const form = document.getElementById('reportFilterForm');
+    const customDateFields = document.querySelectorAll('.custom-date');
+
+    function updateDateFields() {
+        const isCustom = period.value === 'custom';
+
+        customDateFields.forEach(field => {
+            field.style.display = isCustom ? 'flex' : 'none';
+        });
+
+        startDate.required = isCustom;
+        endDate.required = isCustom;
+
+        startDate.setCustomValidity('');
+        endDate.setCustomValidity('');
+    }
+
+    function validateDateRange() {
+        if (period.value !== 'custom') {
+            return true;
+        }
+
+        const start = startDate.value;
+        const end = endDate.value;
+
+        if (!start && !end) {
+            showToastMessage('Please select both start and end dates.');
+            startDate.focus();
+            return false;
+        }
+
+        if (!start) {
+            showToastMessage('Please select a start date.');
+            startDate.focus();
+            return false;
+        }
+
+        if (!end) {
+            showToastMessage('Please select an end date.');
+            endDate.focus();
+            return false;
+        }
+
+        if (start > end) {
+            showToastMessage('End date must be on or after the start date.');
+            endDate.focus();
+            return false;
+        }
+
+        const selectedStart = new Date(`${start}T00:00:00`);
+        const selectedEnd = new Date(`${end}T00:00:00`);
+
+        if (
+            Number.isNaN(selectedStart.getTime()) ||
+            Number.isNaN(selectedEnd.getTime())
+        ) {
+            showToastMessage('Please enter valid dates.');
+            return false;
+        }
+
+        return true;
+    }
+
+    period.addEventListener('change', updateDateFields);
+
+    startDate.addEventListener('change', () => {
+        endDate.min = startDate.value;
+    });
+
+    endDate.addEventListener('change', () => {
+        startDate.max = endDate.value;
+    });
+
+    form.addEventListener('submit', event => {
+        if (!validateDateRange()) {
+            event.preventDefault();
+        }
+    });
+
+    updateDateFields();
+});
+
+
+</script>
+</body>
+</html>

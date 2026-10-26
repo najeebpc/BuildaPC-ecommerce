@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Category Management</title>
+
+    <link rel="stylesheet" href="/admin/css/admin-base.css">
+    <link rel="stylesheet" href="/admin/css/categories.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+<div class="admin-wrapper">
+
+    <!-- Existing Sidebar -->
+    <%- include("../partials/admin/sidebar",{active:'categories'}) %>
+
+
+    <!-- Main Content -->
+    <div class="admin-content">
+        <%- include('../partials/admin/topbar') %>
+        <!-- Page Header -->
+        <div class="top-bar">
+
+            <div>
+                <h1 class="page-title">
+                    Category Management
+                </h1>
+
+                <p class="page-subtitle">
+                    Organize your product categories
+                </p>
+            </div>
+
+            <button
+                type="button"
+                class="add-category-btn"
+                onclick="openAddCategoryModal()">
+
+                <span class="plus-icon">+</span>
+
+                Add New Category
+
+            </button>
+
+        </div>
+        
+        <div id="categoryMessage" class="category-message"></div>
+        
+        <!-- Category Card -->
+        <div class="category-card">
+        <div class="category-search">
+        <form method="GET" action="/admin/categories" class="search-form">
+        <input
+            type="text"
+            name="search"
+            placeholder="Search categories by name..."
+            value="<%= search || '' %>"
+        />
+        <button type="submit" class="search-btn">
+            Search
+        </button>
+        <% if (search) { %>
+            <a href="/admin/categories" class="clear-search">
+                Cancel
+            </a>
+        <% } %>
+         </form>
+        </div>
+            <table class="category-table">
+
+                <thead>
+                    <tr>
+                        <th>Category Name</th>
+                        <th>Product Count</th>
+                        <th>Variant Attributes</th>
+                        <th>List / Unlist</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+
+                <tbody>
+                    <% if(categories.length ===0){%>
+                    <tr>
+                        <td colspan="5" class="empty-row">
+                            No categories found
+                        </td>
+                    </tr>
+                    <% } %>
+                    <% categories.forEach(category =>{%>
+                    <tr>
+                        <td>
+                            <%=  category.name%>
+                        </td>
+                        <td>
+                            <%= category.productCount %>
+                        </td>
+                        <td>
+                            <% if(category.variantAttributes&& category.variantAttributes.length>0){%>
+                            <div class="attribute-list">
+                                <% category.variantAttributes.forEach(attribute =>{%>
+                                <span class="attribute-tag"><%= attribute %></span>
+                                <% }) %>
+                            </div>
+                            <% } %>
+                        </td>
+                        <td>
+                            <label class="toggle">
+                                <input type="checkbox" class="category-status-toggle"
+                                data-category-id="<%=category._id %>"
+                                <%= category.isListed ? "checked":"" %>
+                                >
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </td>
+                        <td>
+                            <div class="action-links">
+                                <a href="#" class="edit-link"
+                                data-category = '<%= JSON.stringify(category)%>'
+                                 onclick='editCategory(this); return false;'>Edit</a>
+                                <a href="" class="delete-link"
+                                onclick="openDeleteModal('<%= category._id %>');return false;">
+                                    Delete
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+            <div class="pagination">
+    <% for (let i = 1; i <= totalPages; i++) { %>
+        <a
+            href="/admin/categories?page=<%= i %>&search=<%= search || '' %>"
+            class="<%= currentPage === i ? 'active' : '' %>"
+        >
+            <%= i %>
+        </a>
+    <% } %>
+</div>
+        </div>
+    </div>
+</div>
+
+<!-- =====================================================
+     ADD / EDIT CATEGORY MODAL
+====================================================== -->
+<div
+    class="category-modal-overlay"
+    id="categoryModal">
+    <div class="category-modal">
+ <!-- Modal Header -->
+     <div class="category-modal-header">
+            <div>
+                <h2 id="modalTitle">
+                    Add Category
+                </h2>
+                <p id="modalSubtitle">
+                    Create a new product category
+                </p>
+            </div>
+            <button
+                type="button"
+                class="category-modal-close"
+                onclick="closeCategoryModal()">
+                ×
+            </button>
+        </div>
+        <!-- Modal Body -->
+        <div class="category-modal-body">
+            <!-- Category Name -->
+            <div class="form-group">
+                <label for="categoryName">
+                    Category Name
+                    <span>*</span>
+                </label>
+                <input
+                    type="text"
+                    id="categoryName"
+                    class="category-input"
+                    placeholder="Enter category name">
+                <p id="categoryNameError" class="field-error"></p>
+            </div>
+            <!-- Category Status -->
+            <div class="form-group category-status-group">
+                <label>
+                    Category Status
+                </label>
+                <div class="status-toggle-row">
+                    <label class="modal-toggle">
+                        <input
+                            type="checkbox"
+                            id="categoryStatus"
+                            checked>
+                        <span class="modal-toggle-slider"></span>
+                    </label>
+                    <span id="statusText">
+                        Listed (Visible to customers)
+                    </span>
+                </div>
+            </div>
+            <!-- Divider -->
+            <div class="modal-divider"></div>
+            <!-- Variant Attributes -->
+            <div class="variant-section">
+                <h3>
+                    Variant Attributes Definition
+                </h3>
+                <p class="variant-description">
+
+                    Define the unique characteristics that
+                    differentiate variants in this category
+                </p>
+                <label class="variant-label">
+                    Variant Attributes
+                </label>
+                <!-- Attribute Tags -->
+                <div
+                    class="attributes-container"
+                    id="attributesContainer">
+                </div>
+                <!-- Add Attribute -->
+                <div class="attribute-input-wrapper">
+                    <input
+                        type="text"
+                        id="attributeInput"
+                        placeholder="Type an attribute and press Enter (e.g., Color, Speed, Capacity)">
+                    <button
+                        type="button"
+                        class="add-attribute-btn"
+                        onclick="addAttribute()">
+                        +
+                    </button>
+                    <p id="categoryAttributeError" class="field-error"></p>
+                </div>
+                <p class="attribute-help">
+                    Press
+                    <span>Enter</span>
+                    to add each attribute
+                </p>
+            </div>
+        </div>
+        
+        <!-- Modal Footer -->
+        <div class="category-modal-footer">
+            <button
+                type="button"
+                class="modal-cancel-btn"
+                onclick="closeCategoryModal()">
+                Cancel
+            </button>
+            <button
+                type="button"
+                class="modal-save-btn"
+                id="modalSaveBtn"
+                onclick="saveCategory()">
+                Create Category
+            </button>
+        </div>
+    </div>
+</div>
+<!-- delete modal -->
+ <div class="category-delete-modal-overlay" id="deleteCategoryModal">
+    <div class="category-delete-modal-box">
+        <div class="category-delete-modal-header">
+            <h3>Delete Category</h3>
+            <button
+                type="button"
+                class="category-delete-modal-close"
+                id="closeCategoryDeleteModal"
+                onclick="closeDeleteModal()">
+                ×
+            </button>
+        </div>
+        <div class="category-delete-modal-body">
+            <div class="category-delete-warning-icon">
+                ⚠️
+            </div>
+            <p id="categoryDeleteModalText">
+                Are you sure you want to delete this category?
+            </p>
+        </div>
+        <div class="category-delete-modal-footer">
+            <button
+                type="button"
+                class="category-delete-cancel-btn"
+                id="cancelCategoryDeleteBtn"
+                onclick="closeDeleteModal()">
+                Cancel
+            </button>
+            <button
+                type="button"
+                class="category-delete-confirm-btn"
+                id="confirmCategoryDeleteBtn">
+                Delete Category
+            </button>
+        </div>
+    </div>
+</div>
+<script>
+    const categoryModal = document.getElementById('categoryModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalSubtitle = document.getElementById('modalSubtitle');
+    const modalSaveBtn = document.getElementById('modalSaveBtn');
+    const categoryName = document.getElementById('categoryName');
+    const categoryStatus = document.getElementById('categoryStatus');
+    const statusText = document.getElementById('statusText');
+    const attributesInput = document.getElementById('attributeInput');
+    const attributesContainer = document.getElementById('attributesContainer');
+    const categoryAttributeError = document.getElementById('categoryAttributeError');
+    const categoryNameError = document.getElementById('categoryNameError');
+    
+    let modalMode ='Add';
+    let editingCategoryId = null;
+    //open modal
+    function openAddCategoryModal(){
+        console.log('add category clicked');
+        modalMode = 'add';
+        modalTitle.textContent ='Add Category';
+        modalSubtitle.textContent='Create a new product category';
+        modalSaveBtn.textContent ='Create Category';
+        categoryName.value='';
+        categoryStatus.checked = true;
+        attributesContainer.innerHTML ='';
+        attributesInput.value='';
+        categoryModal.style.display = 'flex';
+        categoryName.focus();
+    }
+    //open edit modal
+    function editCategory(link){
+        const category = JSON.parse(link.dataset.category);
+        openEditCategoryModal(category);
+    }
+    function openEditCategoryModal(category){
+        modalMode = 'Edit';
+        modalTitle.textContent=`Edit Category: ${category.name}`;
+        modalSubtitle.textContent = 'Configure category settings and variant attributes';
+        modalSaveBtn.textContent= 'Save changes';
+        categoryName.value = category.name;
+        categoryStatus.checked = category.isListed;
+        attributesContainer.innerHTML = '';
+        category.variantAttributes.forEach(attribute => {
+            createAttributeTag(attribute)
+        });
+        editingCategoryId = category._id;
+        attributesInput.value ='';
+        categoryNameError.textContent = '';
+        categoryModal.style.display = 'flex';
+        categoryName.focus();
+    }
+    //close modal
+    function closeCategoryModal(){
+        categoryModal.style.display = 'none';
+        categoryName.value='';
+        attributesContainer.innerHTML= '';
+        attributesInput.value = '';
+        categoryNameError.textContent='';
+        categoryAttributeError.textContent='';
+        modalMode = 'add';
+    }
+    //Add atributes 
+  
+  function addAttribute() {
+    const attribute = attributesInput.value.trim();
+
+    if (attribute === '') {
+        return;
+    }
+
+    const normalize = value =>
+        value.trim().toLowerCase().replace(/\s+/g, '');
+
+    const existingAttributes = Array.from(
+        attributesContainer.querySelectorAll('.attribute-tag-modal span')
+    ).map(tag => normalize(tag.textContent));
+
+    if (existingAttributes.includes(normalize(attribute))) {
+        categoryAttributeError.textContent = 'Attribute already created';
+        return;
+    }
+
+    categoryAttributeError.textContent = '';
+
+    createAttributeTag(attribute);
+
+    attributesInput.value = '';
+    attributesInput.focus();
+}
+    attributesInput.addEventListener('input',function(){
+        categoryAttributeError.textContent='';
+    })
+    categoryName.addEventListener('input',function(){
+        categoryNameError.textContent='';
+    })
+     attributesInput.addEventListener('keydown',(e)=>{
+        if(e.key==='Enter'){
+            e.preventDefault();
+            addAttribute();
+        }
+    })
+    // add attribute tag
+    function createAttributeTag(attribute){
+        const tag = document.createElement('div');
+        tag.classList.add('attribute-tag-modal');
+        tag.innerHTML = `
+        <span>${attribute}</span>
+        <button type ="button" onclick ="removeAttributeTag(this)">×</button>
+        `;
+        attributesContainer.appendChild(tag);
+    }
+    //remove tag
+    function removeAttributeTag(button){
+        button.parentElement.remove();
+    }
+    categoryStatus.addEventListener('change',()=>{
+        if(categoryStatus.checked){
+            statusText.textContent = 'Listed(Visible to customers)';
+        }else{
+            statusText.textContent = 'Unlisted (Hidden from Customers)';
+        }
+    });
+    function getAttributes(){
+        const tags = attributesContainer.querySelectorAll('.attribute-tag-modal span');
+        return Array.from(tags).map(tag=>tag.textContent.trim());
+    }
+    async function saveCategory() {
+        const name = categoryName.value.trim();
+        const isListed = categoryStatus.checked;
+        const variantAttributes = getAttributes();
+        
+        categoryNameError.textContent = '';
+        categoryMessage.textContent = '';
+
+        if(name===''){
+            categoryNameError.textContent='Category name is required ';
+            categoryName.focus();
+            return;
+        }
+        if(name.length<3){
+            categoryNameError.textContent ='Category name should be atleast 3 letter'
+            return;
+        }
+        if (!/^[a-zA-Z0-9]+(?:[ &'-][a-zA-Z0-9]+)*$/.test(name)) {
+        categoryNameError.textContent =
+        'Use only letters, numbers, spaces, hyphens, apostrophes, and &.';
+        categoryName.focus();
+        return;
+        }
+        const categoryData = {
+            name,
+            isListed,
+            variantAttributes
+        };
+        try{
+            let response;
+            if(modalMode ==='add'){
+                response = await fetch('/admin/categories',{
+                    method:'POST',
+                    headers:{
+                        'Content-Type':'application/json'
+                    },
+                    body:JSON.stringify(categoryData)
+                });
+            }else{
+                console.log(editingCategoryId)
+                response = await fetch(`/admin/categories/${editingCategoryId}`,{
+                    method:'PUT',
+                    headers:{
+                        'Content-Type': 'application/json'
+                    },body:JSON.stringify(categoryData)
+                });
+            }
+            const result = await response.json();
+            console.log('Response',result)
+            if(!response.ok){
+                categoryNameError.textContent= result.message;
+                return
+            }
+            showToastMessage(result.message,'success')
+            closeCategoryModal();
+            setTimeout(()=>{
+                window.location.reload();
+            },1400)
+        }catch(error){
+            console.log(error);
+            alert('somthing went wrong');
+        }
+        
+    }
+    const categoryMessage = document.getElementById('categoryMessage');
+    const message = sessionStorage.getItem('categoryMessage');
+    if(message){
+        categoryMessage.textContent = message;
+        categoryMessage.classList.add('success');
+        sessionStorage.removeItem('categoryMessage');
+        setTimeout(() => {
+            categoryMessage.style.display = 'none';
+        }, 4000);
+    }
+
+    const categoryToggles = document.querySelectorAll('.category-status-toggle');
+    categoryToggles.forEach(toggle =>{
+        toggle.addEventListener('change',function(){
+            toggleCategoryStatus(this.dataset.categoryId, this)
+        })
+    })
+    async function toggleCategoryStatus(categoryId, checkbox) {     
+        const isListed = checkbox.checked;
+        console.log(isListed);
+        try{
+            const response = await fetch(`/admin/categories/${categoryId}/status`,
+                {
+                    method:'PATCH',
+                    headers:{
+                        'Content-Type':'application/json'
+                    },
+                    body:JSON.stringify({isListed})
+                }
+            );
+            const result = await response.json();
+            if(!response.ok){
+                checkbox.checked =!isListed;
+                categoryMessage.textContent = result.message;
+                categoryMessage.classList.add('error')
+                return;
+            }
+            showToastMessage(result.message,'success');
+            console.log(result.message)
+        }catch(error){
+            console.log(error);
+            showToastMessage('Somthing went wrong','error')
+        }
+    }
+
+    const deleteCategoryModal = document.getElementById('deleteCategoryModal');
+    const confirmCategoryDeleteBtn = document.getElementById('confirmCategoryDeleteBtn');
+    let deletingCategoryId = null;
+    function openDeleteModal(categoryId){
+        console.log('delete modal clicked',categoryId)
+        deletingCategoryId = categoryId;
+        deleteCategoryModal.style.display= 'flex';
+    }
+    function closeDeleteModal (){
+        deletingCategoryId = null;
+        deleteCategoryModal.style.display= 'none';
+    }
+    confirmCategoryDeleteBtn.addEventListener('click',deleteCategory);
+    async function deleteCategory() {
+        if(!deletingCategoryId){
+            return;
+        }
+        try{
+            const response  = await fetch(
+                `/admin/categories/${deletingCategoryId}`,
+                {
+                    method:'DELETE'
+                }
+            );
+            const result = await response.json();
+            if(!response.ok){
+                closeDeleteModal();
+                categoryMessage.textContent = result.message;
+                categoryMessage.classList.add('error');
+                return;
+            }
+            showToastMessage(result.message,'success')
+            closeDeleteModal();
+           setTimeout(()=>{
+            window.location.reload()
+           },1400)
+        }catch(error){
+            console.log(error);
+            closeDeleteModal();
+            showToastMessage('Somthing went wrong','error');
+        }
+    }
+</script>
+</body>
+
+</html>

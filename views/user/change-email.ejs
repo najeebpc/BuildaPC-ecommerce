@@ -1,0 +1,33 @@
+<link rel="stylesheet" href="/user/css/accounts.css">
+<div class="center-page">
+
+  <div class="email-card">
+    <h3>Change Email</h3>
+
+    <% if (message) { %>
+      <p class="error-text"><%= message %></p>
+    <% } %>
+
+    <form action="/account/change-email" method="POST">
+      <div class="form-group">
+        <label>New Email Address</label>
+        <input
+          type="email"
+          name="email"
+          placeholder="Enter new email"
+          value="<%=formData?.email||''%>"
+          required
+        />
+      </div>
+
+      <button class="btn-primary">Send OTP</button>
+    </form>
+  </div>
+
+</div>
+
+
+
+
+
+

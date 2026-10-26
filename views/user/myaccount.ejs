@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Account</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css"
+/>
+  <link rel="stylesheet" href="/user/css/home.css">
+  <link rel="stylesheet" href="/user/css/accounts.css">
+</head>
+<body>
+
+<%- include("../../views/partials/user/header.ejs") %>
+
+ <main class="account-page">
+    <div class="account-layout">
+<%- include('../../views/partials/user/accounts-sidebar.ejs', { active: 'account' }) %>
+      
+      <!-- right content -->
+<section class="account-content">
+  <div 
+    id="profileToastData"
+    data-success="<%=profileSuccess||''%>"
+    data-error="<%=profileError||''%>"
+    hidden>
+  </div>
+<!-- personal info -->
+  <div class="account-card">
+  <h3>Personal Information</h3>
+  <!--PROFILE PHOTO-->
+  <div class="profile-photo-section">
+    <div class="profile-photo-wrapper">
+      <% if(user.profileImage){%>
+      <img
+        src="/uploads/profile/<%= user.profileImage%>"
+        alt="Profile Photo"
+        class="profile-photo"
+        id="profilePhotoPreview"
+        />
+        <% } else { %>
+          <div class="profile-photo-placeholder" id="profilePhotoPreview">
+            <span><%=user.name? user.name.charAt(0).toUpperCase():'U'%></span>
+          </div>
+          <% } %>
+    </div>
+    <div class="profile-photo-actions">
+      <form action="/account/profile-image" method="POST" enctype="multipart/form-data" id="profileImageForm">
+        <input
+          type="file"
+          name="profileImage"
+          id="profileImageInput"
+          accept="image/jpeg,image/png,image/webp"
+          hidden>
+        <button
+        type="button"
+        class="<%= user.profileImage?'photo-action-btn':'btn-primary'%> "
+        id="changePhotoBtn">
+        <%=user.profileImage?'✎':'Add photo'%>
+      </button>
+      </form>
+      <%if(user.profileImage){%>
+        <form action="/account/profile-image/remove" method="POST">
+          <button type="submit" class="photo-action-btn remove" title="Remove profile photo">🗑</button>
+        </form>
+        <%}%>
+        <p class="profile-photo-help">JPG, PNG or WebP. maximum 2MB</p>
+        <p class="error-text" id="profileImageError"></p>
+        
+    </div>
+  </div>
+  <form action="/update-profile" method="POST" id="profileForm">
+
+    <div class="profile-grid">
+      <div class="account-card-grid">
+
+        <div class="form-group">
+          <label>Username</label>
+          <input
+            type="text"
+            name="username"
+            value="<%= user.name || '' %>"
+            disabled
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Full Name</label>
+          <input
+            type="text"
+            name="fullName"
+            value="<%= user.fullName || '' %>"
+            disabled
+          />
+          
+        </div>
+
+        <div class="form-group">
+          <label>Email Address</label>
+          <input
+            type="email"
+            value="<%= user.email %>"
+            disabled
+          />
+          <% if(!user.googleId){%>
+          <a href="/account/change-email" class="link-btn">
+            Change Email
+          </a>
+          <% } %>
+        </div>
+
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input
+            type="text"
+            name="phone"
+            value="<%= user.phone || '' %>"
+            disabled
+            maxlength="10"
+          />
+          <p class="error-text" id="phoneError"></p>
+        </div>
+
+      </div>
+    </div>
+
+    <button
+      type="button"
+      class="btn-primary account-save-btn"
+      id="editProfileBtn"
+    >
+      Edit Profile
+    </button>
+
+    <button
+      type="submit"
+      class="btn-primary account-save-btn"
+      id="saveProfileBtn"
+      style="display:none;"
+    >
+      Save Changes
+    </button>
+
+  </form>
+</div>
+
+  <% if(!user.googleId){%>      
+  <div class="account-card">
+  <h3>Change Password</h3>
+  <div 
+    id="changePasswordToastData"
+    data-message="<%=message && !field ?message:''%>"
+    hidden></div>
+  <form action="/account/change-password" id="changePasswordForm" method="POST">
+
+    <div class="account-card-grid password-grid">
+
+      
+      <div class="form-group">
+        <label>Current Password</label>
+        <div class="password-wrapper">
+        <input type="password" name="currentPassword" id="currentPassword" />
+        <button type="button" class="password-toggle" title="show" onclick="togglePassword('currentPassword', this)">
+           👁 </button>
+        </div>
+         <p class="error-text" id="currentPasswordError">
+          <% if (message&&(field==='currentPassword'||field==='all')) { %><%= message %><% } %>
+        </p>
+      </div>
+
+      
+      <div class="form-group">
+        <label>New Password</label>
+        <div class="password-wrapper">
+        <input type="password" name="newPassword" id="newPassword"/>
+        <button type="button" class="password-toggle" title="show" onclick="togglePassword('newPassword', this)">
+          👁 </button>
+        </div>
+        <p class="error-text" id="newPasswordError">
+          <% if (message&&(field==='newPassword'||field==='all')) { %><%= message %><% } %>
+        </p>
+        <p class="password-hint">
+        Use 8+ characters with uppercase, lowercase, a number and a special character.
+      </p>
+      </div>
+      <div class="form-group">
+        <label>Confirm New Password</label>
+        <div class="password-wrapper">
+        <input type="password" name="confirmPassword" id="confirmPassword"/>
+        <button type="button" class="password-toggle" title="show" onclick="togglePassword('confirmPassword', this)">
+         👁 </button>
+        </div>
+         <p class="error-text" id="confirmPasswordError">
+          <% if (message&&(field==='confirmPassword'||field==='all')) { %><%= message %><% } %>
+        </p>
+      </div>
+
+    </div>
+
+    <button type="submit" class="btn-primary account-save-btn " id="changePasswordBtn">
+      Change Password
+    </button>
+
+  </form>
+  <% }%>
+</div>
+ <div class="photo-editor-modal" id="photoEditorModal">
+
+    <div class="photo-editor">
+
+        <h3>Edit Profile Photo</h3>
+
+        <div class="photo-editor-image">
+            <img id="photoEditorImage" src="" alt="Edit profile photo">
+        </div>
+
+        <div class="photo-editor-actions">
+
+            <button
+                type="button"
+                class="photo-editor-cancel-btn"
+                id="cancelPhotoEditBtn"
+            >
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                class="btn-primary"
+                id="savePhotoEditBtn"
+            >
+                Save
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+      </section>
+
+    </div>
+  </main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+<script>
+  const changePhotoBtn = document.getElementById('changePhotoBtn');
+  const profileImageInput = document.getElementById('profileImageInput');
+  const profileImageForm = document.getElementById('profileImageForm');
+  const profileImageError = document.getElementById('profileImageError');
+
+  const photoEditorModal = document.getElementById("photoEditorModal");
+  const photoEditorImage = document.getElementById("photoEditorImage");
+  const cancelPhotoEditBtn = document.getElementById("cancelPhotoEditBtn");
+  const savePhotoEditBtn = document.getElementById("savePhotoEditBtn");
+  
+  let cropper = null;
+  changePhotoBtn.addEventListener('click',()=>{
+    profileImageInput.click();
+  });
+  profileImageInput.addEventListener('change',()=>{
+    const file = profileImageInput.files[0];
+    if(!file){
+      return;
+    }
+    profileImageError.textContent='';
+
+    const allowedTypes = ['image/jpeg','image/png','image/webp'];
+    if(!allowedTypes.includes(file.type)){
+      profileImageError.textContent='Please select a JPG, PNG or WebP image';
+      return;
+    }
+    if(file.size>2 * 1024 * 1024){
+      profileImageError.textContent='Image size must be less than 2MB';
+      profileImageError.value ='';
+      return;
+    }
+    const imageUrl = URL.createObjectURL(file);
+    photoEditorImage.src= imageUrl;
+    photoEditorModal.classList.add("active");
+    photoEditorImage.onload=()=>{
+      if(cropper){
+        cropper.destroy();
+        cropper= null;
+      }
+      cropper = new Cropper(
+        photoEditorImage,
+        {
+          aspectRatio:1,
+          viewMode:1,
+          dragMode:'move',
+          autoCropArea:1,
+          responsive:true,
+          background:false
+        }
+      );
+    };
+  });
+ 
+  cancelPhotoEditBtn.addEventListener('click',()=>{
+    if(cropper){
+      cropper.destroy();
+      cropper = null;
+    }
+    photoEditorModal.classList.remove('active');
+    profileImageInput.value= '';
+  });
+  savePhotoEditBtn.addEventListener('click',()=>{
+    if(!cropper){
+      return;
+    }
+    cropper.getCroppedCanvas({
+      width:500,
+      height:500,
+      imageSmoothingEnabled:true,
+      imageSmoothingQuality:"high"
+    }).toBlob(
+      (blob)=>{
+        const file = new File([blob],
+          "profile-image-jpg",
+          {
+            type:"image/jpeg"
+          }
+        );
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        profileImageInput.files = dataTransfer.files;
+        photoEditorModal.classList.remove('active');
+        cropper.destroy();
+        cropper = null;
+        profileImageForm.submit();
+      },
+      "image/jpeg",0.9
+    );
+  });
+  const editBtn = document.getElementById("editProfileBtn");
+  const saveBtn = document.getElementById("saveProfileBtn");
+  const profileForm = document.getElementById("profileForm");
+
+  const inputs = profileForm.querySelectorAll(
+    'input[name="username"], input[name="fullName"], input[name="phone"]'
+  );
+
+  editBtn.addEventListener("click", () => {
+    inputs.forEach(input => {
+      input.disabled = false;
+      input.style.backgroundColor = "#fff";
+    });
+
+    editBtn.style.display = "none";
+    saveBtn.style.display = "inline-block";
+  });
+
+  
+  profileForm.addEventListener("submit", (e) => {
+    let valid = true;
+
+    const fullName = profileForm.fullName;
+    const phone = profileForm.phone;
+
+    document.getElementById("fullNameError").textContent = "";
+    document.getElementById("phoneError").textContent = "";
+
+    if (fullName.value.trim() && fullName.value.trim().length < 3) {
+      document.getElementById("fullNameError").textContent =
+        "Full name must be at least 3 characters";
+      valid = false;
+    }
+
+    if (phone.value && !/^\d{10}$/.test(phone.value.trim())) {
+      document.getElementById("phoneError").textContent =
+        "Phone number must be exactly 10 digits";
+      valid = false;
+    }
+
+    if (!valid) e.preventDefault();
+  });
+  function togglePassword(inputId, button){
+    const input = document.getElementById(inputId);
+    if(input.type ==='password'){
+      input.type='text';
+      button.textContent= '⌣';
+      button.title= 'hide';
+    }else{
+      input.type = 'password',
+      button.textContent= '👁'
+      button.title = 'show'
+    }
+  }
+  document.addEventListener('DOMContentLoaded',()=>{
+    const toastData = document.getElementById('profileToastData');
+    if(!toastData)return;
+    const successMessage=toastData.dataset.success;
+    const errorMessage = toastData.dataset.error;
+    if(successMessage){
+      showToastMessage(successMessage,'success')
+    }
+    if(errorMessage){
+      showToastMessage(errorMessage,'error')
+    }
+  })
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("changePasswordForm");
+
+  if (!form) return;
+
+  const currentPassword = document.getElementById("currentPassword");
+  const newPassword = document.getElementById("newPassword");
+  const confirmPassword = document.getElementById("confirmPassword");
+  const submitBtn = document.getElementById("changePasswordBtn");
+
+  const currentError = document.getElementById("currentPasswordError");
+  const newError = document.getElementById("newPasswordError");
+  const confirmError = document.getElementById("confirmPasswordError");
+
+  function showError(input, errorElement, message) {
+    errorElement.textContent = message;
+    input.classList.add("invalid");
+  }
+
+  function clearError(input, errorElement) {
+    errorElement.textContent = "";
+    input.classList.remove("invalid");
+  }
+
+  function validateCurrentPassword() {
+    if (!currentPassword.value) {
+      showError(currentPassword, currentError, "Current password is required.");
+      return false;
+    }
+
+    clearError(currentPassword, currentError);
+    return true;
+  }
+
+  function validateNewPassword() {
+    const value = newPassword.value;
+
+    if (!value) {
+      showError(newPassword, newError, "New password is required.");
+      return false;
+    }
+
+    if (value.length < 8) {
+      showError(newPassword, newError, "Password must be at least 8 characters.");
+      return false;
+    }
+
+    if (!/[A-Z]/.test(value)) {
+      showError(newPassword, newError, "Include at least one uppercase letter.");
+      return false;
+    }
+
+    if (!/[a-z]/.test(value)) {
+      showError(newPassword, newError, "Include at least one lowercase letter.");
+      return false;
+    }
+
+    if (!/[0-9]/.test(value)) {
+      showError(newPassword, newError, "Include at least one number.");
+      return false;
+    }
+
+    if (!/[^A-Za-z0-9]/.test(value)) {
+      showError(newPassword, newError, "Include at least one special character.");
+      return false;
+    }
+
+    clearError(newPassword, newError);
+    return true;
+  }
+
+  function validateConfirmPassword() {
+    if (!confirmPassword.value) {
+      showError(confirmPassword, confirmError, "Please confirm your new password.");
+      return false;
+    }
+
+    if (confirmPassword.value !== newPassword.value) {
+      showError(confirmPassword, confirmError, "Passwords do not match.");
+      return false;
+    }
+
+    clearError(confirmPassword, confirmError);
+    return true;
+  }
+
+  currentPassword.addEventListener("input", validateCurrentPassword);
+
+  newPassword.addEventListener("input", () => {
+    validateNewPassword();
+
+    if (confirmPassword.value) {
+      validateConfirmPassword();
+    }
+  });
+
+  confirmPassword.addEventListener("input", validateConfirmPassword);
+
+  form.addEventListener("submit", (event) => {
+    const currentValid = validateCurrentPassword();
+    const newValid = validateNewPassword();
+    const confirmValid = validateConfirmPassword();
+
+    if (!currentValid || !newValid || !confirmValid) {
+      event.preventDefault();
+
+      if (!currentValid) currentPassword.focus();
+      else if (!newValid) newPassword.focus();
+      else confirmPassword.focus();
+
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Updating Password...";
+  });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const toastData = document.getElementById("changePasswordToastData");
+
+  if (!toastData) return;
+
+  const message = toastData.dataset.message;
+
+  if (message) {
+    showToastMessage(message, "success");
+  }
+});
+
+</script>
+<%-include("../../views/partials/user/footer.ejs")%>
+
+
+
+
+
+
+

@@ -1,0 +1,507 @@
+/* ACCOUNT PAGE WRAPPER */
+.account-page {
+  padding: 24px 20px 32px;
+  background-color: #f3f4f6;
+}
+
+.account-layout {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 20px;
+}
+
+/* SIDEBAR */
+.account-sidebar {
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 16px 14px;
+  border: 1px solid #e5e7eb;
+}
+
+.account-sidebar-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.account-menu {
+  list-style: none;
+}
+
+.account-menu li {
+  margin-bottom: 4px;
+}
+
+.account-menu li a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  font-size: 13px;
+  text-decoration: none;
+  color: #111827;
+  border-radius: 6px;
+}
+
+.account-menu li img {
+  width: 18px;
+  height: 18px;
+}
+
+.account-menu li.active a {
+  background-color: #2563eb;
+  color: #ffffff;
+}
+
+.account-menu li a:hover {
+  background-color: #edf2ff;
+}
+
+/* RIGHT CONTENT */
+.account-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.account-page-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+/* CARDS */
+.account-card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  padding: 16px 18px 18px;
+}
+
+.account-card h3 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.account-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 18px;
+  margin-bottom: 14px;
+}
+
+.account-card .form-group label {
+  display: block;
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.account-card .form-group input {
+  width: 100%;
+  height: 36px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  padding: 0 10px;
+  background-color: #f9fafb;
+  font-size: 13px;
+}
+/* Change Password - single column layout */
+.password-grid {
+  grid-template-columns: 50% !important;
+  
+}
+
+.account-save-btn {
+  margin-top: 4px;
+}
+
+
+.btn-primary {
+  display: inline-block;
+  padding: 8px 18px;
+  border-radius: 6px;
+  border: none;
+  background-color: #2563eb;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn-primary:hover {
+  background-color: #1d4ed8;
+}
+.alert {
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.alert.success {
+  background: #ecfdf5;
+  color: #065f46;
+}
+
+.alert.error {
+  background: #fef2f2;
+  color: #991b1b;
+}
+/* ================= CHANGE EMAIL PAGE ================= */
+
+/* ===== CENTER PAGE ===== */
+/* ================= PROFILE PHOTO ================= */
+
+.profile-photo-section {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.profile-photo-wrapper {
+  width: 90px;
+  height: 90px;
+  flex-shrink: 0;
+}
+
+.profile-photo {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e5e7eb;
+}
+
+.profile-photo-placeholder {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background-color: #edf2ff;
+  color: #2563eb;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 32px;
+  font-weight: 600;
+
+  border: 2px solid #e5e7eb;
+}
+
+.profile-photo-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.photo-action-btn {
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+
+    background-color: #ffffff;
+    color: #374151;
+
+    font-size: 16px;
+
+    cursor: pointer;
+}
+.photo-action-btn:hover {
+    background-color: #f3f4f6;
+}
+
+.photo-action-btn.remove {
+    color: #dc2626;
+}
+
+.photo-action-btn.remove:hover {
+    background-color: #fef2f2;
+}
+.profile-photo-actions form {
+  margin: 0;
+}
+.profile-photo-actions .btn-primary {
+    display: inline-block;
+
+    padding: 8px 18px;
+
+    border-radius: 6px;
+    border: none;
+
+    background-color: #2563eb;
+    color: #ffffff;
+
+    font-size: 13px;
+    font-weight: 500;
+
+    cursor: pointer;
+}
+.profile-photo-actions .btn-primary:hover {
+    background-color: #1d4ed8;
+}
+.remove-photo-btn {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid #dc2626;
+  background-color: #ffffff;
+  color: #dc2626;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.remove-photo-btn:hover {
+  background-color: #fef2f2;
+}
+
+.profile-photo-help {
+  width: 100%;
+  margin: 0;
+  color: #6b7280;
+  font-size: 11px;
+}
+.center-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f3f4f6;
+  padding: 16px;
+}
+
+/* ===== CARD ===== */
+.email-card {
+  width: 100%;
+  max-width: 380px;
+  background: #ffffff;
+  padding: 22px 20px 24px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* ===== TITLE ===== */
+.email-card h3 {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+/* ===== FORM ===== */
+.email-card .form-group {
+  margin-bottom: 14px;
+}
+
+.email-card label {
+  display: block;
+  font-size: 13px;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.email-card input {
+  width: 100%;
+  height: 38px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  padding: 0 12px;
+  font-size: 14px;
+  background-color: #f9fafb;
+}
+
+.email-card input:focus {
+  outline: none;
+  border-color: #2563eb;
+  background-color: #ffffff;
+}
+
+/* ===== BUTTON ===== */
+.email-card .btn-primary {
+  width: 100%;
+  height: 38px;
+  font-size: 14px;
+  margin-top: 6px;
+}
+
+/* ===== ERROR ===== */
+/* Error text - hidden by default */
+.error-text {
+  display: block;
+  color: #991b1b;
+  font-size: 13px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+.success-text {
+    color: #16a34a;
+    font-size: 14px;
+    margin: 8px 0 15px;
+}
+/* profile photo editor modal */
+.photo-editor-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.photo-editor-modal.active {
+    display: flex;
+}
+
+.photo-editor {
+    width: 420px;
+    max-width: 90%;
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.photo-editor h3 {
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.photo-editor-image {
+    width: 100%;
+    height: 320px;
+    background-color: #111827;
+    overflow: hidden;
+}
+
+.photo-editor-image img {
+    display: block;
+    max-width: 100%;
+}
+
+.photo-editor-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.photo-editor-controls button {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #e5e7eb;
+    background-color: #ffffff;
+    border-radius: 6px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.photo-editor-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+.photo-editor-cancel-btn{
+  height: 36px;
+  padding: 0 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background-color: #ffffff;
+  color: #374151;
+  font-size: 13px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+.photo-editor-cancel-btn:hover {
+    background-color: #f3f4f6;
+}
+.password-wrapper {
+    position: relative;
+}
+
+.password-wrapper input {
+    padding-right: 45px;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    border: none;
+    background: none;
+    padding: 0;
+
+    cursor: pointer;
+    font-size: 17px;
+}
+.password-hint {
+    display: block;
+    font-size: 11px;
+    color: #6b7280;
+    margin: 3px 0 0;
+    line-height: 1.3;
+}
+/* Responsive */
+@media (max-width: 480px) {
+  .change-email-container {
+    padding: 14px;
+  }
+}
+
+/* RESPONSIVE */
+@media (max-width: 992px) {
+  .account-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .account-card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .account-page {
+    padding: 20px 14px 28px;
+  }
+}
+@media (max-width: 480px) {
+
+  .profile-photo-section {
+    align-items: flex-start;
+  }
+
+  .profile-photo-wrapper,
+  .profile-photo,
+  .profile-photo-placeholder {
+    width: 75px;
+    height: 75px;
+  }
+
+  .profile-photo-placeholder {
+    font-size: 26px;
+  }
+
+  .profile-photo-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+}

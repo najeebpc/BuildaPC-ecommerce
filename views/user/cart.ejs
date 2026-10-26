@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Shopping Cart - BuildaPC</title>
+    <link rel="stylesheet" href="/user/css/home.css">
+    <link rel="stylesheet" href="/user/css/cart.css">
+
+</head>
+
+<body>
+    <!-- Header -->
+    <%- include('../../views/partials/user/header.ejs') %>
+    <main class="cart-page">
+
+        <div class="cart-container">
+
+            <h1 class="cart-page-title">
+                Shopping Cart
+            </h1>
+            <% if (items && items.length > 0) { %>
+                <div class="cart-layout">
+                    <!-- =========================
+                         CART ITEMS
+                    ========================== -->
+                    <section class="cart-items-section">
+
+                        <% items.forEach(item => { %>
+
+                            <div
+                                class="cart-item"
+                                data-id="<%= item._id %>"
+                                data-price="<%= item.finalPrice ?? (item.variantId ? item.variantId.price : item.productId.basePrice) %>"
+                                data-original-price="<%= item.originalPrice ?? (item.variantId ? item.variantId.price : item.productId.basePrice) %>"
+                                data-discount-amount="<%= item.discountAmount ?? 0 %>"
+                                data-quantity="<%= item.quantity %>"
+                                data-stock="<%= item.variantId ? item.variantId.stock : item.productId.stockLevel %>"
+                                data-product-id="<%= item.productId._id %>"
+                            >
+
+                                <!-- Product Image -->
+                                <div class="cart-product-image">
+                                    <a href="/product/<%= item.productId._id %>">
+                                    <img
+                                        src="<%= item.productId.primaryImage %>"
+                                        alt="<%= item.productId.name %>"
+                                    >
+                                    </a>
+                                </div>
+
+                                <!-- Product Details -->
+                                <div class="cart-product-details">
+
+                                    <h3 class="cart-product-name">
+                                        <%= item.productId.name %>
+                                    </h3>
+                                    <% if (item.variantId) { %>
+                                    <div class="cart-variant-details">
+                                    <% item.variantId.attributes.forEach(attribute => { %>
+                                    <p>
+                                    <%= attribute.name %>: <%= attribute.value %>
+                                    <% }) %>
+                                    </div>
+                                    <% } %>
+                                    <p class="cart-seller">
+                                        Seller: BuildaPC
+                                    </p>
+
+
+                                    <!-- Quantity -->
+                                    <div class="cart-quantity">
+
+                                        <button
+                                            type="button"
+                                            class="quantity-btn quantity-minus"
+                                        >
+                                            −
+                                        </button>
+
+                                        <span class="quantity-value">
+                                            <%= item.quantity %>
+                                        </span>
+
+                                        <button
+                                            type="button"
+                                            class="quantity-btn quantity-plus"
+                                        >
+                                            +
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- Right Side -->
+                                <div class="cart-item-right">
+                                    <div class="cart-item-actions">
+                                        <button
+                                            type="button"
+                                            class="cart-wishlist-btn"
+                                            title="Add to wishlist"
+                                        >
+                                            Move to Wishlist
+                                        </button>
+                                        <button
+                                            type="button"
+                                            class="cart-remove-btn"
+                                            title="Remove from cart"
+                                        >
+                                            Remove
+                                        </button>
+                                    </div>
+                                    <div class="cart-item-price">
+                                        <% if (Number(item.discountAmount) > 0) { %>
+                                    <span class="cart-original-price">
+                                            ₹<%= Number(item.originalPrice).toLocaleString('en-IN') %>
+                                    </span>
+
+                                    <span class="cart-discounted-price">
+                                            ₹<%= Number(item.finalPrice).toLocaleString('en-IN') %>
+                                    </span>
+
+                                    <span class="cart-offer-badge">
+                                        <%= Number(item.discountPercentage) %>% OFF
+                                    </span>
+                                    <% } else { %>
+                                    <span class="cart-regular-price">
+                                    ₹<%= Number(
+                                        item.originalPrice ??
+                                        (item.variantId ? item.variantId.price : item.productId.basePrice)
+                                        ).toLocaleString('en-IN') %>
+                                    </span>
+                                <% } %>
+                                 <div class="cart-line-total">
+                                        Item total: ₹<%= Number(
+                                        item.lineTotal ??
+                                    (Number(item.finalPrice ?? item.originalPrice ?? (item.variantId ? item.variantId.price : item.productId.basePrice)) * item.quantity)
+                                    ).toLocaleString('en-IN') %>
+                                </div>
+                            </div>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </section>
+                    <!-- =========================
+                         ORDER SUMMARY
+                    ========================== -->
+                    <aside class="order-summary">
+                        <h2>
+                            Order Summary
+                        </h2>
+                        <div class="summary-row">
+                            <span>
+                                Subtotal
+                                <span class="summary-item-count" id="cartItemCount">
+                                    ( <%= items.reduce((total,item)=>total+item.quantity,0) %> items )
+                                </span>
+                            </span>
+                            <span id="cartSubtotal">
+                                ₹0
+                            </span>
+                        </div>
+                        <div class="saving-message" id="cartSavings" hidden></div>
+                        <div class="summary-row shipping-row">
+                            <span>
+                                Shipping Charge
+                            </span>
+                            <span class="shipping-free">
+                                Free
+                            </span>
+                        </div>
+                        <div class="summary-divider"></div>
+                        <div class="summary-total">
+                            <span>
+                                Total
+                            </span>
+                            <span id="cartTotal">
+                                ₹0
+                            </span>
+                        </div>
+                        <!-- <p class="saving-message">
+                            You will save ₹2,000 on this order
+                        </p> -->
+                        
+                        <button
+                            type="button"
+                            class="checkout-btn"
+                            id="proceedToCheckoutBtn"
+                        >
+                            Proceed to Checkout
+                        </button>
+                        
+                        <div class="delivery-info">
+                            <!-- <span class="delivery-icon">
+                                ♧
+                            </span> -->
+                            <!-- <span>
+                                Free delivery on all orders
+                            </span> -->
+                        </div>
+                    </aside>
+                </div>
+            <% } else { %>
+                <!-- =========================
+                     EMPTY CART
+                ========================== -->
+                <div class="empty-cart">
+                    <h2>
+                        Your Cart is Empty
+                    </h2>
+                    <p>
+                        Add products to your cart to see them here.
+                    </p>
+                    <a
+                        href="/products"
+                        class="continue-shopping-btn"
+                    >
+                        Continue Shopping
+                    </a>
+                </div>
+            <% } %>
+        </div>
+    </main>
+    <!-- Footer -->
+    <%- include('../../views/partials/user/footer.ejs') %>
+    <!--Cart JavaScript -->
+    <script >
+        document.querySelectorAll('.cart-remove-btn').forEach(button=>{
+            button.addEventListener('click',async function(){
+                const cartItem = this.closest('.cart-item');
+                const cartItemId = cartItem.dataset.id;
+                try{
+                    const response = await fetch(
+                        `/cart/${cartItemId}`,
+                        {
+                            method:'DELETE',
+                            headers:{'Accept':'application/json'}
+                        }
+                    );
+                    const result = await response.json();
+                    if(!response.ok){
+                        showToastMessage(result.message,'error');
+                        return;
+                    }
+                    showToastMessage(result.message,'success');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                }catch(error){
+                    showToastMessage(error.message,'error');
+                }
+            })
+        });
+        document.querySelectorAll('.cart-wishlist-btn').forEach(button=>{
+            button.addEventListener('click',async function(){
+                const cartItem = this.closest('.cart-item');
+                const cartItemId = cartItem.dataset.id;
+                const productId = cartItem.dataset.productId;
+                try{
+                    const response = await fetch('/account/wishlist',{
+                        method:'POST',
+                        headers:{'Content-Type':'application/json','Accept':'application/json'},
+                        body:JSON.stringify({productId:productId,fromCart:true})
+                    });
+                    const result = await response.json();
+                    if(!response.ok||!result.success){
+                        showToastMessage(result.message,'error')
+                        return;
+                    }
+                    const cartResponse = await fetch(
+                        `/cart/${cartItemId}`,
+                        {
+                            method:'DELETE',
+                            headers:{'Accept':'application/json'}
+                        }
+                    );
+                    const cartResult = await cartResponse.json();
+                    if(!cartResponse){
+                        return;
+                    }
+                    showToastMessage(result.message,'success')
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                }catch(error){
+                    showToastMessage(error.message,'error');
+                }
+            })
+        }) 
+        function showToastMessage(message,type){
+        const toast = document.getElementById('toastMessage');
+        const text = document.getElementById('toastMessageText');
+         console.log('MESSAGE:', message);
+         console.log('TYPE:', type);
+        text.textContent = message;
+        toast.classList.remove('success','error','show')
+        toast.classList.add(type);
+        toast.classList.add('show')
+        setTimeout(() => {
+            toast.classList.remove('show')
+            toast.classList.remove('success')
+            toast.classList.remove('error')
+        }, 4000);
+    }
+        const Max_Cart_Quantity = 5;
+        const cartItems = document.querySelectorAll('.cart-item');
+        
+        cartItems.forEach(cartItem=>{
+            const decreaseButton = cartItem.querySelector('.quantity-minus');
+            const increaseButton = cartItem.querySelector('.quantity-plus');
+            const quantityDisplay = cartItem.querySelector('.quantity-value');
+            const stock = Number(cartItem.dataset.stock);
+            const cartItemId = cartItem.dataset.id;
+            
+            if(!decreaseButton||!increaseButton||!quantityDisplay){
+                return;
+            }
+            decreaseButton.addEventListener('click',async function(){
+                console.log('Decrease button clicked')
+                console.log('button',decreaseButton,increaseButton,quantityDisplay);
+                let quantity = Number(quantityDisplay.textContent);
+                if(quantity<=1){
+                    return;
+                }
+                const newQuantity = quantity-1;
+                try{
+                    const response = await fetch(
+                        `/cart/${cartItemId}/quantity`,
+                        {
+                            method:'PATCH',
+                            headers:{'Content-Type':'application/json','Accept':'application/json'},
+                            body:JSON.stringify({quantity:newQuantity})
+                        }
+                    );
+                    const result  = await response.json();
+                    if(!response.ok||!result.success){
+                        showToastMessage(result.message,'error');
+                        return;
+                    }
+                    quantityDisplay.textContent = newQuantity;
+                    updateCartTotal();
+                    updateCartItemCount();
+                }catch(error){
+                    console.log('decrease error', error);
+                    showToastMessage('failed to updated quantity','error');
+                }
+            })
+            increaseButton.addEventListener('click',async function(){
+                let quantity = Number(quantityDisplay.textContent);
+                const maxQuantity = Math.min(stock,Max_Cart_Quantity);
+                const newQuantity = quantity+1;
+                if(quantity>=stock){
+                    showToastMessage(`Only ${stock} item${stock>1?'s':''} available`,'warning');
+                    return;
+                }
+                if(quantity>=Max_Cart_Quantity){
+                    showToastMessage(`Maximum ${Max_Cart_Quantity} quanity allowed`,'error');
+                    return;
+                }
+                try{
+                    const response = await fetch(`/cart/${cartItemId}/quantity`,{
+                        method:'PATCH',
+                        headers:{'Content-Type':'application/json','Accept':'application/json'},
+                        body:JSON.stringify({quantity:newQuantity})
+                    })
+                    const result = await response.json();
+                    if(!response.ok||!result.success){
+                        showToastMessage(result.message,'error');
+                        return;
+                    }
+                    quantityDisplay.textContent = newQuantity;
+                    updateCartTotal();
+                    updateCartItemCount();
+                }catch(error){
+                    console.log('increase error ',error);
+                    showToastMessage('Failed to update quantity','error')
+                }
+            })
+        })
+        const cartSubtotal = document.getElementById('cartSubtotal');
+        const cartTotal = document.getElementById('cartTotal');
+
+        function updateCartTotal() {
+            let subtotal = 0;
+            let totalSavings = 0;
+
+        document.querySelectorAll('.cart-item').forEach(cartItem => {
+        const price = Number(cartItem.dataset.price) || 0;
+        const originalPrice = Number(cartItem.dataset.originalPrice) || price;
+        const quantityDisplay = cartItem.querySelector('.quantity-value');
+
+        if (!quantityDisplay) return;
+
+        const quantity = Number(quantityDisplay.textContent) || 0;
+        const lineTotal = price * quantity;
+
+        subtotal += lineTotal;
+        totalSavings += Math.max(0, originalPrice - price) * quantity;
+
+            const lineTotalElement = cartItem.querySelector('.cart-line-total');
+
+            if (lineTotalElement) {
+                lineTotalElement.textContent =
+                    `Item total: ₹${lineTotal.toLocaleString('en-IN')}`;
+            }
+        });
+
+        if (cartSubtotal) {
+            cartSubtotal.textContent = `₹${subtotal.toLocaleString('en-IN')}`;
+        }
+
+        if (cartTotal) {
+            cartTotal.textContent = `₹${subtotal.toLocaleString('en-IN')}`;
+        }
+
+        const savingsElement = document.getElementById('cartSavings');
+
+            if (savingsElement) {
+                savingsElement.textContent =
+                    `You save ₹${totalSavings.toLocaleString('en-IN')}`;
+                savingsElement.hidden = totalSavings <= 0;
+            }
+        }
+        updateCartTotal();
+        function updateCartItemCount(){
+            let totalQuantity =0;
+            document.querySelectorAll('.cart-item').forEach(cartItem=>{
+                const quantity = Number(cartItem.querySelector('.quantity-value').textContent);
+                totalQuantity+= quantity;
+                const cartItemCount = document.getElementById('cartItemCount')
+                if(cartItemCount){
+                    cartItemCount.textContent= `(${totalQuantity} items)`;
+                }
+            })
+        }updateCartItemCount()
+        const proceedToCheckoutBtn = document.getElementById('proceedToCheckoutBtn');
+        if(proceedToCheckoutBtn){
+            proceedToCheckoutBtn.addEventListener('click',async function () {
+                try{
+                    const response = await fetch('/checkout/validate',{
+                        method:'POST',
+                        headers:{'Accept':'application/json'}
+                    })
+                    const result = await response.json();
+                    if(!response.ok||!result.success){
+                        showToastMessage(result.message,'error');
+                        return;
+                    }
+                    window.location.href = '/checkout'
+                }catch(error){
+                    showToastMessage('Unable to proceed to checkout','error');
+                }
+            })
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,165 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Wallet</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/user/css/home.css">
+    <link rel="stylesheet" href="/user/css/accounts.css">
+    <link rel="stylesheet" href="/user/css/wallet.css">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <%- include('../../views/partials/user/header.ejs') %>
+
+    <main class="account-page">
+        <div class="account-layout">
+
+            <!-- ACCOUNT SIDEBAR -->
+            <%- include(
+                '../../views/partials/user/accounts-sidebar.ejs',
+                { active: 'wallet' }
+            ) %>
+
+            <!-- WALLET CONTENT -->
+            <section class="account-content">
+
+                <div class="wallet-page-header">
+                    <h2 class="account-page-title">My Wallet</h2>
+                    <p>Manage your wallet balance and transactions.</p>
+                </div>
+
+                <!-- WALLET BALANCE -->
+                <div class="wallet-balance-card">
+                    <div class="wallet-balance-icon">
+                        <svg viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.8"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="5" width="18" height="15" rx="2"></rect>
+                            <path d="M3 9h18"></path>
+                            <path d="M16 14h2"></path>
+                        </svg>
+                    </div>
+
+                    <div class="wallet-balance-info">
+                        <p>Available Balance</p>
+                        <h1>
+                            ₹<%= Number(wallet.balance || 0).toLocaleString('en-IN', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            }) %>
+                        </h1>
+                    </div>
+                </div>
+
+                <!-- TRANSACTION HISTORY -->
+                <div class="wallet-transactions-section">
+                    <div class="wallet-section-header">
+                        <div>
+                            <h3>Transaction History</h3>
+                        </div>
+                    </div>
+                    <% if (transactions && transactions.length > 0) { %>
+                        <div class="wallet-transaction-list">
+                            <% transactions.forEach(transaction => { %>
+                                <div class="wallet-transaction-item">
+                                    <div class="wallet-transaction-icon
+                                        <%= transaction.type === 'credit' ? 'credit' : 'debit' %>">
+                                        <% if (transaction.type === 'credit') { %>
+                                            <span>↓</span>
+                                        <% } else { %>
+                                            <span>↑</span>
+                                        <% } %>
+                                    </div>
+                                    <div class="wallet-transaction-details">
+                                        <h4>
+                                            <%= transaction.description %>
+                                        </h4>
+                                        <p>
+                                            <%= new Date(transaction.createdAt).toLocaleString('en-IN', {
+                                                day: '2-digit',
+                                                month: 'short',
+                                                year: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit'
+                                            }) %>
+                                        </p>
+                                        <% if (transaction.orderId) { %>
+                                            <span class="wallet-transaction-order">
+                                                Order: <%= transaction.orderId %>
+                                            </span>
+                                        <% } %>
+                                    </div>
+                                    <div class="wallet-transaction-amount">
+                                        <strong class="<%= transaction.type === 'credit' ? 'credit' : 'debit' %>">
+                                            <%= transaction.type === 'credit' ? '+' : '-' %>₹<%= Number(transaction.amount).toLocaleString('en-IN', {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2
+                                            }) %>
+                                        </strong>
+                                        <span>
+                                            Balance: ₹<%= Number(transaction.balanceAfter).toLocaleString('en-IN', {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2
+                                            }) %>
+                                        </span>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        </div>
+                        <!-- PAGINATION -->
+                        <% if (totalPages > 1) { %>
+                            <nav class="wallet-pagination" aria-label="Transaction pages">
+                                <% if (currentPage > 1) { %>
+                                    <a href="/account/wallet?page=<%= currentPage - 1 %>">
+                                        Previous
+                                    </a>
+                                <% } %>
+                                <span>
+                                    Page <%= currentPage %> of <%= totalPages %>
+                                </span>
+                                <% if (currentPage < totalPages) { %>
+                                    <a href="/account/wallet?page=<%= currentPage + 1 %>">
+                                        Next
+                                    </a>
+                                <% } %>
+                            </nav>
+                        <% } %>
+                    <% } else { %>
+                        <!-- EMPTY TRANSACTION HISTORY -->
+                        <div class="wallet-empty-state">
+                            <div class="wallet-empty-icon">
+                                <svg viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="5" width="18" height="15" rx="2"></rect>
+                                    <path d="M3 9h18"></path>
+                                    <path d="M8 14h3"></path>
+                                </svg>
+                            </div>
+                            <h3>No Transactions Yet</h3>
+                            <p>Your wallet transactions will appear here.</p>
+
+                            <a href="/products" class="wallet-shop-btn">
+                                Continue Shopping
+                            </a>
+                        </div>
+                    <% } %>
+                </div>
+            </section>
+        </div>
+    </main>
+    <!-- FOOTER -->
+    <%- include('../../views/partials/user/footer.ejs') %>
+
+</body>
+</html>

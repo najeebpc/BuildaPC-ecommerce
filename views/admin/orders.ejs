@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"content="width=device-width, initial-scale=1.0" >
+    <title>Order Management</title>
+    <link rel="stylesheet"  href="/admin/css/admin-base.css">
+    <link  rel="stylesheet" href="/admin/css/orders.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+<div class="admin-wrapper">
+    <%- include("../partials/admin/sidebar", {
+        active: 'orders'
+    }) %>
+    <div class="admin-content">
+        <%- include('../partials/admin/topbar') %>
+        <!-- PAGE HEADER -->
+
+        <div class="top-bar">
+            <div>
+                <h1 class="page-title">
+                    Order Management
+                </h1>
+                <p class="page-subtitle">
+                    Track and manage customer orders
+                </p>
+            </div>
+        </div>
+        <!-- ORDER CARD -->
+        <div class="order-card">
+            <!-- SEARCH -->
+            <div class="order-toolbar">
+                <form
+                    method="GET"
+                    action="/admin/orders"
+                    class="order-search-form"
+                >
+                    <input
+                        type="text"
+                        name="search"
+                        placeholder="Search orders by ID or customer name..."
+                        value="<%= search || '' %>"
+                    >
+                    <button
+                        type="submit"
+                        class="search-btn"
+                    >
+                        Search
+                    </button>
+                    <% if (search || status || sort !== 'newest') { %>
+                        <a
+                            href="/admin/orders"
+                            class="clear-search"
+                        >
+                            Clear
+                        </a>
+                    <% } %>
+                </form>
+                <!-- FILTER -->
+                <div class="order-filters">
+                    <select
+                        id="orderStatusFilter"
+                        onchange="applyOrderFilters()"
+                    >
+                        <option value="">
+                            All Orders
+                        </option>
+                        <option
+                            value="pending"
+                            <%= status === 'pending'
+                                ? 'selected'
+                                : '' %>
+                        >
+                            Pending
+                        </option>
+                        <option
+                            value="shipped"
+                            <%= status === 'shipped'
+                                ? 'selected'
+                                : '' %>
+                        >
+                            Shipped
+                        </option>
+                        <option
+                            value="out for delivery"
+                            <%= status === 'out for delivery'
+                                ? 'selected'
+                                : '' %>
+                        >
+                            Out for Delivery
+                        </option>
+                        <option
+                            value="delivered"
+                            <%= status === 'delivered'
+                                ? 'selected'
+                                : '' %>
+                        >
+                            Delivered
+                        </option>
+                        <option
+                            value="cancelled"
+                            <%= status === 'cancelled'
+                                ? 'selected'
+                                : '' %>
+                        >
+                            Cancelled
+                        </option>
+                    </select>
+                    <!-- SORT -->
+                    <select
+                        id="orderSort"
+                        onchange="applyOrderFilters()"
+                    >
+                        <option
+                            value="newest"
+                            <%= sort === 'newest'
+                                ? 'selected'
+                                : '' %>
+                        >
+                            Newest First
+                        </option>
+                        <option
+                            value="oldest"
+                            <%= sort === 'oldest'
+                                ? 'selected'
+                                : '' %>
+                        >
+                            Oldest First
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <!-- TABLE -->
+            <div class="order-table-wrapper">
+                <table class="order-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                Order ID
+                            </th>
+                            <th>
+                                Customer
+                            </th>
+                            <th>
+                                Order Total
+                            </th>
+                            <th>
+                                Date
+                            </th>
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <% if (orders && orders.length > 0) { %>
+                        <% orders.forEach(order => { %>
+                            <tr>
+                                <!-- ORDER ID -->
+                                <td>
+                                    <%= order.orderId %>
+                                </td>
+                                <!-- CUSTOMER -->
+                                <td>
+                                    <div class="customer-info">
+                                        <strong>
+                                            <%= order.userId?.name || 'User removed' %>
+                                        </strong>
+                                        <span>
+                                            <%= order.userId?.email || '' %>
+                                        </span>
+                                    </div>
+                                </td>
+                                <!-- TOTAL -->
+                                <td>
+                                    ₹<%= Number(
+                                        order.totalAmount
+                                    ).toLocaleString('en-IN') %>
+
+                                </td>
+                                <!-- DATE -->
+                                <td>
+                                    <%= new Date(
+                                        order.createdAt
+                                    ).toLocaleDateString('en-IN') %>
+                                </td>
+                                <!-- ACTIONS -->
+                                <td>
+                                    <div class="order-actions">
+                                        <a
+                                            href="/admin/orders/<%= order.orderId %>"
+                                            class="view-order-btn"
+                                        >
+                                            View Details
+                                        </a>
+                                        <select
+                                            class="order-status-select"
+                                            data-order-id="<%= order.orderId %>"
+                                            onchange="updateOrderStatus(this)"
+                                        >
+                                            <option
+                                                value="pending"
+                                                <%= order.orderStatus === 'pending'
+                                                    ? 'selected'
+                                                    : '' %>
+                                            >
+                                                Pending
+                                            </option>
+
+                                            <option
+                                                value="shipped"
+                                                <%= order.orderStatus === 'shipped'
+                                                    ? 'selected'
+                                                    : '' %>
+                                            >
+                                                Shipped
+                                            </option>
+
+                                            <option
+                                                value="out for delivery"
+                                                <%= order.orderStatus === 'out for delivery'
+                                                    ? 'selected'
+                                                    : '' %>
+                                            >
+                                                Out for Delivery
+                                            </option>
+
+                                            <option
+                                                value="delivered"
+                                                <%= order.orderStatus === 'delivered'
+                                                    ? 'selected'
+                                                    : '' %>
+                                                >
+                                                Delivered
+                                            </option>
+
+                                            <option
+                                                value="cancelled"
+                                                <%= order.orderStatus === 'cancelled'
+                                                    ? 'selected'
+                                                    : '' %>
+                                            >
+                                                Cancelled
+                                            </option>
+                                        </select>
+                                        <% if (order.orderStatus === 'Return requested') { %>
+                                        <a
+                                            href="/admin/orders/<%= order.orderId %>"
+                                            class="review-return-btn"
+                                        >
+                                        <i class="fa-solid fa-bell"></i>
+                                                Review Return
+                                        </a>
+                                        <% } else if (order.orderStatus === 'Return approved') { %>
+                                            <a href="/admin/orders/<%= order.orderId %>"
+                                                class="return-status-badge return-approved">
+                                            <i class="fa-solid fa-circle-check"></i>
+                                                Return Accepted
+                                            </a>
+                                        <% } else if (order.orderStatus === 'Return rejected') { %>
+                                            <a href="/admin/orders/<%= order.orderId %>" 
+                                            class="return-status-badge return-rejected">
+                                            <i class="fa-solid fa-circle-xmark"></i>
+                                                Return Rejected
+                                            </a>
+                                        <% } else if (order.orderStatus === 'Return received') { %>
+                                            <a href="/admin/orders/<%= order.orderId %>" 
+                                            class="return-status-badge return-received">
+                                            <i class="fa-solid fa-box-open"></i>
+                                                Return Received
+                                            </a>
+                                        <% } %>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td
+                                colspan="5"
+                                class="order-empty"
+                            >
+                                No orders found.
+                            </td>
+                        </tr>
+                    <% } %>
+                    </tbody>
+                </table>
+            </div>
+            <!-- PAGINATION -->
+            <% if (totalPages > 1) { %>
+                <div class="order-pagination">
+                    <% for (
+                        let i = 1;
+                        i <= totalPages;
+                        i++
+                    ) { %>
+                        <a
+                            href="/admin/orders?page=<%= i %>&search=<%= encodeURIComponent(search || '') %>&status=<%= encodeURIComponent(status || '') %>&sort=<%= sort %>"
+                            class="<%= currentPage === i ? 'active' : '' %>"
+                        >
+                            <%= i %>
+                        </a>
+                    <% } %>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+<script>
+
+function applyOrderFilters() {
+
+    const status = document.getElementById( 'orderStatusFilter' ).value;
+    const sort = document.getElementById( 'orderSort' ).value;
+    const search = '<%= search || "" %>';
+    const params =
+        new URLSearchParams();
+    if (search) {
+        params.set('search', search);
+    }
+    if (status) {
+        params.set('status', status);
+    }
+    if (sort) {
+        params.set('sort', sort);
+    }
+    window.location.href =
+        `/admin/orders?${params.toString()}`;
+}
+async function updateOrderStatus(select) {
+    const orderId =  select.dataset.orderId;
+    const orderStatus = select.value;
+
+    try {
+
+        const response =
+            await fetch(
+                `/admin/orders/${orderId}/status`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json','Accept':'application/json'
+                    },
+
+                    body: JSON.stringify({
+                        orderStatus
+                    })
+                }
+            );
+
+
+        const result =
+            await response.json();
+        if (!response.ok || !result.success) {
+            alert(
+                result.message ||
+                'Unable to update order status'
+            );
+            window.location.reload();
+            return;
+        }
+        window.location.reload();
+    } catch (error) {
+        console.log(
+            'Update order status error:',
+            error
+        );
+        alert(
+            'Unable to update order status'
+        );
+        window.location.reload();
+    }
+}
+</script>
+</body>
+</html>

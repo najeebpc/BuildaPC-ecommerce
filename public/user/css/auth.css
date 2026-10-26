@@ -1,0 +1,433 @@
+/* GLOBAL RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* FONT + PAGE BG */
+body {
+  min-height: 100vh;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  background-color: #eef1f6;
+}
+
+/* CENTER CARD */
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  
+}
+/* SUCCESS ALERT BOX */
+.auth-alert {
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto 20px auto;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  /* font-weight: 400; */
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.success-alert {
+  background-color: #14532D; /* Your green color */
+}
+.error-alert{
+  background-color: red;
+}
+.alert-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.alert-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.auth-card {
+  width: 380px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 32px 32px 28px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+}
+
+/* HEADER */
+.auth-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.auth-logo {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2563eb;
+  margin-bottom: 8px;
+}
+
+.auth-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.auth-subtext {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* FORM */
+.auth-form {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.form-group input {
+  width: 100%;
+  height: 40px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  padding: 0 12px;
+  font-size: 13px;
+  background-color: #f9fafb;
+}
+
+.form-group input::placeholder {
+  color: #9ca3af;
+}
+
+/* ERROR */
+.input-error {
+  border-color: #f87171;
+  background-color: #fef2f2;
+}
+
+.error-text {
+  margin-top: 2px;
+  font-size: 12px;
+  color: #ef4444;
+}
+
+/* BUTTONS */
+.btn-primary {
+  margin-top: 6px;
+  width: 100%;
+  height: 42px;
+  border: none;
+  border-radius: 6px;
+  background-color: #2563eb;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: #1d4ed8;
+}
+.btn-google {
+  width: 100%;
+  height: 42px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+  font-size: 13px;
+  font-weight: 500;
+  color: #111827;
+  cursor: pointer;
+}
+
+.btn-google:hover {
+  background-color: #f3f4f6;
+}
+
+/* FOOTER LINK */
+.auth-footer {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.auth-footer a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-footer a:hover {
+  text-decoration: underline;
+}
+/* CENTER HEADER */
+.auth-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* REFERRAL WRAPPER */
+.referral-wrapper {
+  position: relative;
+}
+
+.referral-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.referral-wrapper input {
+  padding-left: 42px;   /* space for SVG */
+}
+
+/* DIVIDER CENTER FIX */
+.divider {
+  margin: 16px 0 10px;
+  text-align: center;    /* ⭐ THIS CENTERS THE TEXT */
+  position: relative;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.divider span {
+  background: #fff;
+  padding: 0 8px;
+}
+/* Remember me + Forgot password row */
+.auth-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: -6px;
+  margin-bottom: 4px;
+}
+
+.remember-me {
+  font-size: 13px;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.remember-me input {
+  cursor: pointer;
+}
+
+/* Forgot Password link */
+.forgot-link {
+  font-size: 13px;
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
+}
+/* 6-digit code input boxes */
+.code-inputs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.code-box {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 500;
+  outline: none;
+}
+
+.code-box:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.18);
+}
+
+/* Resend Code link */
+.resend-wrapper {
+  margin-top: 14px;
+  text-align: center;
+}
+
+.resend-link {
+  font-size: 13px;
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.resend-link:hover {
+  text-decoration: underline;
+}
+/* email verification page */
+/* verify email header spacing */
+.verify-header .auth-subtext {
+  margin-top: 6px;
+}
+
+/* circular email icon */
+.email-circle {
+  width: 72px;
+  height: 72px;
+  border-radius: 999px;
+  background-color: #0f172a; /* dark circle */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 18px auto 14px;
+}
+
+.email-circle img {
+  width: 30px;
+  height: 30px;
+}
+
+/* info box under text */
+.verify-info-box {
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background-color: #e5f0ff; /* soft blue */
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+/* resend + back links */
+.verify-links {
+  margin-top: 18px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.verify-links a {
+  font-size: 13px;
+  text-decoration: none;
+  color: #2563eb;
+  font-weight: 500;
+}
+
+.verify-links a:hover {
+  text-decoration: underline;
+}
+
+.back-link {
+  color: #6b7280;          /* slightly softer for "Back to Login" */
+  font-weight: 400;
+}
+/*resend timer */
+.resend-link.disabled {
+  pointer-events: none;
+  color: #9ca3af;
+  text-decoration: none;
+  cursor: not-allowed;
+}
+
+#timer-text {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.otp-message {
+  text-align: center;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+.otp-message.success {
+  color: green;
+}
+
+.otp-message.error {
+  color: red;
+}
+
+
+/* Dark success card */
+.success-card {
+  width: 480px;
+  background-color: #020617;      /* very dark navy */
+  border-radius: 16px;
+  padding: 50px 32px 50px;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.6);
+  text-align: center;
+  color: #e5e7eb;
+}
+
+/* green circle with check */
+.success-icon-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 2px solid #22c55e;    
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 18px;
+}
+
+.success-icon-circle img {
+  width: 30px;
+  height: 30px;
+}
+
+/* text styles */
+.success-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+
+.success-text {
+  font-size: 14px;
+  color: #9ca3af;
+  margin: 2px 0;
+}
+.password-hint {
+    display: block;
+    font-size: 11px;
+    color: #6b7280;
+    margin: 3px 0 0;
+    line-height: 1.3;
+}

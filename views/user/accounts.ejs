@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>BuildaPC - My Account</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Inter font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../public/user/css/accounts.css">
+  <link rel="stylesheet" href="../../public/user/css/home.css">
+</head>
+
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <header class="top-nav">
+    <div class="nav-container">
+
+      <!-- left -->
+      <div class="nav-left">
+        <a href="#" class="logo">
+          <span class="logo-blue">Builda</span>PC
+        </a>
+
+        <nav class="nav-links">
+          <a href="#">Home</a>
+          <a href="#">PC Components</a>
+          <a href="#">Pre-built PCs</a>
+        </nav>
+      </div>
+
+      <!-- center -->
+      <div class="nav-center">
+        <div class="nav-search">
+          <input type="text" placeholder="Search for products..." />
+          <!-- put your real svg here -->
+          <img src="search.svg" class="search-icon" alt="Search" />
+        </div>
+      </div>
+
+      <!-- right -->
+      <div class="nav-right">
+        <div class="account-wrapper">
+          <button class="account-btn" type="button">
+            <img src="user.svg" class="nav-icon-img" alt="user" />
+            <span>Account</span>
+            <img src="chevron-down.svg" class="chevron-icon" alt="">
+          </button>
+
+          <div class="account-dropdown">
+            <a href="#">Account Details</a>
+            <a href="#">Address</a>
+            <a href="#">My Orders</a>
+            <a href="#">Wishlist</a>
+            <a href="#">Logout</a>
+          </div>
+        </div>
+
+        <a href="#" class="nav-cart">
+          <img src="cart.svg" class="nav-icon-img" alt="cart" />
+          <span>Cart</span>
+          <span class="cart-badge">2</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ===== ACCOUNT CONTENT ===== -->
+  <main class="account-page">
+    <div class="account-layout">
+
+      <!-- sidebar -->
+      <aside class="account-sidebar">
+        <h3 class="account-sidebar-title">My Account</h3>
+        <ul class="account-menu">
+          <li class="active">
+            <a href="#">
+              <img src="../../public/user/icons/account.svg" alt="">
+              <span>Account Details</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <img src="../../public/user/icons/address.svg" alt="">
+              <span>Address</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <img src="../../public/user/icons/orders.svg" alt="">
+              <span>Orders</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <img src="../../public/user/icons/wishlist.svg" alt="">
+              <span>Wishlist</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <img src="../../public/user/icons/coupon.svg" alt="">
+              <span>My Coupons</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <img src="../../public/user/icons/wallet.svg" alt="">
+              <span>Wallet</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <img src="../../public/user/icons/logout.svg" alt="">
+              <span>Logout</span>
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- right content -->
+      <section class="account-content">
+        <h2 class="account-page-title">My Account</h2>
+
+        <!-- personal info -->
+        <div class="account-card">
+          <h3>Personal Information</h3>
+
+          <div class="account-card-grid">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" value="najeeb">
+            </div>
+            <div class="form-group">
+              <label>Username</label>
+              <input type="text" value="pece">
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input type="email" value="sample@example.com">
+            </div>
+            <div class="form-group">
+              <label>Phone Number</label>
+              <input type="text" value="9876543210">
+            </div>
+          </div>
+
+          <button class="btn-primary account-save-btn">Save Changes</button>
+        </div>
+
+        <!-- change password -->
+        <div class="account-card">
+          <h3>Change Password</h3>
+
+          <div class="account-card-grid">
+            <div class="form-group">
+              <label>Current Password</label>
+              <input type="password">
+            </div>
+            <div class="form-group">
+              <label>New Password</label>
+              <input type="password">
+            </div>
+            <div class="form-group">
+              <label>Confirm New Password</label>
+              <input type="password">
+            </div>
+          </div>
+
+          <button class="btn-primary account-save-btn">Change Password</button>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-col">
+        <h4>BuildaPC</h4>
+        <p>Your one-stop shop for building your dream PC.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Shop</h4>
+        <a href="#">PC Components</a>
+        <a href="#">Pre-built PCs</a>
+      </div>
+      <div class="footer-col">
+        <h4>Account</h4>
+        <a href="#">My Account</a>
+        <a href="#">Orders</a>
+        <a href="#">Wishlist</a>
+      </div>
+      <div class="footer-col">
+        <h4>Support</h4>
+        <a href="#">Contact Us</a>
+        <a href="#">FAQs</a>
+        <a href="#">Shipping Policy</a>
+        <a href="#">Return Policy</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      © 2025 BuildaPC. All rights reserved.
+    </div>
+  </footer>
+
+</body>
+</html>

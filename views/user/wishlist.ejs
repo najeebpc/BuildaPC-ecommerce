@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Wishlist</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/user/css/home.css">
+    <link rel="stylesheet" href="/user/css/accounts.css">
+    <link rel="stylesheet" href="/user/css/wishlist.css">
+</head>
+<body>
+<!-- HEADER -->
+<%- include('../../views/partials/user/header.ejs') %>
+
+<main class="account-page">
+
+    <div class="account-layout">
+        <!-- SIDEBAR -->
+        <%- include('../../views/partials/user/accounts-sidebar.ejs', { active: 'wishlist' }) %>
+        <!-- CONTENT -->
+        <section class="account-content">
+            <div class="wishlist-page-title-row">
+                <div>
+                    <h2 class="account-page-title">
+                        My Wishlist
+                    </h2>
+
+                    <p class="wishlist-subtitle">
+                        Products you have saved for later
+                    </p>
+                </div>
+            </div>
+            <div
+                id="wishlistMessage"
+                class="wishlist-message"></div>
+            <% if (products && products.length > 0) { %>
+                <div class="wishlist-grid">
+                    <% products.forEach(item => { %>
+                        <%
+                        const product = item.productId;
+                        const variant = item.variantId;
+                        const hasVariant = !!variant;
+                        const displayPrice = hasVariant?variant.price:product.basePrice;
+                        const displayStock = hasVariant?variant.stock:product.stockLevel;
+                        const isAvailable = product.isListed&&!product.isDeleted&&(!hasVariant||variant.isActive)&&displayStock>0;
+                        %>
+                        <div
+                            class="account-card wishlist-card"
+                            data-id="<%= product._id %>"
+                        >
+                            <!-- PRODUCT IMAGE -->
+                            <div class="wishlist-image">
+                                <a href="/product/<%= product._id %>">
+                                <img
+                                    src="<%= product.primaryImage %>"
+                                    alt="<%= product.name %>"
+                                >
+                                </a>
+                            </div>
+                            <!-- PRODUCT DETAILS -->
+                            <div class="wishlist-details">
+                                <h3>
+                                    <a href="/product/<%= product._id %>" class="wishlist-product-link">
+                                    <%= product.name %>
+                                    </a>
+                                </h3>
+                                <p class="wishlist-price">
+                                    ₹<%= Number(displayPrice)
+                                        .toLocaleString('en-IN') %>
+                                </p>
+                                <% if (variant && variant.attributes && variant.attributes.length > 0) { %>
+                                <div class="wishlist-variant-details">
+                                <% variant.attributes.forEach(attribute => { %>
+                                    <span>
+                                         <%= attribute.name %>: <%= attribute.value %>
+                                    </span>
+                                <% }) %>
+                                </div>
+                                <% } %>
+                                <% if (!product.isListed || product.isDeleted) { %>
+                                    <p class="wishlist-unavailable">
+                                        Product unavailable
+                                    </p>
+                                <% } else if ( displayStock <= 0) { %>
+                                    <p class="wishlist-out-of-stock">
+                                        Out of stock
+                                    </p>
+                                <% } else { %>
+                                    <p class="wishlist-available">
+                                        Available
+                                    </p>
+                                <% } %>
+                                <!-- ACTIONS -->
+                                <div class="wishlist-actions">
+                                    <% if ( isAvailable){%>
+                                        <button
+                                            type="button"
+                                            class="wishlist-cart-btn"
+                                            data-product-id="<%= product._id %>"
+                                            data-variant-id="<%= variant ? variant._id : '' %>"
+
+                                            onclick="addToCart(this.dataset.productId, this.dataset.variantId)"
+                                        >
+                                            Add to Cart
+                                        </button>
+                                    <% } %>
+                                    <button
+                                        type="button"
+                                        class="wishlist-remove-btn"
+                                        data-product-id="<%= product._id %>"
+                                        data-variant-id="<%= variant ? variant._id : '' %>"
+                                        onclick="removeFromWishlist(this.dataset.productId, this.dataset.variantId)"
+                                    >
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            <% } else { %>
+                <!-- EMPTY WISHLIST -->
+                <div class="account-card wishlist-empty">
+                    <h4>
+                        Your Wishlist is Empty
+                    </h4>
+                    <p>
+                        Save products you like to your wishlist
+                        and find them here later.
+                    </p>
+                    <a
+                        href="/products"
+                        class="wishlist-shop-btn"
+                    >
+                        Continue Shopping
+                    </a>
+                </div>
+            <% } %>
+        </section>
+    </div>
+</main>
+<!-- FOOTER -->
+<%- include('../../views/partials/user/footer.ejs') %>
+
+<script>
+    const addToCart= async (productId, variantId=nll) => {
+        try{
+            const response = await fetch('/cart',{
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({productId:productId,variantId:variantId||null,quantity:1})
+            })
+            const result =await response.json();
+            if(!response.ok){
+                showToastMessage(result.message,'error');
+                return;
+            }
+            showToastMessage(result.message,'success');
+            setTimeout(() => {
+                removeFromWishlist(productId,variantId, false);
+            }, 1000);
+        }catch(error){
+            showToastMessage(error.message,'error');
+        }
+    }
+    const removeFromWishlist = async(productId,variantId=null, showSuccess = true)=>{
+        try{
+            const response = await fetch(`/account/wishlist/${productId}`,{
+                method:'DELETE',
+                headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({variantId:variantId||null})
+            });
+            const result = await response.json();
+            if(!response.ok){
+                throw new Error(result.message||'Failed to remove product');
+            }
+            if(showSuccess){
+                showToastMessage(result.message,'success');
+            }
+            
+            setTimeout(()=>{
+                window.location.reload();
+            },1000)
+        }catch(error){
+            showToastMessage(error.message,'error')
+        }
+    }
+    function showToastMessage(message,type){
+        const toast = document.getElementById('toastMessage');
+        const text = document.getElementById('toastMessageText');
+         console.log('MESSAGE:', message);
+         console.log('TYPE:', type);
+        text.textContent = message;
+        toast.classList.remove('success','error','show')
+        toast.classList.add(type);
+        toast.classList.add('show')
+        setTimeout(() => {
+            toast.classList.remove('show')
+            toast.classList.remove('success')
+            toast.classList.remove('error')
+        }, 3000);
+    }
+
+</script>
+
+</body>
+</html>

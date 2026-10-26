@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard | BuildaPC Admin</title>
+
+    <!-- Google Font: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- Base Admin CSS -->
+    <link rel="stylesheet" href="/admin/css/admin-base.css">
+
+    <!-- Dashboard CSS -->
+    <link rel="stylesheet" href="/admin/css/dashboard.css">
+</head>
+<body>
+
+<div class="admin-wrapper">
+
+    <!-- Sidebar -->
+    <%- include('../partials/admin/sidebar') %>
+
+    <!-- Main Content -->
+    <main class="admin-content has-topbar">
+
+        <!-- Top Bar -->
+        <%- include('../partials/admin/topbar') %>
+        <div class="dashboard-page">
+        <!-- Dashboard Content -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <span>Total Revenue</span>
+        <h3>₹<%= Number(totalRevenue || 0).toLocaleString('en-IN') %></h3>
+    </div>
+
+    <div class="stat-card">
+        <span>Delivered Orders</span>
+        <h3><%= totalOrders || 0 %></h3>
+    </div>
+
+    <div class="stat-card">
+        <span>Total Users</span>
+        <h3><%= totalUsers || 0 %></h3>
+    </div>
+
+    <div class="stat-card">
+        <span>New Orders Today</span>
+        <h3><%= newOrdersToday || 0 %></h3>
+    </div>
+</div>
+<div class="dashboard-lists">
+    <section class="dashboard-card">
+        <h3>Top 10 Best-Selling Products</h3>
+
+        <% if (topProducts.length) { %>
+            <div class="dashboard-table-wrapper">
+                <table class="dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Product</th>
+                            <th>Quantity Sold</th>
+                            <th>Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% topProducts.forEach((product, index) => { %>
+                            <tr>
+                                <td><%= index + 1 %></td>
+                                <td><%= product.productName || 'Unknown Product' %></td>
+                                <td><%= product.quantitySold %></td>
+                                <td>₹<%= Number(product.revenue || 0).toLocaleString('en-IN') %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        <% } else { %>
+            <p class="empty-state">No completed sales yet.</p>
+        <% } %>
+    </section>
+
+    <section class="dashboard-card">
+        <h3>Top 10 Best-Selling Categories</h3>
+
+        <% if (topCategories.length) { %>
+            <div class="dashboard-table-wrapper">
+                <table class="dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Category</th>
+                            <th>Quantity Sold</th>
+                            <th>Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% topCategories.forEach((category, index) => { %>
+                            <tr>
+                                <td><%= index + 1 %></td>
+                                <td><%= category.categoryName %></td>
+                                <td><%= category.quantitySold %></td>
+                                <td>₹<%= Number(category.revenue || 0).toLocaleString('en-IN') %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        <% } else { %>
+            <p class="empty-state">No category sales available yet.</p>
+        <% } %>
+    </section>
+    <section class="dashboard-card sales-chart-card">
+    <div class="chart-header">
+        <div>
+            <h3>Sales Overview</h3>
+            <p>Revenue from delivered orders</p>
+        </div>
+
+        <div class="chart-filters">
+            <select id="salesPeriod">
+                <option value="daily">Daily</option>
+                <option value="monthly" selected>Monthly</option>
+                <option value="yearly">Yearly</option>
+            </select>
+
+            <select id="salesYear"></select>
+            <select id="salesMonth"></select>
+        </div>
+    </div>
+
+    <div class="sales-chart-container">
+        <canvas id="salesChart"></canvas>
+    </div>
+</section>
+</div>
+        </div>
+    </main>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    const periodSelect = document.getElementById('salesPeriod');
+    const yearSelect = document.getElementById('salesYear');
+    const monthSelect = document.getElementById('salesMonth');
+    const canvas = document.getElementById('salesChart');
+
+    if (!periodSelect || !yearSelect || !monthSelect || !canvas) return;
+
+    const now = new Date();
+
+    for (let year = now.getFullYear(); year >= now.getFullYear() - 5; year--) {
+        yearSelect.add(new Option(year, year));
+    }
+
+    const months = [
+        'January', 'February', 'March', 'April',
+        'May', 'June', 'July', 'August',
+        'September', 'October', 'November', 'December'
+    ];
+
+    months.forEach((name, index) => {
+        monthSelect.add(new Option(name, index + 1));
+    });
+    monthSelect.value = now.getMonth() + 1;
+
+    let chart;
+    function updateFilters() {
+        const period = periodSelect.value;
+        yearSelect.style.display = period === 'yearly' ? 'none' : '';
+        monthSelect.style.display = period === 'daily' ? '' : 'none';
+    }
+    async function loadChart() {
+        const params = new URLSearchParams({
+            period: periodSelect.value,
+            year: yearSelect.value,
+            month: monthSelect.value
+        });
+        try {
+            const response = await fetch(
+                `/admin/dashboard/sales-chart?${params}`
+            );
+            if (!response.ok) {
+                throw new Error('Failed to load sales data');
+            }
+            const result = await response.json();
+            const sales = result.sales || [];
+            let labels = [];
+            let values = [];
+            if (periodSelect.value === 'daily') {
+                const daysInMonth = new Date(
+                    Number(yearSelect.value),
+                    Number(monthSelect.value),
+                    0
+                ).getDate();
+
+                labels = Array.from(
+                    { length: daysInMonth },
+                    (_, index) => String(index + 1)
+                );
+
+                values = labels.map(day => {
+                    const row = sales.find(item =>
+                        item._id.day === Number(day)
+                    );
+                    return row ? row.totalSales : 0;
+                });
+            } else if (periodSelect.value === 'monthly') {
+                labels = months;
+                values = months.map((_, index) => {
+                    const row = sales.find(item =>
+                        item._id.month === index + 1
+                    );
+                    return row ? row.totalSales : 0;
+                });
+            } else {
+                const yearData = new Map(
+                    sales.map(item => [item._id.year, item.totalSales])
+                );
+                labels = Array.from(yearData.keys()).map(String);
+                values = Array.from(yearData.values());
+            }
+            if (chart) chart.destroy();
+            chart = new Chart(canvas, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Sales (₹)',
+                        data: values,
+                        borderColor: '#4f46e5',
+                        backgroundColor: 'rgba(79, 70, 229, 0.12)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: value =>
+                                    '₹' + Number(value).toLocaleString('en-IN')
+                            }
+                        }
+                    }
+                }
+            });
+        } catch (error) {
+            console.error('Sales chart error:', error);
+        }
+    }
+    periodSelect.addEventListener('change', () => {
+        updateFilters();
+        loadChart();
+    });
+
+    yearSelect.addEventListener('change', loadChart);
+    monthSelect.addEventListener('change', loadChart);
+
+    updateFilters();
+    await loadChart();
+});
+</script>
+</body>
+</html>
