@@ -11,6 +11,7 @@ const notificationServices = require('../../services/admin/notificationServices'
 const walletServices = require('../../services/user/walletServices');
 const pricingServices = require('../../services/user/pricingServices');
 const couponServices = require('../../services/user/couponServices');
+const Coupon = require('../../model/couponSchema');
 
 const generateOrderId = ()=>{
     const randomPart = crypto.randomBytes(3).toString('hex').toUpperCase();
@@ -22,11 +23,26 @@ const getOrderPricing = async(userId, couponCode =null)=>{
     let discount = 0;
     if(couponCode){
         coupon = await couponServices.validateCoupon(couponCode,subtotal);
-        discount = coupon.discount;
+        discount = coupon.discount||0;
     }
-    const totalAmount = Math.round((subtotal-discount)*100)/100 ;
+    const totalAmount = Math.round((subtotal-discount).toFixed(2)) ;
+    let allocatedDiscount = 0;
+    const updatedOrderItems = orderItems.map((item,index)=>{
+        const itemTotal = item.price*item.quantity;
+        let couponDiscountAmount= 0;
+        if(index=== orderItems.length-1){
+            couponDiscountAmount = Number((discount-allocatedDiscount).toFixed(2));
+        }else{
+            couponDiscountAmount = Number(((itemTotal/subtotal)*discount).toFixed(2));
+            allocatedDiscount +=couponDiscountAmount;
+        }
+        return{
+        ...item,
+        couponDiscountAmount
+        }
+    })
     return{
-        orderItems,
+        orderItems:updatedOrderItems,
         subtotal,
         couponId:coupon?coupon.couponId:null,
         couponCode:coupon?coupon.code:null,
@@ -410,6 +426,9 @@ const cancelOrder = async(userId, orderId, cancellationReason = '')=>{
                 throw new Error('This order cannot be cancelled');
             }
             for(const item of order.items){
+                if(['cancelled','returned'].includes(item.itemStatus)){
+                    continue;
+                }
                 let result;
                 if(item.variantId){
                     result = await ProductVariant.updateOne(
@@ -449,6 +468,40 @@ const cancelOrder = async(userId, orderId, cancellationReason = '')=>{
         await session.endSession();
     }
 }
+const checkCancellationImapct = async(userId,orderId,itemId)=>{
+    const order = await Order.findOne({userId,orderId});
+    console.log('order find',order)
+    if(!order){
+        throw new Error(MESSAGES.ORDER_NOT_FOUND);
+    }
+    if(order.orderStatus!=='pending'){
+        throw new Error('This item cannot be cancelled at this stage');
+    }
+    const item = order.items.id(itemId);
+    console.log('item data',item)
+    if(!item||item.itemStatus !=='active'){
+        throw new Error('Invalid Order Item');
+    }
+    const itemTotal = Number((item.price*item.quantity).toFixed(2));
+    const newSubtotal = Number((order.subtotal-itemTotal).toFixed(2));
+    if(!order.couponId||newSubtotal<=0){
+        return {couponRemoved:false};
+    }
+    const coupon = await Coupon.findById(order.couponId);
+    const itemDiscount = Number((item.discountAmount||0).toFixed(2));
+    const remainingDiscount = Number((order.couponDiscount-itemDiscount).toFixed(2));
+    if(!coupon||newSubtotal<coupon.minOrderAmount){
+        return {
+            couponRemoved:true,
+            discountRemoved:remainingDiscount,
+            remainingSubtotal:newSubtotal,
+            newTotalAmount:newSubtotal
+        }
+    }
+    return{
+        couponRemoved:false
+    }
+}
 const cancelOrderItem = async(userId,orderId,itemId,cancellationReason)=>{
     const session = await mongoose.startSession();
     try{
@@ -472,13 +525,26 @@ const cancelOrderItem = async(userId,orderId,itemId,cancellationReason)=>{
                 throw new Error('This item is already cancelled');
             }
             const itemTotal = Number((item.price*item.quantity).toFixed(2));
-            if(itemTotal>order.subtotal){
+            const itemDiscount = Number((item.couponDiscountAmount||0).toFixed(2));
+
+            if(!Number.isFinite(itemTotal)||itemTotal<=0||itemTotal>order.subtotal||
+                !Number.isFinite(itemDiscount)||itemDiscount<0||itemDiscount>itemTotal
+            ){
                 throw new Error('Invalid order item amount');
             }
-            const currentSubtotal = Number(order.subtotal);
-            const currentCouponDiscount = Number(order.couponDiscount||0);
-            const itemCouponDiscount = currentSubtotal>0?Math.min(currentCouponDiscount,Number((currentCouponDiscount*itemTotal/currentSubtotal).toFixed(2))):0;
-            const refundAmount = Number(Math.max(0,itemTotal-itemCouponDiscount).toFixed(2));
+            const newSubtotal = Number((order.subtotal-itemTotal).toFixed(2));
+            let remainingDiscount = Number((order.couponDiscount-itemDiscount).toFixed(2));
+            if(order.couponId&& newSubtotal>0){
+                const coupon = await Coupon.findById(order.couponId)
+                        .session(session);
+                if(!coupon||newSubtotal<coupon.minOrderAmount){
+                    remainingDiscount = 0;
+                }
+            }else{
+                remainingDiscount=0;
+            }
+            const newTotalAmount = Number((newSubtotal-remainingDiscount).toFixed(2));
+            const refundAmount = Number((order.totalAmount-newTotalAmount).toFixed(2));
             let stockResult;
             if(item.variantId){
                 stockResult = await ProductVariant.updateOne(
@@ -508,9 +574,9 @@ const cancelOrderItem = async(userId,orderId,itemId,cancellationReason)=>{
             item.itemStatus = 'cancelled';
             item.cancellationReason=cancellationReason.trim();
             item.cancelledAt= new Date();
-            order.subtotal = Number(Math.max(0,currentSubtotal-itemTotal).toFixed(2));
-            order.couponDiscount = Number(Math.max(0,currentCouponDiscount-itemCouponDiscount).toFixed(2));
-            order.totalAmount = Number(Math.max(0,Number(order.totalAmount)-refundAmount).toFixed(2));
+            order.subtotal = newSubtotal;
+            order.couponDiscount = remainingDiscount;
+            order.totalAmount = newTotalAmount;
             const allItemsCancelled = order.items.every(orderItem=>orderItem.itemStatus==='cancelled');
             if(allItemsCancelled){
                 order.orderStatus = 'cancelled';
@@ -551,6 +617,40 @@ const returnOrder = async (userId, orderId, returnReason) => {
     )
     return order;
 };
+const returnOrderItem = async(userId,orderId,itemId,returnReason)=>{
+    const session = await mongoose.startSession();
+    try{
+        let updatedOrder;
+        await session.withTransaction(async()=>{
+            const order = await Order.findOne({userId,orderId}).session(session);
+            if(!order){
+                throw new Error(MESSAGES.ORDER_NOT_FOUND)
+            }
+            if(order.orderStatus !=='delivered'){
+                throw new Error('Only delivered order can be returned');
+            }
+            const item = order.items.id(itemId);
+            if(item.itemStatus!=='active'){
+                throw new Error('This item cannot be returned');
+            }
+            if(item.returnStatus !=='none'){
+                throw new Error('A return request already exists for this item');
+            }
+            item.returnReason = returnReason.trim();
+            item.returnRequestedAt= new Date();
+            item.returnStatus = 'requested';
+            await order.save({session});
+            await notificationServices.createNotification(
+                MESSAGES.RETURN_REQUEST,
+                `A customer has reqested a return request for order ${order.orderId}`
+            )
+            updatedOrder = order;
+        });
+        return updatedOrder;
+    }finally{
+        await session.endSession();
+    }
+}
 const getOrderDetails = async(userId, orderId)=>{
     const order = await Order.findOne({userId,orderId}).lean();
     if(!order){
@@ -567,6 +667,8 @@ module.exports ={
     getUserOrders,
     cancelOrder,
     cancelOrderItem,
+    checkCancellationImapct,
     returnOrder,
+    returnOrderItem,
     getOrderDetails
 }

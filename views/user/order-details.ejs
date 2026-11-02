@@ -49,15 +49,6 @@
                 Print Invoice
             </a>
             <%} %>
-            <% if (order.orderStatus === 'delivered') { %>
-                <button
-                    type="button"
-                    class="return-order-btn"
-                    data-order-id="<%= order.orderId %>"
-                >
-                    Return Order
-                </button>
-            <% } %>
             <% if (
                 ['pending']
                     .includes(order.orderStatus)
@@ -88,7 +79,9 @@
                     </div>
                     <div class="order-product-info">
                         <h3>
+                            <a href="/product/<%=item.productId%>" class="order-product-link">
                             <%= item.productName %>
+                            </a>
                         </h3>
                         <% if (
                             item.variantAttributes &&
@@ -145,10 +138,18 @@
     
     <% if (order.orderStatus === 'cancelled') { %>
     <span class="item-cancelled-status">Order Cancelled</span>
-<% } else if (item.itemStatus === 'cancelled') { %>
+    <% } else if (item.itemStatus === 'cancelled') { %>
     <span class="item-cancelled-status">Item Cancelled</span>
-<% } else if (item.itemStatus === 'returned') { %>
+    <% } else if (item.itemStatus === 'returned') { %>
     <span class="item-cancelled-status">Item Returned</span>
+    <% } else if (item.returnStatus === 'requested') { %>
+    <span class="item-return-status requested">Return Requested</span>
+    <% } else if (item.returnStatus === 'approved') { %>
+    <span class="item-return-status approved">Return Approved</span>
+    <% } else if (item.returnStatus === 'rejected') { %>
+    <span class="item-return-status rejected">Return Rejected</span>
+    <% } else if (item.returnStatus === 'received') { %>
+    <span class="item-return-status received">Return Received</span>
 <% } else if (['pending'].includes(order.orderStatus)) { %>
     <button
         type="button"
@@ -157,9 +158,17 @@
         data-item-id="<%= item._id %>"
         data-product-name="<%= item.productName %>"
     >Cancel Item</button>
+<% } else if(order.orderStatus==='delivered'){ %>
+        <button
+        type="button"
+        class="return-item-btn"
+        data-order-id="<%= order.orderId %>"
+        data-item-id="<%= item._id %>"
+        data-product-name="<%= item.productName %>"
+    >Return Item</button>
 <% } %>
 </div>
-                </div>
+  </div>
             <% }) %>
         </div>
     </div>
@@ -213,16 +222,39 @@
             </h2>
        
 <div class="billing-info-box">
+    <% const totalOfferDiscount = order.items.reduce((total,item)=>{
+        if(item.itemStatus==='cancelled'){
+            return total;
+        }
+        return total+(Number(item.discountAmount||0)*Number(item.quantity||0));
+    },0);
+       const originalSubtotal = Number(order.subtotal||0)+totalOfferDiscount;
+    %>
     <div class="billing-row">
-        <span>Subtotal (after offers)</span>
+        <span>Subtotal </span>
         <span>
-            ₹<%= Number(order.subtotal ?? order.totalAmount).toLocaleString('en-IN') %>
+            ₹<%=originalSubtotal.toLocaleString('en-IN')%>
         </span>
     </div>
-
+    <% if (totalOfferDiscount > 0) { %>
+    <div class="billing-row coupon-savings-row">
+        <span>Offer Savings</span>
+        <span>
+            −₹<%= totalOfferDiscount.toLocaleString('en-IN') %>
+        </span>
+    </div>
+    <% } %>
+    <% if (totalOfferDiscount > 0) { %>
+    <div class="billing-row">
+    <span>Subtotal After Offers</span>
+    <span>
+        ₹<%= Number(order.subtotal || 0).toLocaleString('en-IN') %>
+    </span>
+    </div>
+    <% } %>
     <% if (Number(order.couponDiscount) > 0) { %>
         <div class="billing-row coupon-savings-row">
-            <span>Coupon Discount</span>
+            <span>Coupon applied (<%= order.couponCode %>)</span>
             <span>
                 −₹<%= Number(order.couponDiscount).toLocaleString('en-IN') %>
             </span>
@@ -235,8 +267,8 @@
     </div>
 
     <div class="billing-row">
-        <span>Tax</span>
-        <span>₹0</span>
+        <span>Inclusive of all taxes</span>
+        <span></span>
     </div>
 
     <div class="payment-method-row">
@@ -336,7 +368,7 @@
             <p id="cancelItemConfirmation">
                 Are you sure you want to cancel this item?
             </p>
-
+            <p id="couponWarning" class="coupon-warning" hidden></p>
             <label
                 for="itemCancellationReason"
                 class="cancellation-reason-label"
@@ -387,7 +419,7 @@
         <div class="return-order-modal-header">
 
             <h3>
-                Return Order
+                Return Item
             </h3>
 
             <button
@@ -537,20 +569,39 @@ const cancelItemModalCancel = document.getElementById('cancelItemModalCancel');
 const confirmCancelItem = document.getElementById('confirmCancelItem');
 const itemCancellationReason = document.getElementById('itemCancellationReason');
 const cancelItemConfirmation = document.getElementById('cancelItemConfirmation');
+const couponWarning = document.getElementById('couponWarning');
 let selectedItemOrderId = null;
 let selectedItemId = null;
     document.querySelectorAll('.cancel-item-btn').forEach(button=>{
-        button.addEventListener('click',function(){
+        button.addEventListener('click', async function(){
             selectedItemOrderId = this.dataset.orderId;
             selectedItemId = this.dataset.itemId;
-            cancelItemConfirmation.textContent = `Are you sure want to cancel ${this.dataset.productName}?`;
             itemCancellationReason.value='';
-            cancelItemModal.classList.add('show');
-                    console.log('All button attributes:', this.attributes);
-        console.log('Order ID:', this.dataset.orderId);
-        console.log('Item ID:', this.dataset.itemId);
-        console.log('Product name:', this.dataset.productName);
-             console.log(' button clicked item id and order id',selectedItemId,selectedItemOrderId)
+            cancelItemConfirmation.textContent = `Are you sure want to cancel ${this.dataset.productName}?`;
+            couponWarning.hidden=true;
+            couponWarning.textContent='';
+            try{
+                const response = await fetch(`/account/orders/${encodeURIComponent(selectedItemOrderId)}/items/${encodeURIComponent(selectedItemId)}/cancellation-impact`,
+                {
+                    headers:{'Accept':'application/json'}
+                }    
+            );
+            const result = await response.json();
+            if(!response.ok||!result.success){
+                showToastMessage(result.message||'Unable to check cancellation details','error');
+                return;
+            }
+            if(result.couponRemoved){
+                couponWarning.textContent= 
+                `Warning: Cancelling this item will remove your coupon discount,
+                 because your remaining order value will be below the minimum puchase requirment.`
+                 couponWarning.hidden=false;
+            }
+            cancelItemModal.classList.add('show')
+            }catch(error){
+                console.log(error);
+                showToastMessage('Unable to check cancellation details. Please try again.','error');
+            }
         });
     });
     function closeCancelItemModal(){
@@ -599,6 +650,7 @@ let selectedItemId = null;
         confirmCancelItem.textContent='Confirm Cancellation';
     }
     });
+
 const returnOrderModal =document.getElementById('returnOrderModal');
 const returnModalClose = document.getElementById('returnModalClose');
 const returnModalCancel =document.getElementById('returnModalCancel');
@@ -606,76 +658,75 @@ const confirmReturnOrder = document.getElementById('confirmReturnOrder');
 const returnReason = document.getElementById('returnReason');
 const returnReasonError = document.getElementById('returnReasonError');
 let selectedReturnOrderId = null;
-const returnOrderButtons =document.querySelectorAll('.return-order-btn');
-returnOrderButtons.forEach(button => {
-    button.addEventListener('click', function () {
-        selectedReturnOrderId =  this.dataset.orderId;
-        returnReason.value = '';
-        returnReasonError.textContent = '';
+let selectedReturnItemId = null;
+document.querySelectorAll('.return-item-btn').forEach(button=>{
+    button.addEventListener('click',function(){
+        selectedReturnOrderId = this.dataset.orderId;
+        selectedReturnItemId = this.dataset.itemId;
+        returnReason.value='';
+        returnReasonError.textContent='';
+        document.querySelector('.return-confirmation-text').textContent=
+        `Are you sure you want to return ${this.dataset.productName}?`;
+        confirmReturnOrder.textContent ='Confirm Return';
         returnOrderModal.classList.add('show');
-    });
+    })
 });
-function closeReturnModal() {
+function closeReturnModal(){
     returnOrderModal.classList.remove('show');
-    selectedReturnOrderId = null;
-    returnReason.value = '';
-    returnReasonError.textContent = '';
+    selectedReturnItemId=null;
+    selectedReturnOrderId=null;
+    returnReason.value ='';
+    returnReasonError.textContent='';
     confirmReturnOrder.disabled = false;
-    confirmReturnOrder.textContent ='Confirm Return';
+    confirmReturnOrder.textContent='Confirm Return';
 }
-returnModalClose.addEventListener('click', closeReturnModal);
-returnModalCancel.addEventListener('click', closeReturnModal);
-document.querySelector('.return-order-modal-overlay')
-    .addEventListener('click', closeReturnModal );
+returnModalCancel.addEventListener('click',closeReturnModal);
+returnModalClose.addEventListener('click',closeReturnModal);
+returnOrderModal.querySelector('.return-order-modal-overlay').addEventListener('click',closeReturnModal);
+confirmReturnOrder.addEventListener('click',async function(){
 
-confirmReturnOrder.addEventListener('click',async function () {
-        if (!selectedReturnOrderId) {
-            return;
-        }
-        const reason = returnReason.value.trim();
-        if (!reason) {
-            returnReasonError.textContent = 'Return reason is required';
-            returnReason.focus();
-            return;
-        }
-        returnReasonError.textContent = '';
-        confirmReturnOrder.disabled = true;
-        confirmReturnOrder.textContent = 'Returning...';
-        try {
-            const response = await fetch(
-                `/account/orders/${selectedReturnOrderId}/return`,
-                {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        returnReason: reason
-                    })
-                }
-            );
-            const result = await response.json();
-            if (!response.ok || !result.success) {
-                showToastMessage( result.message || 'Unable to return order', 'error');
-                confirmReturnOrder.disabled = false;
-                confirmReturnOrder.textContent =  'Confirm Return';
-                return;
-            }
-            closeReturnModal();
-            showToastMessage(
-                result.message ||  'Order returned successfully', 'success');
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
-        } catch (error) {
-            console.log(  'Return order error:', error);
-            showToastMessage( 'Unable to return order', 'error');
-            confirmReturnOrder.disabled = false;
-            confirmReturnOrder.textContent =  'Confirm Return';
-        }
+    if(!selectedReturnOrderId||!selectedReturnItemId){
+        return;
     }
-);
+    
+    const reason = returnReason.value.trim();
+    console.log('return reason',reason)
+    if(!reason){
+        returnReasonError.textContent = 'Return reason is required';
+        returnReason.focus();
+        return;
+    }
+    returnReasonError.textContent='';
+    confirmReturnOrder.disabled=true;
+    confirmReturnOrder.textContent='Submitting...';
+    try{
+        const response = await fetch(
+            `/account/orders/${encodeURIComponent(selectedReturnOrderId)}/items/${encodeURIComponent(selectedReturnItemId)}/return`,
+            {
+                method:'PATCH',
+                headers:{'Content-type':'application/json','Accept':'application/json'},
+                body:JSON.stringify({returnReason:reason})
+            }
+        )
+        const result = await response.json();
+        if(!response.ok||!result.success){
+            showToastMessage(result.message,'error');
+            confirmReturnOrder.disabled=false;
+            confirmReturnOrder.textContent='Confirm Return';
+            return;
+        }
+        closeReturnModal();
+        showToastMessage(result.message,'success');
+        setTimeout(() => {
+            window.location.reload();
+        }, 1200);
+    }catch(error){
+        console.log('Return item error' ,error)
+        showToastMessage('Unable to request item return','error');
+        confirmReturnOrder.disabled=false;
+        confirmReturnOrder.textContent='Confirm Return';
+    }
+});
     function showToastMessage(message,type){
         const toast = document.getElementById('toastMessage');
         const text = document.getElementById('toastMessageText');

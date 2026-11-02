@@ -66,9 +66,9 @@ const loadOrderDetails = async(req,res)=>{
 }
 const reviewReturnRequest = async(req,res)=>{
     try{
-        const orderId = req.params.orderId;
+        const {orderId,itemId} = req.params;
         const {decision} = req.body;
-        await orderServices.reviewReturnRequest(orderId,decision);
+        await orderServices.reviewReturnRequest(orderId,itemId,decision);
         return res.status(200).json({
             success:true,
             message:decision==='approved'
@@ -85,8 +85,8 @@ const reviewReturnRequest = async(req,res)=>{
 }
 const markReturnReceived = async(req,res)=>{
     try{
-        const orderId = req.params.orderId;
-        await orderServices.markReturnReceived(orderId);
+        const {orderId,itemId} = req.params;
+        await orderServices.markReturnReceived(orderId,itemId);
         return res.status(200).json({
             success:true,
             message:MESSAGES.RETURN_RECEIVED

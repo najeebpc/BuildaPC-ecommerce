@@ -36,6 +36,25 @@ const orderItemSchema = new mongoose.Schema(
             required: true,
             min: 1
         },
+        originalPrice: {
+            type: Number,
+            required: true,
+            min: 0
+        },
+        discountAmount:{
+            type:Number,
+            default:0,
+            min:0
+        },
+        couponDiscountAmount:{
+            type:Number,
+            default:0,
+            min:0
+        },
+        couponDiscountAdjusted:{
+            type:Boolean,
+            default:false
+        },
         itemStatus:{
             type:String,
             enum:['active','cancelled','returned'],
@@ -48,6 +67,36 @@ const orderItemSchema = new mongoose.Schema(
         cancelledAt:{
             type:Date,
             default:null
+        },
+        returnReason: {
+            type: String,
+            default: ''
+        },
+        returnRequestedAt: {
+            type: Date,
+            default: null
+        },
+        returnStatus: {
+            type: String,
+            enum: ['none', 'requested', 'approved', 'rejected', 'received'],
+            default: 'none'
+        },
+        returnRejectedReason: {
+            type: String,
+            default: ''
+        },
+        returnReceivedAt: {
+            type: Date,
+            default: null
+        },
+        returnStockRestored: {
+            type: Boolean,
+            default: false
+        },
+        retundAmount:{
+            type:Number,
+            defualt:0,
+            min:0
         }
     },
 );

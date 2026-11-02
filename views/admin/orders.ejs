@@ -244,7 +244,7 @@
                                                 Cancelled
                                             </option>
                                         </select>
-                                        <% if (order.orderStatus === 'Return requested') { %>
+                                        <% if (order.items.some(item=>item.returnStatus === 'requested')) { %>
                                         <a
                                             href="/admin/orders/<%= order.orderId %>"
                                             class="review-return-btn"
@@ -252,24 +252,6 @@
                                         <i class="fa-solid fa-bell"></i>
                                                 Review Return
                                         </a>
-                                        <% } else if (order.orderStatus === 'Return approved') { %>
-                                            <a href="/admin/orders/<%= order.orderId %>"
-                                                class="return-status-badge return-approved">
-                                            <i class="fa-solid fa-circle-check"></i>
-                                                Return Accepted
-                                            </a>
-                                        <% } else if (order.orderStatus === 'Return rejected') { %>
-                                            <a href="/admin/orders/<%= order.orderId %>" 
-                                            class="return-status-badge return-rejected">
-                                            <i class="fa-solid fa-circle-xmark"></i>
-                                                Return Rejected
-                                            </a>
-                                        <% } else if (order.orderStatus === 'Return received') { %>
-                                            <a href="/admin/orders/<%= order.orderId %>" 
-                                            class="return-status-badge return-received">
-                                            <i class="fa-solid fa-box-open"></i>
-                                                Return Received
-                                            </a>
                                         <% } %>
                                     </div>
                                 </td>
@@ -354,11 +336,12 @@ async function updateOrderStatus(select) {
         const result =
             await response.json();
         if (!response.ok || !result.success) {
-            alert(
-                result.message ||
-                'Unable to update order status'
-            );
-            window.location.reload();
+            console.log('update order error',result.message)
+            showToastMessage(result.message,'error')
+            setTimeout(() => {
+             window.location.reload();
+            }, 1300);
+  
             return;
         }
         window.location.reload();

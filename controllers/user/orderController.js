@@ -193,6 +193,21 @@ const cancelOrderItem = async(req,res)=>{
         })
     }
 };
+const checkCancellationImapct = async(req,res)=>{
+    try{
+        const {orderId,itemId,} = req.params;
+        const result = await orderServices.checkCancellationImapct(req.session.user,orderId,itemId);
+        return res.json({
+            success:true,
+            ...result
+        });
+    }catch(error){
+        return res.status(400).json({
+            success:false,
+            message:error.message
+        })
+    }
+}
 const returnOrder = async (req, res) => {
     try {
         const userId = req.session.user._id;
@@ -221,6 +236,24 @@ const returnOrder = async (req, res) => {
         });
     }
 };
+const returnOrderItem = async(req,res)=>{
+    try{
+        const userId = req.session.user._id;
+        const {orderId,itemId} = req.params;
+        const {returnReason} = req.body;
+        const updatedOrder = await orderServices.returnOrderItem(userId,orderId,itemId,returnReason);
+        return res.status(200).json({
+            success:true,
+            message:' Order return requested'
+        });
+    }catch(error){
+        console.log(error);
+        return res.status(400).json({
+            success:false,
+            message:error.message
+        })
+    }
+}
 const loadOrderDetails = async(req,res)=>{
     try{
     const userId = req.session.user._id;
@@ -255,7 +288,9 @@ module.exports = {
     loadOrders,
     cancelOrder,
     cancelOrderItem,
+    checkCancellationImapct,
     returnOrder,
+    returnOrderItem,
     loadOrderDetails,
     downloadInvoice
 }

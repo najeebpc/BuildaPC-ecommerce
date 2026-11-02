@@ -181,7 +181,16 @@
 
     object-fit: contain;
 }
+.order-product-link {
+    color: #111827;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
 
+.order-product-link:hover {
+    color: #2563eb;
+    /* text-decoration: underline; */
+}
 
 /* Product info */
 
@@ -338,71 +347,129 @@
    Billing Information
 ================================ */
 
+
+/* ================================
+   Billing Information
+================================ */
+
 .billing-info-box {
-    min-height: 190px;
-
-    padding: 18px 20px;
-
+    padding: 16px 18px;
     background: #f8fafc;
-
     border: 1px solid #edf0f3;
     border-radius: 7px;
 }
 
+/* Common billing rows */
 
 .billing-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 12px;
 
-    margin-bottom: 17px;
+    margin-bottom: 10px;
 
     color: #5b6472;
-
     font-size: 12px;
+    line-height: 1.4;
 }
 
 .billing-row span:last-child {
     color: #111827;
+    font-weight: 500;
+    white-space: nowrap;
 }
 
+/* Product / Category Offer Savings */
+
+.offer-savings-row {
+    color: #15803d;
+}
+
+.offer-savings-row span:last-child {
+    color: #15803d;
+    font-weight: 600;
+}
+
+/* Coupon Savings */
+
+.coupon-savings-row {
+    color: #15803d;
+}
+
+.coupon-savings-row span:last-child {
+    color: #15803d;
+    font-weight: 600;
+}
+
+/* Subtotal after offers */
+
+.billing-subtotal-row {
+    padding-bottom: 9px;
+    margin-bottom: 10px;
+    border-bottom: 1px dashed #d1d5db;
+}
+
+/* Shipping */
 
 .free-shipping {
     color: #16a34a !important;
+    font-weight: 600;
 }
 
+/* Tax information */
+
+.billing-tax-row {
+    margin-top: 4px;
+    margin-bottom: 10px;
+    font-size: 11px;
+    color: #6b7280;
+}
+
+/* Payment method */
+
+.payment-method-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    margin-top: 12px;
+    padding-top: 10px;
+
+    border-top: 1px solid #e5e7eb;
+
+    color: #5b6472;
+    font-size: 11px;
+}
+
+.payment-method-row span:last-child {
+    color: #374151;
+    font-weight: 500;
+}
+
+/* Final Total */
 
 .billing-total-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 12px;
 
-    margin-top: 27px;
-    padding-top: 16px;
+    margin-top: 12px;
+    padding-top: 12px;
 
-    border-top: 1px solid #e5e7eb;
+    border-top: 1px solid #d1d5db;
 
     color: #111827;
-
-    font-size: 15px;
+    font-size: 14px;
 }
 
 .billing-total-row strong:last-child {
-    color: #2563eb;
+    color: #111827;
+    font-size: 16px;
 }
 
-
-.payment-method-row {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-top: 22px;
-    color: #5b6472;
-    font-size: 11px;
-}
-.payment-method-row span:last-child {
-    color: #4b5563;
-}
 
 .order-product-price {
     display: flex;
@@ -420,7 +487,7 @@
 }
 
 .order-discounted-price {
-    color: #dc2626;
+    color: #111827;
     font-size: 17px;
     font-weight: 700;
 }
@@ -525,7 +592,86 @@
     background: #f3f4f6;
     color: #4b5563;
 }
+.coupon-warning {
+    margin-top: 12px;
+    padding: 12px;
+    background: #fff4e5;
+    border: 1px solid #f0c36d;
+    border-radius: 6px;
+    color: #8a5700;
+    font-size: 14px;
+    line-height: 1.5;
+}
 
+.coupon-warning[hidden] {
+    display: none;
+}
+/* Return Item Button */
+.return-item-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    margin-top: 8px;
+    background: #fff;
+    color: #2563eb;
+    border: 1px solid #2563eb;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.return-item-btn:hover {
+    background: #2563eb;
+    color: #fff;
+}
+
+.return-item-btn:active {
+    transform: scale(0.97);
+}
+
+.return-item-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+/* Common Return Status */
+.item-return-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 11px;
+    margin-top: 8px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+/* Return Requested */
+.item-return-status.requested {
+    color: #92400e;
+    background: #fef3c7;
+}
+
+/* Return Approved */
+.item-return-status.approved {
+    color: #1d4ed8;
+    background: #dbeafe;
+}
+
+/* Return Rejected */
+.item-return-status.rejected {
+    color: #b91c1c;
+    background: #fee2e2;
+}
+
+/* Return Received */
+.item-return-status.received {
+    color: #15803d;
+    background: #dcfce7;
+}
 /* ================================
    Responsive
 ================================ */

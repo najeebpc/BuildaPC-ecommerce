@@ -24,12 +24,16 @@
         <h1 class="admin-title">BuildaPC Admin</h1>
         <p class="admin-subtext">Sign in to access the admin panel</p>
       </div>
-
+      <% if (passSuccess) { %>
+      <p class="success-text">
+        <%= passSuccess.message %>
+      </p>
+      <% } %>
       <!-- Form -->
       <form class="admin-auth-form" action="/admin/login" method="post">
         <div class="admin-form-group">
           <label>Admin email</label>
-          <input type="text" name="email" value="<%= formData.email || '' %>" placeholder="Enter your username" required>
+          <input type="text" id="adminEmail" name="email" value="<%= formData.email || '' %>" placeholder="Enter your username" required>
           <p class="error-text" id="mailError"><% if(field === "email" && message){ %>
             <%=message %>
             <% } %>
@@ -38,20 +42,49 @@
 
         <div class="admin-form-group">
           <label>Password</label>
-          <input type="password" name="password"  placeholder="Enter your password" required>
+          <div class="password-input-wrapper">
+          <input id="password" type="password" name="password"  placeholder="Enter your password" required>
+          <button type="button" class="password-toggle" title="show" onclick="togglePassword('password', this)">
+            👁 
+          </button>
+          </div>
           <p class="error-text" ><% if(field === "password" && message){ %>
             <%=message %>
             <% } %>
             </p>
+          <div class="admin-options">
+          <a href="/admin/forgot-password" class="admin-forgot-link" >Forgot Password?</a>
+          </div>
         </div>
 
         <button type="submit" class="admin-btn-primary">Login</button>
+
       </form>
 
       
     </div>
 
   </div>
+  <script>
+    function togglePassword(inputId,button){
+      const input = document.getElementById(inputId);
+      if(input.type==='password'){
+        input.type = 'text';
+        button.textContent = '⌣';
+        button.title='hide';
+      }else{
+        input.type='password';
+        button.textContent = '👁';
+        button.title = 'show';
+      }
+    }
+    const adminEmail = document.getElementById('adminEmail');
+    const adminPass = document.getElementById('password');
+    const mailError = document.getElementById('mailError');
+    adminEmail.addEventListener('input',()=>{
+      mailError.textContent='';
+    });
 
+  </script>
 </body>
 </html>

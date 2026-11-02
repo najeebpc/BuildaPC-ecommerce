@@ -306,7 +306,7 @@ const createProductVariant = async(req,res)=>{
         console.log('Failed to add variants ', error);
         return res.status(500).json({
             success:false,
-            message:MESSAGES.VARIANT_FAILED
+            message:error.message
         })
     }
 }
@@ -333,7 +333,7 @@ const updateProductVariant = async(req,res)=>{
         console.log('Update product variant error', error);
         return res.status(500).json({
             success:false,
-            message:MESSAGES.VARIANT_UPDATE_FAILED
+            message:error.message
         })
     }
     

@@ -85,7 +85,9 @@ router.get('/order-success/:orderId',isAuthenticated,orderController.loadOrderSu
 router.get('/account/orders',isAuthenticated,orderController.loadOrders);
 router.patch('/account/orders/:orderId/cancel',isAuthenticated,orderController.cancelOrder);
 router.patch('/account/orders/:orderId/items/:itemId/cancel',isAuthenticated,orderController.cancelOrderItem);
+router.get('/account/orders/:orderId/items/:itemId/cancellation-impact',isAuthenticated,orderController.checkCancellationImapct);
 router.patch('/account/orders/:orderId/return',isAuthenticated,orderController.returnOrder);
+router.patch('/account/orders/:orderId/items/:itemId/return',isAuthenticated,orderController.returnOrderItem)
 router.get('/account/orders/:orderId',isAuthenticated,orderController.loadOrderDetails);
 router.get('/account/orders/:orderId/invoice',isAuthenticated,orderController.downloadInvoice);
 

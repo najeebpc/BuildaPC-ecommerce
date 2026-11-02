@@ -224,13 +224,13 @@ const verifyOtp = async (req,res)=>{
                 email:email,
                 purpose:"RESET-PASSWORD"
             });
-            console.log('resetOTP',otpData.otp)
             if(!otpData){
                 return res.status(STATUS.BAD_REQUEST).json({
                     success:false,
                     message:MESSAGES.OTP_INVALID
                 });
             }
+            console.log('resetOTP',otpData.otp)
             if(Date.now()>otpData.expiresAt.getTime()){
                 return res.status(STATUS.BAD_REQUEST).json({
                     success:false,
@@ -249,7 +249,7 @@ const verifyOtp = async (req,res)=>{
         if (req.session.otpPurpose === "CHANGE-EMAIL") {
             const email = req.session.newEmail;
             if(!email){
-                return req.status(STATUS.BAD_REQUEST).json({
+                return res.status(STATUS.BAD_REQUEST).json({
                     success:false,
                     message:MESSAGES.SESSION_EXPIRED
                 })
@@ -502,6 +502,13 @@ const changePassword = async (req,res)=>{
     try{
         const {password,confirmPassword} = req.body;
         console.log(confirmPassword,password,)
+        if(!userServices.isStrongPassword(password)){
+            req.session.resetError = {
+                message:MESSAGES.PASSWORD_INVALID,
+                feild:'password'
+            }
+            return res.redirect('/change-password');
+        }
         if(password !== confirmPassword){
             req.session.resetError = {
                 message:MESSAGES.PASSWORD_MISMATCH,

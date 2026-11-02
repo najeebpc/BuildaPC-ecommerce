@@ -48,6 +48,12 @@ const adminAuth = (req,res,next)=>{
     }
     res.redirect('/admin/login');
 }
+const isAdminRestPass = (req,res,next)=>{
+    if(!req.session.adminRestEmail){
+        return res.redirect('/admin/forgot-password')
+    }
+    next();
+}
 const isAdminLogged = (req,res,next)=>{
     if(req.session.admin){
         return res.redirect('/admin/dashboard');
@@ -60,5 +66,6 @@ module.exports = {
     isVerified,
     adminAuth,
     isAdminLogged,
-    isResetPassword
+    isResetPassword,
+    isAdminRestPass
 }

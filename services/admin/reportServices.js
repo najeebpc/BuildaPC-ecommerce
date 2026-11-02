@@ -53,6 +53,7 @@ const getReportDates = (query) => {
 };
 
 const getSalesReport = async (startDate, endDate) => {
+
     const orders = await Order.find({
         orderStatus: 'delivered',
         createdAt: {
@@ -60,22 +61,82 @@ const getSalesReport = async (startDate, endDate) => {
             $lte: endDate
         }
     })
-    .select('orderId createdAt subtotal couponDiscount totalAmount paymentMethod paymentStatus orderStatus')
+    .select(`
+        orderId
+        userId
+        createdAt
+        shippingAddress.fullName
+        items
+        subtotal
+        couponDiscount
+        totalAmount
+        paymentMethod
+        paymentStatus
+        orderStatus
+    `)
     .sort({ createdAt: -1 })
     .lean();
+    orders.forEach(order => {
+
+        const activeItems = order.items.filter(
+            item => item.itemStatus !== 'cancelled'
+        );
+        order.customerName =
+            order.shippingAddress?.fullName || 'N/A';
+
+        order.itemsCount = activeItems.reduce(
+            (total, item) => total + item.quantity,
+            0
+        );
+        order.productDiscount = activeItems.reduce(
+            (total, item) =>
+                total + (item.discountAmount || 0) * item.quantity,
+            0
+        );
+        order.totalDiscount = Number(
+            (order.productDiscount + (order.couponDiscount || 0)).toFixed(2)
+        );
+        order.refundAmount = order.items.reduce(
+            (total, item) =>
+                total + (
+                    item.returnStatus === 'received'
+                        ? (item.refundAmount || 0)
+                        : 0
+                ),
+            0
+        );
+        order.netSales = Number(
+            (order.totalAmount - order.refundAmount).toFixed(2)
+        );
+    });
 
     const report = orders.reduce((result, order) => {
         result.totalOrders += 1;
-        result.totalSales += order.totalAmount || 0;
+        result.totalSales += order.netSales;
         result.totalSubtotal += order.subtotal || 0;
         result.totalCouponDiscount += order.couponDiscount || 0;
+        result.totalProductDiscount += order.productDiscount || 0;
+        result.totalDiscount += order.totalDiscount || 0;
+        result.totalRefund += order.refundAmount || 0;
+        result.totalItemsSold += order.itemsCount || 0;
         return result;
+
     }, {
         totalOrders: 0,
         totalSales: 0,
         totalSubtotal: 0,
-        totalCouponDiscount: 0
+        totalCouponDiscount: 0,
+        totalProductDiscount: 0,
+        totalDiscount: 0,
+        totalRefund: 0,
+        totalItemsSold: 0
     });
+    report.totalSales = Number(report.totalSales.toFixed(2));
+    report.totalSubtotal = Number(report.totalSubtotal.toFixed(2));
+    report.totalCouponDiscount = Number(report.totalCouponDiscount.toFixed(2));
+    report.totalProductDiscount = Number(report.totalProductDiscount.toFixed(2));
+    report.totalDiscount = Number(report.totalDiscount.toFixed(2));
+    report.totalRefund = Number(report.totalRefund.toFixed(2));
 
     return {
         ...report,

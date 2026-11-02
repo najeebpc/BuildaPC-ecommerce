@@ -94,7 +94,7 @@
             </div>
         </div>
         <!-- RETURN REQUEST DETAILS -->
-        <% if (order.returnReason) { %>
+        <!-- <% if (order.returnReason) { %>
         <div class="order-details-card return-request-card">
         <div class="return-request-header">
             <div>
@@ -169,7 +169,7 @@
         <% } %>
         </div>
         </div>
-        <% } %>
+        <% } %> -->
         <!-- CUSTOMER INFORMATION -->
         <div class="order-details-card">
             <h2 class="section-title">
@@ -278,6 +278,88 @@
                                     <%= item.itemStatus || 'active' %>
                             </span>
                         </p>
+                        <% if (item.returnStatus && item.returnStatus !== 'none') { %>
+
+    <div class="item-return-request">
+
+        <div class="item-return-header">
+            <h4>Return Request</h4>
+
+            <span class="item-return-badge <%= item.returnStatus %>">
+                <%= item.returnStatus %>
+            </span>
+        </div>
+
+        <div class="item-return-info">
+            <p>
+                <strong>Customer's Reason:</strong>
+                <%= item.returnReason || 'No reason provided' %>
+            </p>
+
+            <p>
+                <strong>Request Date:</strong>
+                <%= item.returnRequestedAt
+                    ? new Date(item.returnRequestedAt).toLocaleString('en-IN')
+                    : 'Not available' %>
+            </p>
+
+            <% if (item.returnRejectedReason) { %>
+                <p>
+                    <strong>Rejection Reason:</strong>
+                    <%= item.returnRejectedReason %>
+                </p>
+            <% } %>
+        </div>
+
+        <div class="item-return-actions">
+
+            <% if (item.returnStatus === 'requested') { %>
+
+                <button
+                    type="button"
+                    class="approve-return-btn"
+                    onclick="reviewReturnRequest('<%= order.orderId %>', '<%= item._id %>', 'approved')"
+                >
+                    <i class="fa-solid fa-check"></i>
+                    Approve Return
+                </button>
+
+                <button
+                    type="button"
+                    class="reject-return-btn"
+                    onclick="reviewReturnRequest('<%= order.orderId %>', '<%= item._id %>', 'rejected')"
+                >
+                    <i class="fa-solid fa-xmark"></i>
+                    Reject Return
+                </button>
+
+            <% } else if (
+                item.returnStatus === 'approved' &&
+                !item.returnStockRestored
+            ) { %>
+
+                <button
+                    type="button"
+                    class="approve-return-btn"
+                    onclick="markReturnReceived('<%= order.orderId %>', '<%= item._id %>')"
+                >
+                    <i class="fa-solid fa-box-open"></i>
+                    Mark as Received &amp; Restore Stock
+                </button>
+
+            <% } else if (item.returnStatus === 'received') { %>
+
+                <span class="return-completed-label">
+                    <i class="fa-solid fa-check-circle"></i>
+                    Stock Restored
+                </span>
+
+            <% } %>
+
+        </div>
+    </div>
+
+<% } %>
                         </div>
                         <!-- PRICE -->
                         <div class="order-item-price">
@@ -295,47 +377,84 @@
 <div class="order-details-card order-summary-card">
     <h2 class="section-title">Order Summary</h2>
 
+    <%
+        const activeItems = order.items.filter(
+            item => item.itemStatus === 'active'
+        );
+
+        const itemCount = activeItems.reduce(
+            (total, item) => total + Number(item.quantity || 0),
+            0
+        );
+
+        const totalOfferDiscount = activeItems.reduce(
+            (total, item) => total +
+                (Number(item.discountAmount || 0) * Number(item.quantity || 0)),
+            0
+        );
+
+        const subtotalAfterOffers = Number(order.subtotal || 0);
+        const originalSubtotal = subtotalAfterOffers + totalOfferDiscount;
+        const couponDiscount = Number(order.couponDiscount || 0);
+        const finalTotal = Number(
+            order.originalTotalAmount ?? order.totalAmount ?? 0
+        );
+    %>
+
     <div class="summary-row">
         <span>Items</span>
-        <span>
-            <%= order.items
-            .filter(item=>item.itemStatus==='active')
-            .reduce(
-                (total, item) => total + item.quantity, 0
-            ) %>
-        </span>
+        <span><%= itemCount %></span>
     </div>
 
     <div class="summary-row">
-        <span>Subtotal</span>
-        <span>
-            ₹<%= Number(order.subtotal || 0).toLocaleString('en-IN') %>
-        </span>
+        <span>Original Subtotal</span>
+        <span>₹<%= originalSubtotal.toLocaleString('en-IN') %></span>
     </div>
 
-    <% if (Number(order.couponDiscount) > 0) { %>
-        <div class="summary-row coupon-discount-row">
-            <span>Coupon Discount</span>
+    <% if (totalOfferDiscount > 0) { %>
+        <div class="summary-row discount-row">
+            <span>Product / Category Offer Savings</span>
             <span>
-                −₹<%= Number(order.couponDiscount).toLocaleString('en-IN') %>
+                −₹<%= totalOfferDiscount.toLocaleString('en-IN') %>
             </span>
         </div>
     <% } %>
 
+    <div class="summary-row">
+        <span>Subtotal After Offers</span>
+        <span>₹<%= subtotalAfterOffers.toLocaleString('en-IN') %></span>
+    </div>
+
+    <% if (couponDiscount > 0) { %>
+        <div class="summary-row discount-row">
+            <span>
+                Coupon Discount
+                <% if (order.couponCode) { %>
+                    (<%= order.couponCode %>)
+                <% } %>
+            </span>
+            <span>
+                −₹<%= couponDiscount.toLocaleString('en-IN') %>
+            </span>
+        </div>
+    <% } %>
+
+    <div class="summary-row">
+        <span>Shipping</span>
+        <span>Free</span>
+    </div>
+
     <div class="summary-row total-row">
         <strong>Total</strong>
         <strong>
-            ₹<%= Number(
-                order.originalTotalAmount ?? order.totalAmount ?? 0
-            ).toLocaleString('en-IN') %>
+            ₹<%= finalTotal.toLocaleString('en-IN') %>
         </strong>
     </div>
 </div>
-
     </div>
 </div>
 <script>
-    async function reviewReturnRequest(orderId,decision) {
+    async function reviewReturnRequest(orderId,itemId,decision) {
         const action = decision ==='approved'?'approve':'reject';
         if(!confirm(`Are you sure want to ${action} this return request?`)){
             return;
@@ -343,7 +462,7 @@
         const buttons = document.querySelectorAll('.return-request-actions button');
         try{
             const response = await fetch(
-                `/admin/orders/${orderId}/return-review`,
+                `/admin/orders/${orderId}/items/${itemId}/return-review`,
                 {
                     method:'PATCH',
                     headers:{'Content-Type':'application/json','Accept':'application/json'},
@@ -366,13 +485,13 @@
             buttons.forEach(button=>button.disabled=false);
         }
     }
-    async function markReturnReceived(orderId) {
+    async function markReturnReceived(orderId,itemId) {
         const confirmed = confirm('Conform that the returned product has been received and inspected? Stock will be restored.');
         if(!confirmed){
             return;
         }
         try{
-            const response = await fetch(`/admin/orders/${orderId}/return-received`,
+            const response = await fetch(`/admin/orders/${orderId}/items/${itemId}/return-received`,
                 {
                     method:'PATCH',
                     headers:{'Accept':'application/json'}

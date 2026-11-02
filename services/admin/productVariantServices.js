@@ -16,7 +16,101 @@ const getProductVariantData = async(productId)=>{
         variants
     }
 };
+const validateVariant = async (productId, variantData, variantId = null) => {
+
+    const product = await Product.findById(productId).populate('categoryId');
+
+    if (!product) {
+        throw new Error('Product not found');
+    }
+    if (!product.categoryId) {
+        throw new Error('Product category not found');
+    }
+    const allowedValue = (value)=>{
+        return value.trim().toLowerCase().replace(/\s+/g, '');
+    }
+    const allowedAttributes = product.categoryId.variantAttributes || [];
+
+    if (!Array.isArray(variantData.attributes) || variantData.attributes.length === 0) {
+        throw new Error('At least one variant attribute is required');
+    }
+
+    if (
+        variantData.price === undefined ||
+        variantData.price === null ||
+        variantData.price === '' ||
+        !Number.isFinite(Number(variantData.price)) ||
+        Number(variantData.price) < 0
+    ) {
+        throw new Error('Please enter a valid variant price');
+    }
+
+    if (
+        variantData.stock === undefined ||
+        variantData.stock === null ||
+        variantData.stock === '' ||
+        !Number.isInteger(Number(variantData.stock)) ||
+        Number(variantData.stock) < 0
+    ) {
+        throw new Error('Please enter a valid variant stock');
+    }
+    const normalizedAttributes = variantData.attributes.map(attribute => {
+
+        if (
+            typeof attribute.name !== 'string' ||
+            typeof attribute.value !== 'string' ||
+            !attribute.name.trim() ||
+            !attribute.value.trim()
+        ) {
+            throw new Error('Attribute name and value are required');
+        }
+
+        const name = allowedValue(attribute.name);
+        const value = allowedValue(attribute.value)
+
+        const isAllowed = allowedAttributes.some(
+            allowed => allowedValue(allowed)===name
+        );
+        if (!isAllowed) {
+            throw new Error(`${attribute.name} is not allowed for this category`);
+        }
+        return { name, value };
+    });
+    const attributeNames = normalizedAttributes.map(attribute => attribute.name);
+
+    if (new Set(attributeNames).size !== attributeNames.length) {
+        throw new Error('Duplicate variant attributes are not allowed');
+    }
+    const query = { productId };
+    if (variantId) {
+        query._id = { $ne: variantId };
+    }
+    const existingVariants = await ProductVariant.find(query).select('attributes');
+
+    const isDuplicate = existingVariants.some(existingVariant => {
+        const existingAttributes = existingVariant.attributes.map(attribute => ({
+            name: allowedValue(attribute.name),
+            value: allowedValue(attribute.value)
+        }));
+        if (existingAttributes.length !== normalizedAttributes.length) {
+            return false;
+        }
+        const existingMap = new Map(
+            existingAttributes.map(attribute => [attribute.name, attribute.value])
+        );
+        return normalizedAttributes.every(attribute =>
+            existingMap.get(attribute.name) === attribute.value
+        );
+    });
+    if (isDuplicate) {
+        throw new Error('This variant already exists for this product');
+    }
+    return true;
+};
 const createVariant  = async(productId, variantData)=>{
+
+    await validateVariant(productId,variantData);
+
     const variant = await ProductVariant.create({
         productId,
         attributes:variantData.attributes,
@@ -26,11 +120,12 @@ const createVariant  = async(productId, variantData)=>{
     });
     return variant;
 }
-const updateVariant = async(productid, variantId, variantData)=>{
+const updateVariant = async(productId, variantId, variantData)=>{
+    await validateVariant(productId,variantData,variantId)
     const variant = await ProductVariant.findOneAndUpdate(
         {
         _id:variantId,
-        productId:productid
+        productId:productId
         },
         {
             attributes:variantData.attributes,

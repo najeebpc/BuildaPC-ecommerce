@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {adminAuth,isAdminLogged} = require("../middlewares/authMiddleware")
+const {adminAuth,isAdminLogged,isAdminRestPass} = require("../middlewares/authMiddleware")
 const adminController = require("../controllers/admin/adminController");
 const customerController = require("../controllers/admin/customerController");
 const categoryContorller = require('../controllers/admin/categoryController');
@@ -15,6 +15,13 @@ const reportController = require('../controllers/admin/reportController');
 
 router.get('/login',isAdminLogged,adminController.loadLogin);
 router.post('/login',adminController.login);
+router.get('/forgot-password',adminController.loadForgotPassword);
+router.post('/forgot-password',adminController.forgotPassword);
+router.get('/verify-otp',adminController.loadVerifyOtp);
+router.post('/verify-otp',adminController.verifyOtp);
+router.post('/resend-otp',adminController.resendOtp);
+router.get('/change-password',isAdminRestPass,adminController.loadChangePassword);
+router.post('/change-password',adminController.changePassword);
 router.get('/dashboard',adminAuth,adminController.loadDashBoard);
 router.get('/dashboard/sales-chart',adminAuth,adminController.loadSalesChartData)
 router.get('/logout',adminController.logout);
@@ -43,8 +50,8 @@ router.delete('/products/:id',adminAuth,productController.deleteProduct);
 router.get('/orders',adminAuth,orderController.loadOrders);
 router.patch('/orders/:orderId/status',adminAuth,orderController.updateOrderStatus);
 router.get('/orders/:orderId',adminAuth,orderController.loadOrderDetails);
-router.patch('/orders/:orderId/return-review',adminAuth,orderController.reviewReturnRequest);
-router.patch('/orders/:orderId/return-received',adminAuth,orderController.markReturnReceived);
+router.patch('/orders/:orderId/items/:itemId/return-review',adminAuth,orderController.reviewReturnRequest);
+router.patch('/orders/:orderId/items/:itemId/return-received',adminAuth,orderController.markReturnReceived);
 // review routes
 router.get('/reviews',adminAuth,reviewController.loadReviews);
 router.patch('/reviews/:reviewId/status',adminAuth,reviewController.updateReviewStatus);

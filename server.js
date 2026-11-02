@@ -30,7 +30,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use((req,res,next)=>{
-    res.locals.formData ={};
+    res.locals.formData =req.session.formData||{};
     res.locals.message =req.session.message|| null;
     res.locals.field = req.session.field||null;
     res.locals.profileError = null;
@@ -51,10 +51,10 @@ app.use((req,res,next)=>{
 
 app.use("/",userRouter);
 app.use('/admin',adminRouter);
-app.use((req,res)=>{
+// app.use((req,res)=>{
     
-    res.status(404).render('user/page-404');
-});
+//     res.status(404).render('user/page-404');
+// });
 
 app.listen(port,()=>{
     console.log("server is running on port ",port);

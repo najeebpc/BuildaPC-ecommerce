@@ -1,5 +1,6 @@
 const Coupon = require('../../model/couponSchema');
 const MESSAGES =  require('../../constants/messages');
+const mongoose = require('mongoose');
 
 const getAvailableCoupons = async()=>{
     const now = new Date();
@@ -60,8 +61,40 @@ const validateCoupon = async(code,orderAmount)=>{
         payableAmount:Math.round((orderAmount-discount)*100)/100
     };
 };
+const recalculateCoupon = async(couponId, orderAmount)=>{
+    if(!mongoose.Types.ObjectId.isValid(couponId)){
+        throw new Error('Invalid coupon');
+    }
+    if(!Number.isFinite(orderAmount)||orderAmount<0){
+        throw new Error('invalid order amount');
+    };
+    const coupon = await Coupon.findById(couponId);
+    if(!coupon){
+        return {
+            couponId:null,
+            couponCode:null,
+            discount:0
+        };
+    }
+    if(orderAmount<coupon.minOrderAmount){
+        return {couponId:null,couponCode:null,discount:0};
+    };
+    let discount = 0;
+    if(coupon.discountType==='percentage'){
+        discount = orderAmount*coupon.discountValue/100;
+        if(coupon.maxDiscount !=null){
+            discount= Math.min(discount,coupon.maxDiscount);
+        }
+    }else{
+        discount = coupon.discountValue;
+    }
+    discount = Math.min(discount,orderAmount);
+    discount = Math.round(discount*100)/100;
+    return {couponId:coupon._id,couponCode:coupon.code,discount};
 
+}
 module.exports = {
     getAvailableCoupons,
-    validateCoupon
+    validateCoupon,
+    recalculateCoupon
 }

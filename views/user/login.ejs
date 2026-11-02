@@ -54,13 +54,17 @@
         <!-- Password -->
         <div class="form-group">
           <label for="password">Password</label>
+          <div class="password-input-wrapper">
           <input
             type="password";
             id="password"
             name="password"
             placeholder="Enter your password"
-            
           />
+           <button type="button" class="password-toggle" title="show" onclick="togglePassword('password', this)">
+            👁 
+          </button>
+          </div>
           <p class="error-text" id="passError"><% if(field === "password" && message){ %>
             <%=message %>
             <% } %>
@@ -125,6 +129,18 @@
     })
   function validateEmail(email){
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+  function togglePassword(inputId,button){
+    const input = document.getElementById(inputId);
+    if(input.type==='password'){
+      input.type = 'text';
+      button.textContent = '⌣';
+      button.title = 'hide';
+    }else{
+      input.type = 'password';
+      button.textContent= '👁';
+      button.title = 'show';
+    }
   }
   </script>
 </body>

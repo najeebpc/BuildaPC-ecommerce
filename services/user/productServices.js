@@ -124,7 +124,25 @@ const getProducts = async ({
                         .skip(skip)
                         .limit(limit)
                         .lean()
-    const productIds = products.map(product=>product._id);                 
+    const productIds = products.map(product=>product._id);
+    const fistVariant = await ProductVariant.aggregate([
+        {
+            $match:{productId:{$in:productIds},isActive:true}
+        },
+        {$sort:{createdAt:1}},
+        {
+            $group:{
+                _id:'$productId',price:{$first:'$price'}
+            }
+        }
+    ]);
+    const variantPriceMap={};
+    fistVariant.forEach(item=>{
+        variantPriceMap[item._id.toString()] = item.price;
+    });
+    products.forEach(product=>{
+        product.displayPrice = variantPriceMap[product._id.toString()]??product.basePrice;
+    });                 
     const variantCounts = await ProductVariant.aggregate([
         {$match:{productId:{$in:productIds}}},
         {$group:{_id:'$productId',count:{$sum:1}}}

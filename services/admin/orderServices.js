@@ -3,6 +3,7 @@ const User = require('../../model/userSchema');
 const mongoose = require('mongoose');
 const Product = require('../../model/productSchema');
 const ProductVariant = require('../../model/variantSchema');
+const Coupon = require('../../model/couponSchema');
 const MESSAGES = require('../../constants/messages');
 const walletServices = require('../../services/user/walletServices');
 const referralServices = require('../../services/user/referralServices');
@@ -61,17 +62,7 @@ const getAllOrders = async ({
     };
 };
 const updateOrderStatus = async (orderId,orderStatus) => {
-    const allowedStatuses = [
-        'pending',
-        'shipped',
-        'out for delivery',
-        'delivered',
-        'cancelled'
-        
-    ];
-    if (!allowedStatuses.includes(orderStatus)) {
-        throw new Error('Invalid order status');
-    }
+
     const session = await mongoose.startSession();
     try{
         let order;
@@ -79,6 +70,16 @@ const updateOrderStatus = async (orderId,orderStatus) => {
             order = await Order.findOne({orderId}).session(session);
             if(!order){
                 throw new Error('Order not found');
+            }
+            const statusTransitions = {
+                pending:['shipped','cancelled'],
+                shipped:['out for delivery','cancelled'],
+                'out for delivery':['delivered','cancelled'],
+                delivered:[],
+                cancelled:[]
+            }
+            if (!statusTransitions[order.orderStatus]?.includes(orderStatus)) {
+                 throw new Error('Invalid order status transition');
             }
             if(orderStatus==='cancelled'){
                 if(order.orderStatus==='cancelled'){
@@ -136,7 +137,7 @@ const getOrderDetails = async (orderId) => {
     return order;
 };
 
-const reviewReturnRequest = async(orderId,decision)=>{
+const reviewReturnRequest = async(orderId,itemId,decision)=>{
     const allowedDecisions = ['approved','rejected'];
     if(!allowedDecisions.includes(decision)){
         throw new Error(MESSAGES.INVALID_DECISION);
@@ -145,18 +146,18 @@ const reviewReturnRequest = async(orderId,decision)=>{
     if(!order){
         throw new Error(MESSAGES.ORDER_NOT_FOUND);
     }
-    if(order.orderStatus!=='Return requested'){
-        throw new Error(MESSAGES.DONT_HAVE_ORDER_REQUEST);
+    const item = order.items.id(itemId);
+    if(!item){
+        throw new Error('Order item not found');
     }
-    if(decision==='approved'){
-        order.orderStatus ='Return approved';
-    }else{
-        order.orderStatus='Return rejected';
+    if(item.returnStatus !=='requested'){
+        throw new Error('This item does not have a pending return request');
     }
+    item.returnStatus = decision;
     await order.save();
     return order;
 }
-const markReturnReceived = async(orderId)=>{
+const markReturnReceived = async(orderId,itemId)=>{
     const session = await mongoose.startSession();
     try{
         let updatedOrder;
@@ -166,47 +167,83 @@ const markReturnReceived = async(orderId)=>{
             if(!order){
                 throw new Error(MESSAGES.ORDER_NOT_FOUND);
             }
-            if(order.orderStatus!=='Return approved'){
-                throw new Error('Only approved return can be marked as received');
+            const item = order.items.id(itemId);
+            if(!item){
+                throw new Error('Order item not found');
             }
-            if(order.returnStockRestored){
-                throw new Error('Stock has already been restored for this return');
+            if(item.returnStatus !=='approved'){
+                throw new Error('Only approved returns can be marked as received');
             }
-            for(const item of order.items){
-                if(['cancelled','returned'].includes(item.itemStatus)){
-                    continue;
+            if(item.returnStockRestored){
+                throw new Error('Stock has already been restored for this item');
+            }
+            if(item.itemStatus !=='active'){
+                throw new Error('This item cannot be returned');
+            }
+            const itemTotal = Number((item.price*item.quantity).toFixed(2));
+            const itemDiscount = Number((item.couponDiscountAmount||0).toFixed(2));
+            if(
+                !Number.isFinite(itemTotal)||
+                itemTotal<=0||
+                itemTotal>order.subTotal||
+                !Number.isFinite(itemDiscount)||
+                itemDiscount<0||
+                itemDiscount>itemTotal
+            ){
+                throw new Error('Invalid order item amount');
+            }
+            const newSubtotal = Number((order.subtotal-itemTotal).toFixed(2));
+            let remainingDiscount= order.couponDiscount;
+            if(remainingDiscount>0){
+                remainingDiscount= Number((remainingDiscount-itemDiscount).toFixed(2))
+            }
+            if(order.couponId&& newSubtotal>0){
+                const coupon = await Coupon.findById(order.couponId).session(session);
+                if(!coupon||newSubtotal<coupon.minOrderAmount){
+                    remainingDiscount=0;
                 }
-                let result;
+            }else{
+                remainingDiscount = 0;
+            }
+            const newTotalAmount=Number((newSubtotal-remainingDiscount).toFixed(2));
+            const refundAmount = Number((order.totalAmount-newTotalAmount).toFixed(2));
+            if(!Number.isFinite(refundAmount)||refundAmount<0){
+                throw new Error('Invalid refund amount');
+            }
+            let stockResult;
                 if(item.variantId){
-                    result = await ProductVariant.updateOne(
+                    stockResult = await ProductVariant.updateOne(
                         {_id:item.variantId},
                         {$inc:{stock:item.quantity}},
                         {session}
                     );
                 }else{
-                    result = await Product.updateOne(
+                    stockResult = await Product.updateOne(
                         {_id:item.productId},
                         {$inc:{stockLevel:item.quantity}},
                         {session}
                     );
                 }
-                if(order.paymentStatus==='paid'){
+                if(stockResult.matchedCount!==1){
+                    throw new Error(`Product not found: ${item.productName}`);
+                }
+             if(order.paymentStatus==='paid'){
                     await walletServices.changeWalletBalance({
                         userId:order.userId,
                         type:'credit',
-                        amount:order.totalAmount,
-                        description:`Refund for returned order ${order.orderId}`,
+                        amount:refundAmount,
+                        description:`Refund for returned item ${item.productName} in order ${order.orderId}`,
                         session
                     }); 
                 }
-                if(result.matchedCount!==1){
-                    throw new Error(`Product not found: ${item.productName}`);
-                }
-
-            }
-            order.orderStatus='Return received';
-            order.returnStockRestored=true;
-            order.returnReceivedAt= new Date();
+            item.itemStatus='returned';
+            item.returnStatus='received';
+            item.returnStockRestored = true;
+            item.returnReceivedAt= new Date();
+            item.refundAmount = order.paymentStatus ==='paid'?refundAmount:0;
+            order.subtotal = newSubtotal;
+            order.couponDiscount = remainingDiscount;
+            order.totalAmount = newTotalAmount
             await order.save({session});
             updatedOrder =order;
         });

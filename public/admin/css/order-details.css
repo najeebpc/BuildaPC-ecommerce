@@ -507,6 +507,71 @@
     color: #15803d;
     font-weight: 600;
 }
+.discount-row span {
+    color: #15803d;
+    font-weight: 600;
+}
+.item-return-request {
+    width: 100%;
+    margin-top: 16px;
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #fafafa;
+}
+
+.item-return-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.item-return-header h4 {
+    margin: 0;
+    font-size: 15px;
+}
+
+.item-return-badge {
+    padding: 5px 11px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.item-return-badge.requested {
+    color: #92400e;
+    background: #fef3c7;
+}
+
+.item-return-badge.approved {
+    color: #1d4ed8;
+    background: #dbeafe;
+}
+
+.item-return-badge.rejected {
+    color: #b91c1c;
+    background: #fee2e2;
+}
+
+.item-return-badge.received {
+    color: #15803d;
+    background: #dcfce7;
+}
+
+.item-return-info p {
+    margin: 8px 0;
+    font-size: 13px;
+    color: #4b5563;
+}
+
+.item-return-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 14px;
+}
 @media (max-width: 600px) {
     .return-request-actions {
         justify-content: stretch;

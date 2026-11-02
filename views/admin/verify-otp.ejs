@@ -1,0 +1,244 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>BuildaPC Admin - Verify Security Code</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/admin/css/auth.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+  <div class="admin-auth-page">
+    <div class="admin-auth-card">
+
+      <div class="admin-auth-header">
+        <div class="admin-logo">BuildaPC</div>
+        <h1 class="admin-heading">Verify Security Code</h1>
+        <p class="admin-subtext">
+          Enter the 6-digit code sent to your admin email address.
+        </p>
+      </div>
+
+      <form id="otpform" class="admin-auth-form">
+
+        <div class="admin-form-group">
+          <label>Verification Code</label>
+
+          <div class="code-inputs">
+            <input type="text" maxlength="1" class="code-box">
+            <input type="text" maxlength="1" class="code-box">
+            <input type="text" maxlength="1" class="code-box">
+            <input type="text" maxlength="1" class="code-box">
+            <input type="text" maxlength="1" class="code-box">
+            <input type="text" maxlength="1" class="code-box">
+          </div>
+
+          <p id="otpMessage" class="otp-message <%= message ? 'error' : '' %>"><% if( message){ %>
+            <%=message %>
+            <% } %></p>
+        </div>
+
+        <button type="submit" id="verifyBtn" class="admin-btn-primary">
+          Verify
+        </button>
+      </form>
+
+      <div class="resend-wrapper">
+        <span id="timer-text">
+          Resend code in <strong><span id="timer">60</span>s</strong>
+        </span>
+
+        <a href="/admin/resend-otp" id="resend-Link" class="resend-link disabled">
+          Resend Code
+        </a>
+      </div>
+
+      <div class="admin-auth-footer">
+        Back to <a href="/admin/login">Login</a>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const timerText = document.getElementById("timer-text");
+  const resendLink = document.getElementById("resend-Link");
+  const otpMessage = document.getElementById("otpMessage");
+  const verifyBtn = document.getElementById("verifyBtn");
+  const inputs = document.querySelectorAll(".code-box");
+
+  let countdown;
+  let resendInProgress = false;
+
+  function startTimer(expiresAt) {
+    clearInterval(countdown);
+
+    const expiryTime = new Date(expiresAt).getTime();
+
+    resendLink.classList.add("disabled");
+
+    function updateTime() {
+      const timeLeft = Math.ceil((expiryTime - Date.now()) / 1000);
+
+      if (timeLeft <= 0) {
+        clearInterval(countdown);
+        timerText.textContent = "Didn't receive the code?";
+        resendLink.classList.remove("disabled");
+        return;
+      }
+
+      timerText.innerHTML =
+        `Resend code in <strong>${timeLeft}s</strong>`;
+    }
+
+    updateTime();
+    countdown = setInterval(updateTime, 1000);
+  }
+
+  startTimer("<%= expiresAt.toISOString() %>");
+
+  // OTP input navigation
+  inputs.forEach((input, index) => {
+
+    input.addEventListener("input", () => {
+      input.value = input.value.replace(/[^0-9]/g, "");
+
+      if (input.value && index < inputs.length - 1) {
+        inputs[index + 1].focus();
+      }
+    });
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Backspace" && !input.value && index > 0) {
+        inputs[index - 1].focus();
+      }
+    });
+
+    input.addEventListener("paste", (e) => {
+      e.preventDefault();
+
+      const pastedData = e.clipboardData
+        .getData("text")
+        .replace(/[^0-9]/g, "")
+        .slice(0, inputs.length);
+
+      pastedData.split("").forEach((digit, i) => {
+        inputs[i].value = digit;
+      });
+
+      const lastIndex = pastedData.length - 1;
+
+      if (lastIndex >= 0) {
+        inputs[lastIndex].focus();
+      }
+    });
+
+  });
+
+  // Verify OTP
+  document.getElementById("otpform").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const otp = Array.from(inputs)
+      .map(input => input.value.trim())
+      .join("");
+
+    if (!/^\d{6}$/.test(otp)) {
+      otpMessage.textContent = "Please enter the complete 6-digit code.";
+      return;
+    }
+
+    if (verifyBtn.disabled) return;
+
+    verifyBtn.disabled = true;
+    verifyBtn.textContent = "Verifying...";
+
+    try {
+      const response = await fetch("/admin/verify-otp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ otp })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        otpMessage.textContent = data.message || "OTP verification failed.";
+        otpMessage.className = 'error-text'
+        verifyBtn.disabled = false;
+        verifyBtn.textContent = "Verify";
+        return;
+      }
+
+      Swal.fire({
+        icon: "success",
+        title: "OTP Verified Successfully",
+        showConfirmButton: false,
+        timer: 1500
+      }).then(() => {
+        window.location.href = data.redirectUrl;
+      });
+
+    } catch (error) {
+      console.log(error);
+
+      otpMessage.textContent = "Something went wrong. Please try again.";
+      verifyBtn.disabled = false;
+      verifyBtn.textContent = "Verify";
+    }
+  });
+
+  // Resend OTP
+  resendLink.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    if (
+      resendLink.classList.contains("disabled") ||
+      resendInProgress
+    ) {
+      return;
+    }
+
+    resendInProgress = true;
+
+    try {
+      const response = await fetch("/admin/resend-otp", {
+        method: "POST"
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        otpMessage.textContent = data.message;
+        otpMessage.className = "success-text";
+        startTimer(data.expiresAt);
+      } else {
+        otpMessage.textContent = data.message;
+        otpMessage.className = 'error-text';
+      }
+
+    } catch (error) {
+      console.log(error);
+      otpMessage.textContent = "Unable to resend code. Please try again.";
+    } finally {
+      resendInProgress = false;
+    }
+  });
+
+});
+</script>
+</body>
+</html>
