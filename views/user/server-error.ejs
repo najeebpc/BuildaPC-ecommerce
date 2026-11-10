@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>500 - Server Error | BuildaPC</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+        background: #f8fafc;
+        color: #1e293b;
+      }
+
+      .error-container {
+        width: 100%;
+        max-width: 550px;
+        padding: 45px 30px;
+        text-align: center;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      }
+
+      .error-code {
+        margin-bottom: 15px;
+        font-size: 90px;
+        font-weight: 800;
+        color: #2563eb;
+      }
+
+      h1 {
+        margin-bottom: 15px;
+        font-size: 26px;
+      }
+
+      p {
+        margin-bottom: 25px;
+        color: #64748b;
+        font-size: 16px;
+        line-height: 1.6;
+      }
+
+      .home-btn {
+        display: inline-block;
+        padding: 12px 25px;
+        color: #ffffff;
+        background: #2563eb;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background 0.2s ease;
+      }
+
+      .home-btn:hover {
+        background: #1d4ed8;
+      }
+
+      @media (max-width: 480px) {
+        .error-code {
+          font-size: 70px;
+        }
+
+        h1 {
+          font-size: 22px;
+        }
+
+        p {
+          font-size: 14px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="error-container">
+      <div class="error-code">500</div>
+
+      <h1>Internal Server Error</h1>
+
+      <p>Oops! Something went wrong on our server. Please try again later.</p>
+
+      <a href="/" class="home-btn">Back to Home</a>
+    </div>
+  </body>
+</html>

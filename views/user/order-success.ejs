@@ -1,162 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Order Successful | BuildaPC</title>
-    <link rel="stylesheet" href="/user/css/home.css" >
-    <link  rel="stylesheet" href="/user/css/order-success.css" >
-</head>
+    <link rel="stylesheet" href="/user/css/home.css" />
+    <link rel="stylesheet" href="/user/css/order-success.css" />
+  </head>
 
-<body>
-    <!-- Header -->
+  <body>
     <%- include('../../views/partials/user/header.ejs') %>
     <main class="order-success-page">
-        <!-- =========================================
-             SUCCESS MESSAGE
-        ========================================== -->
-        <section class="success-header">
-            <div class="success-icon">
-                <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                >
-                    <polyline
-                        points="20 6 9 17 4 12"
-                    ></polyline>
-                </svg>
+      <section class="success-header">
+        <div class="success-icon">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <h1>Order Successfully Placed!</h1>
+        <p>
+          <% if(order.paymentMethod==='online'&&order.paymentStatus==='paid'){%> Your payment has
+          been verified and your order has been placed. <%} else if(order.paymentMethod==='cod'){%>
+          Your order has been placed successfully.Pay when your order is deliverd. <%} else{%> Your
+          order is confirmed and will be processed immediately. <%}%>
+        </p>
+      </section>
+
+      <div class="success-container">
+        <section class="success-card order-items-card">
+          <h2>Order Items</h2>
+          <div class="order-items">
+            <% order.items.forEach(item => { %>
+            <div class="success-order-item">
+              <div class="success-item-image">
+                <img src="<%= item.productImage %>" alt="<%= item.productName %>" />
+              </div>
+
+              <div class="success-item-details">
+                <h3>
+                  <%= item.productName %>
+                </h3>
+                <% if ( item.variantAttributes && item.variantAttributes.length > 0 ) { %> <%
+                item.variantAttributes.forEach( attribute => { %>
+                <p class="success-item-variant"><%= attribute.name %>: <%= attribute.value %></p>
+                <% }) %>
+                <% } %>
+                <p class="success-item-quantity">Qty: <%= item.quantity %></p>
+              </div>
+
+              <div class="success-item-price">
+                ₹<%= Number( item.price * item.quantity ).toLocaleString('en-IN') %>
+              </div>
             </div>
-            <h1>
-                Order Successfully Placed!
-            </h1>
-            <p>
-               <% if(order.paymentMethod==='online'&&order.paymentStatus==='paid'){%>
-                Your payment has been verified and your order has been placed.
-                <%} else if(order.paymentMethod==='cod'){%>
-                Your order has been placed successfully.Pay when your order is deliverd.
-                <%} else{%>
-                Your order is confirmed and will be processed immediately.
-                <%}%>
-            </p>
+            <% }) %>
+          </div>
         </section>
-        <!-- =========================================
-             ORDER CONTENT
-        ========================================== -->
-        <div class="success-container">
-            <!-- =====================================
-                 ORDER ITEMS
-            ====================================== -->
-            <section class="success-card order-items-card">
-                <h2>
-                    Order Items
-                </h2>
-                <div class="order-items">
-                    <% order.items.forEach(item => { %>
-                        <div class="success-order-item">
-                            <!-- Product Image -->
-                            <div class="success-item-image">
-                                <img
-                                    src="<%= item.productImage %>"
-                                    alt="<%= item.productName %>"
-                                >
-                            </div>
-                            <!-- Product Details -->
-                            <div class="success-item-details">
-                                <h3>
-                                    <%= item.productName %>
-                                </h3>
-                                <% if (
-                                    item.variantAttributes &&
-                                    item.variantAttributes.length > 0 ) { %>
-                                    <% item.variantAttributes.forEach(
-                                        attribute => {
-                                    %>
-                                        <p class="success-item-variant">
-                                            <%= attribute.name %>:
-                                            <%= attribute.value %>
-                                        </p>
-                                    <% }) %>
-                                <% } %>
-                                <p class="success-item-quantity">
-                                    Qty: <%= item.quantity %>
-                                </p>
-                            </div>
-                            <!-- Item Price -->
-                            <div class="success-item-price">
-                                ₹<%= Number( item.price * item.quantity ).toLocaleString('en-IN') %>
-                            </div>
-                        </div>
-                    <% }) %>
-                </div>
-            </section>
-            <!-- =====================================
-                 ORDER SUMMARY
-            ====================================== -->
-            <section class="success-card order-summary-card">
-                <h2>
-                    Order Summary
-                </h2>
-                <div class="success-summary-row">
-                    <span>
-                        Order ID
-                    </span>
-                    <strong>
-                        <%= order.orderId %>
-                    </strong>
-                </div>
-                <div class="success-summary-row">
-                    <span>
-                        Order Total
-                    </span>
-                    <strong class="success-total">
-                        ₹<%= Number(
-                            order.totalAmount
-                        ).toLocaleString('en-IN') %>
-                    </strong>
-                </div>
-                <div class="success-summary-row">
-                    <span>
-                        Payment Method
-                    </span>
-                    <strong>
-                        <%= order.paymentMethod === 'cod'
+
+        <section class="success-card order-summary-card">
+          <h2>Order Summary</h2>
+          <div class="success-summary-row">
+            <span> Order ID </span>
+            <strong>
+              <%= order.orderId %>
+            </strong>
+          </div>
+          <div class="success-summary-row">
+            <span> Order Total </span>
+            <strong class="success-total">
+              ₹<%= Number( order.totalAmount ).toLocaleString('en-IN') %>
+            </strong>
+          </div>
+          <div class="success-summary-row">
+            <span> Payment Method </span>
+            <strong>
+              <%= order.paymentMethod === 'cod'
                             ? 'Cash on Delivery'
                             :order.paymentMethod==='online'
                             ?'Online Payment'
                             :'Wallet Payment'
                             
                         %>
-                    </strong>
-                </div>
-            </section>
-            <!-- =====================================
-                 ACTION BUTTONS
-            ====================================== -->
-            <div class="success-actions">
-                <a
-                    href="/account/orders/<%= order.orderId %>"
-                    class="view-order-btn"
-                >
-                    View Order Details
-                </a>
-                <a
-                    href="/products"
-                    class="continue-shopping-btn"
-                >
-                    Continue Shopping
-                </a>
-            </div>
+            </strong>
+          </div>
+        </section>
+
+        <div class="success-actions">
+          <a href="/account/orders/<%= order.orderId %>" class="view-order-btn">
+            View Order Details
+          </a>
+          <a href="/products" class="continue-shopping-btn"> Continue Shopping </a>
         </div>
+      </div>
     </main>
-    <!-- Footer -->
+
     <%- include('../../views/partials/user/footer.ejs') %>
-</body>
+  </body>
 </html>

@@ -1,20 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Pre-built PCs | BuildaPC</title>
 
     <!-- Your existing home.css -->
-    <link rel="stylesheet" href="/user/css/home.css">
+    <link rel="stylesheet" href="/user/css/home.css" />
 
     <!-- Product listing page CSS -->
-    <link rel="stylesheet" href="/user/css/products.css">
-</head>
+    <link rel="stylesheet" href="/user/css/products.css" />
+  </head>
 
-<body>
+  <body>
     <!-- =========================
          USER NAVBAR
     ========================== -->
@@ -23,361 +22,187 @@
          PRODUCT LISTING PAGE
     ========================== -->
     <main class="products-page">
-        <div class="products-container">
-            <!-- Page title -->
-            <h1 class="products-page-title">
-                Pre-built PCs
-            </h1>
-            <div class="products-layout">
-                <!-- =========================
+      <div class="products-container">
+        <!-- Page title -->
+        <h1 class="products-page-title">Pre-built PCs</h1>
+        <div class="products-layout">
+          <!-- =========================
                      FILTER SIDEBAR
                 ========================== -->
-                <aside class="product-filters">
-                    <div class="filter-header">
-                        <h2>Filters</h2>
-                    </div>
-                    <!-- Price -->
-                    <div class="filter-section price-filter-section">
-                        <h3>Price Range</h3>
-                        <div class="price-inputs">
-                            <div class="price-input-group">
-                                <label for="minPrice">
-                                    Min
-                                </label>
-                                <input
-                                    type="number"
-                                    id="minPrice"
-                                    name="minPrice"
-                                    placeholder="₹0"
-                                    value="<%= minPrice || '' %>"
-                                    min="0"
-                                >
-                            </div>
-                            <div class="price-input-group">
-                                <label for="maxPrice">
-                                    Max
-                                </label>
-                                <input
-                                    type="number"
-                                    id="maxPrice"
-                                    name="maxPrice"
-                                    placeholder="₹1,00,000"
-                                    value="<%= maxPrice || '' %>"
-                                    min="0" >
-                            </div>
-                        </div>
-                        <button
-                            type="button"
-                            class="apply-filter-btn"
-                        >
-                            Apply Filter
-                        </button>
-                    </div>
-                </aside>
-                <!-- =========================
+          <aside class="product-filters">
+            <div class="filter-header">
+              <h2>Filters</h2>
+            </div>
+            <!-- Price -->
+            <div class="filter-section price-filter-section">
+              <h3>Price Range</h3>
+              <div class="price-inputs">
+                <div class="price-input-group">
+                  <label for="minPrice"> Min </label>
+                  <input
+                    type="number"
+                    id="minPrice"
+                    name="minPrice"
+                    placeholder="₹0"
+                    value="<%= minPrice || '' %>"
+                    min="0"
+                  />
+                </div>
+                <div class="price-input-group">
+                  <label for="maxPrice"> Max </label>
+                  <input
+                    type="number"
+                    id="maxPrice"
+                    name="maxPrice"
+                    placeholder="₹1,00,000"
+                    value="<%= maxPrice || '' %>"
+                    min="0"
+                  />
+                </div>
+              </div>
+              <button type="button" class="apply-filter-btn">Apply Filter</button>
+            </div>
+          </aside>
+          <!-- =========================
                      PRODUCT CONTENT
                 ========================== -->
-                <section class="products-content">
-                    <!-- =========================
+          <section class="products-content">
+            <!-- =========================
                          TOP BAR
                     ========================== -->
-                    <div class="products-toolbar">
-                        <div class="product-result-count">
+            <div class="products-toolbar">
+              <div class="product-result-count">
+                <% const startProduct = totalProducts > 0 ? ((currentPage - 1) * 6) + 1 : 0; const
+                endProduct = Math.min( currentPage * 6, totalProducts ); %>
+                <span>
+                  Showing
+                  <%= startProduct %>-<%= endProduct %>
+                  of
+                  <%= totalProducts %>
+                  products
+                </span>
+              </div>
+              <!-- Sort -->
+              <div class="product-sort">
+                <label for="sortProducts"> Sort by: </label>
 
-                            <% 
-                                const startProduct =
-                                    totalProducts > 0
-                                        ? ((currentPage - 1) * 6) + 1
-                                        : 0;
+                <select id="sortProducts" name="sort">
+                  <% if (sort === 'price_asc') { %>
+                  <option value="price_asc" selected>Price: Low to High</option>
+                  <% } else { %>
+                  <option value="price_asc">Price: Low to High</option>
+                  <% } %>
 
-                                const endProduct =
-                                    Math.min(
-                                        currentPage * 6,
-                                        totalProducts
-                                    );
-                            %>
-                            <span>
-                                Showing
-                                <%= startProduct %>-<%= endProduct %>
-                                of
-                                <%= totalProducts %>
-                                products
-                            </span>
-                        </div>
-                        <!-- Sort -->
-                        <div class="product-sort">
+                  <% if (sort === 'price_desc') { %>
+                  <option value="price_desc" selected>Price: High to Low</option>
+                  <% } else { %>
+                  <option value="price_desc">Price: High to Low</option>
+                  <% } %>
 
-                            <label for="sortProducts">
-                                Sort by:
-                            </label>
+                  <% if (sort === 'name_asc') { %>
+                  <option value="name_asc" selected>A-Z</option>
+                  <% } else { %>
+                  <option value="name_asc">A-Z</option>
+                  <% } %>
 
-                            <select
-                                id="sortProducts"
-                                name="sort">
-                                <option
-                                    value="price_asc"
-                                    <%= sort === 'price_asc' ? 'selected' : '' %>
-                                >
-                                    Price: Low to High
-                                </option>
-                                <option
-                                    value="price_desc"
-                                    <%= sort === 'price_desc' ? 'selected' : '' %>
-                                >
-                                    Price: High to Low
-                                </option>
-                                <option
-                                    value="name_asc"
-                                    <%= sort === 'name_asc' ? 'selected' : '' %>
-                                >
-                                    A-Z
-                                </option>
-                                <option
-                                    value="name_desc"
-                                    <%= sort === 'name_desc' ? 'selected' : '' %>
-                                >
-                                    Z-A
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                    <!-- =========================
-                         ACTIVE SEARCH
-                    ========================== -->
-                    <% if (search) { %>
-                        <div class="active-search">
-                            <span>
-                                Search results for:
-                                <strong>"<%= search %>"</strong>
-                            </span>
-                            <a
-                                href="/products"
-                                class="clear-search"
-                            >
-                                Cancel
-                            </a>
-                        </div>
-                    <% } %>
-                    <!-- =========================
-                         PRODUCT GRID
-                    ========================== -->
-                    <div class="products-grid">
-                        <% if (products && products.length > 0) { %>
-                            <% products.forEach(product => { %>
-                                <article class="product-card">
-                                    <!-- Product Image -->
-                                    <a
-                                        href="/product/<%= product._id %>"
-                                        class="product-image-link"
-                                    >
-                                        <div class="product-image-container">
-                                            <img
-                                                src="<%= product.primaryImage %>"
-                                                alt="<%= product.name %>"
-                                                class="product-image"
-                                            >
-                                        </div>
-                                    </a>
-                                    <!-- Product Information -->
-                                    <div class="product-card-body">
-                                        <a
-                                            href="/product/<%= product._id %>"
-                                            class="product-name-link">
-                                            <h2 class="product-name">
-                                                <%= product.name %>
-                                            </h2>
-                                        </a>
-                                        <p class="product-price">
-                                            ₹<%= Number(product.basePrice).toLocaleString('en-IN') %>
-                                        </p>
-                                        <!-- Product Actions -->
-                                        <div class="product-card-actions">
-                                            <button
-                                                type="button"
-                                                class="add-cart-btn"
-                                                data-product-id="<%= product._id %>">
-                                                <span class="cart-icon">
-                                                    🛒
-                                                </span>
-                                                <span>
-                                                    Add to Cart
-                                                </span>
-                                            </button>
-                                            <button
-                                                type="button"
-                                                class="wishlist-btn <%if(product.isInWishlist){%> checked<%}%>"
-                                                class="wishlist-btn"
-                                                data-product-id="<%= product._id %>"
-                                                aria-label="Add to wishlist"
-                                            >
-                                                <span class="wishlist-icon">
-                                                    <%= product.isInWishlist ? '♥' : '♡' %>
-                                                </span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </article>
-                            <% }) %>
-                        <% } else { %>
-                            <!-- No products -->
-                            <div class="no-products">
-                                <h2>
-                                    No products found
-                                </h2>
-                                <p>
-                                    Try changing your search or filters.
-                                </p>
-
-                                <a
-                                    href="/products"
-                                    class="clear-products-btn"
-                                >
-                                    Clear Filters
-                                </a>
-                            </div>
-                        <% } %>
-                    </div>
-                    <!-- =========================
-                         PAGINATION
-                    ========================= -->
-                    <% if (totalPages >1) { %>
-                        <nav
-                            class="product-pagination"
-                            aria-label="Product pagination"
-                        >
-                            <% if (currentPage > 1) { %>
-                                <a
-                                    href="/products?page=<%= currentPage - 1 %>"
-                                    class="pagination-btn"
-                                >
-                                    Previous
-                                </a>
-                            <% } else { %>
-                                <span class="pagination-btn disabled">
-                                    Previous
-                                </span>
-                            <% } %>
-                            <% for (let i = 1; i <= totalPages; i++) { %>
-                                <a
-                                    href="/products?page=<%= i %>"
-                                    class="pagination-number <%= currentPage === i ? 'active' : '' %>"
-                                >
-                                    <%= i %>
-                                </a>
-                            <% } %>
-                            <% if (currentPage < totalPages) { %>
-                                <a
-                                    href="/products?page=<%= currentPage + 1 %>"
-                                    class="pagination-btn"
-                                >
-                                    Next
-                                </a>
-                            <% } else { %>
-                                <span class="pagination-btn disabled">
-                                    Next
-                                </span>
-                            <% } %>
-                        </nav>
-                    <% } %>
-                </section>
+                  <% if (sort === 'name_desc') { %>
+                  <option value="name_desc" selected>Z-A</option>
+                  <% } else { %>
+                  <option value="name_desc">Z-A</option>
+                  <% } %>
+                </select>
+              </div>
             </div>
+
+            <% if (search) { %>
+            <div class="active-search">
+              <span>
+                Search results for:
+                <strong>"<%= search %>"</strong>
+              </span>
+              <a href="/products" class="clear-search"> Cancel </a>
+            </div>
+            <% } %>
+
+            <div class="products-grid">
+              <% if (products && products.length > 0) { %> <% products.forEach(product => { %>
+              <article class="product-card">
+                <!-- Product Image -->
+                <a href="/product/<%= product._id %>" class="product-image-link">
+                  <div class="product-image-container">
+                    <img
+                      src="<%= product.primaryImage %>"
+                      alt="<%= product.name %>"
+                      class="product-image"
+                    />
+                  </div>
+                </a>
+                <!-- Product Information -->
+                <div class="product-card-body">
+                  <a href="/product/<%= product._id %>" class="product-name-link">
+                    <h2 class="product-name"><%= product.name %></h2>
+                  </a>
+                  <p class="product-price">
+                    ₹<%= Number(product.basePrice).toLocaleString('en-IN') %>
+                  </p>
+                  <!-- Product Actions -->
+                  <div class="product-card-actions">
+                    <button type="button" class="add-cart-btn" data-product-id="<%= product._id %>">
+                      <span class="cart-icon"> 🛒 </span>
+                      <span> Add to Cart </span>
+                    </button>
+                    <button
+                      type="button"
+                      class="wishlist-btn <%if(product.isInWishlist){%> checked<%}%>"
+                      class="wishlist-btn"
+                      data-product-id="<%= product._id %>"
+                      aria-label="Add to wishlist"
+                    >
+                      <span class="wishlist-icon"> <%= product.isInWishlist ? '♥' : '♡' %> </span>
+                    </button>
+                  </div>
+                </div>
+              </article>
+              <% }) %>
+              <% } else { %>
+              <!-- No products -->
+              <div class="no-products">
+                <h2>No products found</h2>
+                <p>Try changing your search or filters.</p>
+
+                <a href="/products" class="clear-products-btn"> Clear Filters </a>
+              </div>
+              <% } %>
+            </div>
+
+            <% if (totalPages >1) { %>
+            <nav class="product-pagination" aria-label="Product pagination">
+              <% if (currentPage > 1) { %>
+              <a href="/products?page=<%= currentPage - 1 %>" class="pagination-btn"> Previous </a>
+              <% } else { %>
+              <span class="pagination-btn disabled"> Previous </span>
+              <% } %>
+              <% for (let i = 1; i <= totalPages; i++) { %>
+              <a
+                href="/products?page=<%= i %>"
+                class="pagination-number <%= currentPage === i ? 'active' : '' %>"
+              >
+                <%= i %>
+              </a>
+              <% } %>
+              <% if (currentPage < totalPages) { %>
+              <a href="/products?page=<%= currentPage + 1 %>" class="pagination-btn"> Next </a>
+              <% } else { %>
+              <span class="pagination-btn disabled"> Next </span>
+              <% } %>
+            </nav>
+            <% } %>
+          </section>
         </div>
+      </div>
     </main>
     <%-include("../../views/partials/user/footer.ejs")%>
 
-<script>
-        const applyFilterBtn = document.querySelector('.apply-filter-btn')
-        applyFilterBtn.addEventListener('click',function(){
-        const selectedCategories = document.querySelectorAll('input[name="category"]:checked');
-        const minPrice = document.getElementById('minPrice').value;
-        const maxPrice = document.getElementById('maxPrice').value;
-        console.log('category', selectedCategories);
-        console.log('minPrice', minPrice);
-        console.log('maxPrice', maxPrice);
-        const params = new URLSearchParams();
-        selectedCategories.forEach(category=>{
-            params.append('category',category.value);
-        })
-        if(minPrice){
-            params.set('minPrice',minPrice);
-        }
-        if(maxPrice){
-            params.set('maxPrice',maxPrice);
-        }
-        window.location.href = `/products/preBuilt?${params.toString()}`;
-    })
-    
-    const sortProduct = document.getElementById('sortProducts');
-    sortProduct.addEventListener('change',function(){
-        const params = new URLSearchParams(window.location.search);
-        params.set('sort',this.value);
-        window.location.href= `/products/preBuilt?${params.toString()}`;
-    });
-    document.querySelectorAll('.add-cart-btn').forEach(button=>{
-        button.addEventListener('click',async function(){
-            const productId = this.dataset.productId;
-        try{
-            const response = await fetch('/cart',{
-                method:'POST',
-                headers:{'Content-Type':'application/json','Accept':'application/json'},
-                body:JSON.stringify({productId:productId,quantity:1})
-            });
-            const result = await response.json();
-            if(!response.ok||!result.success){
-                showToastMessage(result.message,'error');
-                if(result.redirect){
-                    setTimeout(()=>{
-                        window.location.href=result.redirect;
-                    },1500);
-                }
-                return;
-            }
-            showToastMessage(result.message,'success');
-            await removeProductFromWishlist(productId);
-        }catch(error){
-            showToastMessage(error.message,'error');
-        }
-        })
-    });
-    const removeProductFromWishlist = async (productId)=>{
-        try{
-            await fetch(`/account/wishlist/remove-if-exists/${productId}`,{
-                method:'DELETE',
-                headers:{'Accept':'application/json'}
-            })
-        }catch(error){
-            console.log('wishlist delete error',error)
-        }
-    }
-    document.querySelectorAll('.wishlist-btn').forEach(button=>{
-        button.addEventListener('click',async function(){
-            const productId = this.dataset.productId;
-        try{
-            const response = await fetch('/account/wishlist',{
-                method:'POST',
-                headers:{'Content-type':'application/json','Accept':'application/json'},
-                body:JSON.stringify({productId:productId})
-            })
-            const result = await response.json();
-            if(!response.ok||!result.success){
-                showToastMessage(result.message,'error');
-                if(result.redirect){
-                    setTimeout(()=>{
-                        window.location.href=result.redirect;
-                    },1500);
-                }
-                return;
-            }
-            showToastMessage(result.message,'success');
-            this.classList.add('checked');
-            const icon= this.querySelector('.wishlist-icon');
-            if(icon){icon.textContent='♥'}
-        }catch(error){
-            showToastMessage(error.message,'error');
-        }
-        })
-    });
-</script>
-</body>
-
+    <script src="/user/js/prebuilt.js"></script>
+  </body>
 </html>

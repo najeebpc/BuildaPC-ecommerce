@@ -1,217 +1,199 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Refer a Friend</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
 
-    <link rel="stylesheet" href="/user/css/home.css">
-    <link rel="stylesheet" href="/user/css/accounts.css">
-    <link rel="stylesheet" href="/user/css/referral.css">
-</head>
+    <link rel="stylesheet" href="/user/css/home.css" />
+    <link rel="stylesheet" href="/user/css/accounts.css" />
+    <link rel="stylesheet" href="/user/css/referral.css" />
+  </head>
 
-<body>
+  <body>
     <%- include('../../views/partials/user/header.ejs') %>
 
     <main class="account-page">
-        <div class="account-layout">
+      <div class="account-layout">
+        <%- include( '../../views/partials/user/accounts-sidebar.ejs', { active: 'referral' } ) %>
 
-            <%- include(
-                '../../views/partials/user/accounts-sidebar.ejs',
-                { active: 'referral' }
-            ) %>
+        <section class="account-content">
+          <div class="referral-page-header">
+            <h2 class="account-page-title">Refer a Friend</h2>
+            <p>Invite your friends to BuildaPC and earn wallet rewards together.</p>
+          </div>
 
-            <section class="account-content">
-                <div class="referral-page-header">
-                    <h2 class="account-page-title">Refer a Friend</h2>
-                    <p>Invite your friends to BuildaPC and earn wallet rewards together.</p>
-                </div>
+          <div class="referral-reward-cards">
+            <div class="referral-reward-card">
+              <span class="referral-reward-icon">₹</span>
+              <h3>₹500</h3>
+              <p>Your reward</p>
+            </div>
 
-                <div class="referral-reward-cards">
-                    <div class="referral-reward-card">
-                        <span class="referral-reward-icon">₹</span>
-                        <h3>₹500</h3>
-                        <p>Your reward</p>
-                    </div>
+            <div class="referral-reward-card">
+              <span class="referral-reward-icon">₹</span>
+              <h3>₹500</h3>
+              <p>Your friend's reward</p>
+            </div>
+          </div>
 
-                    <div class="referral-reward-card">
-                        <span class="referral-reward-icon">₹</span>
-                        <h3>₹500</h3>
-                        <p>Your friend's reward</p>
-                    </div>
-                </div>
+          <div class="referral-info">
+            <strong>How it works</strong>
+            <p>
+              Share your referral code with a friend. When your friend places their first qualifying
+              order and it is delivered, both of you receive ₹500 in your wallets.
+            </p>
+          </div>
 
-                <div class="referral-info">
-                    <strong>How it works</strong>
-                    <p>Share your referral code with a friend. When your friend places their first qualifying order and it is delivered, both of you receive ₹500 in your wallets.</p>
-                </div>
+          <div class="referral-share-card">
+            <div class="referral-field">
+              <label for="referralCode">Your referral code</label>
 
-                <div class="referral-share-card">
-                    <div class="referral-field">
-                        <label for="referralCode">Your referral code</label>
+              <div class="referral-input-group">
+                <input type="text" id="referralCode" value="<%= referralCode %>" readonly />
+                <button type="button" onclick="copyReferral('referralCode', this)">
+                  Copy code
+                </button>
+              </div>
+            </div>
 
-                        <div class="referral-input-group">
-                            <input
-                                type="text"
-                                id="referralCode"
-                                value="<%= referralCode %>"
-                                readonly
-                            >
-                            <button type="button" onclick="copyReferral('referralCode', this)">
-                                Copy code
-                            </button>
-                        </div>
-                    </div>
+            <div class="referral-field">
+              <label for="referralLink">Your referral link</label>
 
-                    <div class="referral-field">
-                        <label for="referralLink">Your referral link</label>
+              <div class="referral-input-group">
+                <input type="text" id="referralLink" value="<%= referralLink %>" readonly />
+                <button type="button" onclick="copyReferral('referralLink', this)">
+                  Copy link
+                </button>
+              </div>
+            </div>
 
-                        <div class="referral-input-group">
-                            <input
-                                type="text"
-                                id="referralLink"
-                                value="<%= referralLink %>"
-                                readonly
-                            >
-                            <button type="button" onclick="copyReferral('referralLink', this)">
-                                Copy link
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="referral-sharing">
-                    <span class="referral-sharing-title">Share with friends</span>
+            <div class="referral-sharing">
+              <span class="referral-sharing-title">Share with friends</span>
 
-                    <div class="referral-sharing-options">
-                    <button
-                        type="button"
-                        class="share-option share-whatsapp"
-                        onclick="shareReferral('whatsapp')">
-                        <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
-                    </button>
-                    
-                    <button
-                        type="button"
-                        class="share-option share-telegram"
-                        onclick="shareReferral('telegram')">
-                        <i class="fa-brands fa-telegram" aria-hidden="true"></i>
-                    </button>
+              <div class="referral-sharing-options">
+                <button
+                  type="button"
+                  class="share-option share-whatsapp"
+                  onclick="shareReferral('whatsapp')"
+                >
+                  <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                </button>
 
-                    <!-- <button
-                        type="button"
-                        class="share-option share-email"
-                        onclick="shareReferral('email')">
-                        Email
-                    </button>
+                <button
+                  type="button"
+                  class="share-option share-telegram"
+                  onclick="shareReferral('telegram')"
+                >
+                  <i class="fa-brands fa-telegram" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+          </div>
 
-                    <button
-                        type="button"
-                        class="share-option share-native"
-                        id="nativeShareButton"
-                        onclick="shareReferral('native')">
-                        More options
-                    </button> -->
-                    </div>
-                </div>
+          <div class="referral-stats">
+            <div class="referral-stat-card">
+              <span>Total referrals</span>
+              <h3><%= totalReferrals %></h3>
+            </div>
 
-                </div>
+            <div class="referral-stat-card">
+              <span>Successful referrals</span>
+              <h3><%= rewardedReferrals ||0%></h3>
+            </div>
+          </div>
 
-                <div class="referral-stats">
-                    <div class="referral-stat-card">
-                        <span>Total referrals</span>
-                        <h3><%= totalReferrals %></h3>
-                    </div>
+          <div class="referral-history-section">
+            <h3>Your referrals</h3>
 
-                    <div class="referral-stat-card">
-                        <span>Successful referrals</span>
-                        <h3><%= rewardedReferrals ||0%></h3>
-                    </div>
-                </div>
-
-                <div class="referral-history-section">
-                    <h3>Your referrals</h3>
-
-                    <% if (referrals && referrals.length > 0) { %>
-                        <div class="referral-history-list">
-                            <% referrals.forEach(referral => { %>
-                                <div class="referral-history-item">
-                                    <div class="referral-user-info">
-                                        <strong>
-                                            <%= referral.referredUserId
+            <% if (referrals && referrals.length > 0) { %>
+            <div class="referral-history-list">
+              <% referrals.forEach(referral => { %>
+              <div class="referral-history-item">
+                <div class="referral-user-info">
+                  <strong>
+                    <%= referral.referredUserId
                                                 ? referral.referredUserId.name
                                                 : 'User' %>
-                                        </strong>
+                  </strong>
 
-                                        <span>
-                                            Joined <%= new Date(referral.createdAt)
+                  <span>
+                    Joined
+                    <%= new Date(referral.createdAt)
                                                 .toLocaleDateString('en-IN') %>
-                                        </span>
-                                    </div>
-
-                                    <span class="referral-status <%= referral.status %>">
-                                        <%= referral.status %>
-                                    </span>
-                                </div>
-                            <% }) %>
-                        </div>
-                    <% } else { %>
-                        <div class="referral-empty-state">
-                            <h3>No referrals yet</h3>
-                            <p>Share your referral link with friends to get started.</p>
-                        </div>
-                    <% } %>
+                  </span>
                 </div>
-            </section>
-        </div>
+
+                <span class="referral-status <%= referral.status %>"> <%= referral.status %> </span>
+              </div>
+              <% }) %>
+            </div>
+            <% } else { %>
+            <div class="referral-empty-state">
+              <h3>No referrals yet</h3>
+              <p>Share your referral link with friends to get started.</p>
+            </div>
+            <% } %>
+          </div>
+        </section>
+      </div>
     </main>
 
     <%- include('../../views/partials/user/footer.ejs') %>
     <script>
-        async function copyReferral(inputId, button) {
-            const input = document.getElementById(inputId);
-            const originalText = button.textContent;
+      async function copyReferral(inputId, button) {
+        const input = document.getElementById(inputId);
+        const originalText = button.textContent;
 
-            try {
-                await navigator.clipboard.writeText(input.value);
-                button.textContent = 'Copied!';
-            } catch (error) {
-                input.select();
-                input.setSelectionRange(0, input.value.length);
+        try {
+          await navigator.clipboard.writeText(input.value);
+          button.textContent = 'Copied!';
+        } catch (error) {
+          input.select();
+          input.setSelectionRange(0, input.value.length);
 
-                const copied = document.execCommand('copy');
-                button.textContent = copied ? 'Copied!' : 'Copy failed';
-            }
-
-            setTimeout(() => {
-                button.textContent = originalText;
-            }, 1500);
+          const copied = document.execCommand('copy');
+          button.textContent = copied ? 'Copied!' : 'Copy failed';
         }
-        async function shareReferral(method) {
-            const link = document.getElementById('referralLink').value;
-            const message = `Join me on BuildaPC! Sign up using my referral link: ${link}.`+
-                            `When your first qualifying order is delivered, we both receive ₹500 in out wallet!`;
-            const encodedMessage = encodeURIComponent(message);
-            const encodeLink = encodeURIComponent(link);
-            switch(method){
-                case 'whatsapp':
-                    window.open(`https://wa.me/?text=${encodedMessage}`,
-                                '_blank','noopener,noreferrer'
-                    );
-                    break;
-                case 'telegram': 
-                    window.open(`https://t.me/share/url?url=${encodeLink}&text=${encodeURIComponent(
-                        'Join me on BuildaPC and get 500 in wallet rewards!'
-                    )}`,'_blank','noopener,noreferrer');
-                    break;
-            }
+
+        setTimeout(() => {
+          button.textContent = originalText;
+        }, 1500);
+      }
+      async function shareReferral(method) {
+        const link = document.getElementById('referralLink').value;
+        const message =
+          `Join me on BuildaPC! Sign up using my referral link: ${link}.` +
+          `When your first qualifying order is delivered, we both receive ₹500 in out wallet!`;
+        const encodedMessage = encodeURIComponent(message);
+        const encodeLink = encodeURIComponent(link);
+        switch (method) {
+          case 'whatsapp':
+            window.open(`https://wa.me/?text=${encodedMessage}`, '_blank', 'noopener,noreferrer');
+            break;
+          case 'telegram':
+            window.open(
+              `https://t.me/share/url?url=${encodeLink}&text=${encodeURIComponent(
+                'Join me on BuildaPC and get 500 in wallet rewards!',
+              )}`,
+              '_blank',
+              'noopener,noreferrer',
+            );
+            break;
         }
+      }
     </script>
-</body>
+  </body>
 </html>

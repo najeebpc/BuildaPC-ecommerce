@@ -1,193 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>BuildaPC - Verify Security Code</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <title>BuildaPC - Verify Security Code</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Inter font -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
 
-  <!-- Common auth styles -->
-  <!-- For testing from views/user with Live Server -->
-  <link rel="stylesheet" href="user/css/auth.css">
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-</head>
-<body>
-  <div class="auth-page">
-    <div class="auth-card">
-
-      <!-- Header -->
-      <div class="auth-header">
-        <div class="auth-logo">BuildaPC</div>
-        <h1 class="auth-title">Verify Security Code</h1>
-        <p class="auth-subtext">
-          Please enter the 6-digit code sent to your email address.
-        </p>
-      </div>
-
-      <!-- Form -->
-      <form  id="otpform"    class="auth-form">
-        <div class="form-group">
-          <label>Verification Code</label>
-
-          <div class="code-inputs">
-            <input type="text" maxlength="1" class="code-box">
-            <input type="text" maxlength="1" class="code-box">
-            <input type="text" maxlength="1" class="code-box">
-            <input type="text" maxlength="1" class="code-box">
-            <input type="text" maxlength="1" class="code-box">
-            <input type="text" maxlength="1" class="code-box">
-          </div>
-          <p id="otpMessage" class="otp-message"></p>
-
+    <link rel="stylesheet" href="user/css/auth.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+  <body>
+    <div class="auth-page">
+      <div class="auth-card">
+        <div class="auth-header">
+          <div class="auth-logo">BuildaPC</div>
+          <h1 class="auth-title">Verify Security Code</h1>
+          <p class="auth-subtext">Please enter the 6-digit code sent to your email address.</p>
         </div>
 
-        <button type="button" onclick="return validateOtpForm()"  class="btn-primary">Verify</button>
-      </form>
+        <form id="otpform" class="auth-form">
+          <div class="form-group">
+            <label>Verification Code</label>
 
-      <!-- Resend link -->
-      <div class="resend-wrapper">
-        <span id="timer-text">
-         Resend code in <strong><span id="timer">60</span>s</strong>
-        </span>
-        <a href="#" id="resend-Link" class="resend-link disabled">Resend Code</a>
+            <div class="code-inputs">
+              <input type="text" maxlength="1" class="code-box" />
+              <input type="text" maxlength="1" class="code-box" />
+              <input type="text" maxlength="1" class="code-box" />
+              <input type="text" maxlength="1" class="code-box" />
+              <input type="text" maxlength="1" class="code-box" />
+              <input type="text" maxlength="1" class="code-box" />
+            </div>
+            <p id="otpMessage" class="otp-message"></p>
+          </div>
+
+          <button type="button" onclick="return validateOtpForm();" class="btn-primary">
+            Verify
+          </button>
+        </form>
+
+        <div class="resend-wrapper">
+          <span id="timer-text">
+            Resend code in <strong><span id="timer">60</span>s</strong>
+          </span>
+          <a href="#" id="resend-Link" class="resend-link disabled">Resend Code</a>
+        </div>
       </div>
-
     </div>
-  </div>
-</body>
-<script>
- 
-  document.addEventListener("DOMContentLoaded", () => {
-     
-  const timer = document.getElementById("timer");
-  const resendLink = document.getElementById("resend-Link");
-  const timerText = document.getElementById("timer-text");
-  const otpMessage = document.getElementById("otpMessage");
-
-  let countdown;
-  function startTimer(expiresAt){
-    clearInterval(countdown);
-    const expiryTime = new Date(expiresAt).getTime();
-    resendLink.classList.add('disabled');
-    function updateTime(){
-      const timeLeft = Math.ceil((expiryTime-Date.now())/1000)
-      if(timeLeft<=0){
-        clearInterval(countdown);
-        timerText.textContent= "Didn't receive the code?";
-        resendLink.classList.remove("disabled");
-
-        return;
-      }
-      timerText.innerHTML=`Resend code in <strong><span id="timer">${timeLeft}</span>s</strong>`;
-
-    }
-    updateTime();
-    countdown = setInterval(updateTime,1000);
-  }
-  startTimer("<%= expiresAt.toISOString()%>");
-
-  resendLink.addEventListener("click",(e)=>{
-    e.preventDefault();
-
-    fetch('/resend-otp',{method:'POST'})
-    .then(res=>res.json())
-    .then(data=>{
-      if(data.success){
-        otpMessage.innerText= data.message;
-        otpMessage.className = "otp-message success"
-
-        startTimer(data.expiresAt);
-
-      }else{
-        otpMessage.innerText = data.message;
-        otpMessage.className = "otp-message error"
-      }
-    })
-  })
-  const inputs = document.querySelectorAll(".code-box");
-
-    inputs.forEach((input, index) => {
-      input.addEventListener("input", () => {
-        input.value = input.value.replace(/[^0-9]/g, "");
-
-        if (input.value.length === 1 && index < inputs.length - 1) {
-          inputs[index + 1].focus();
-        }
-      });
-
-      input.addEventListener("keydown", (e) => {
-        if (e.key === "Backspace" && input.value === "" && index > 0) {
-          inputs[index - 1].focus();
-        }
-      });
-
-      input.addEventListener('paste',(e)=>{
-        e.preventDefault();
-        const pastedData = e.clipboardData.getData('text').replace(/[^0-9]/g, "");
-        if(!pastedData){
-          return;
-        }
-        pastedData.slice(0,inputs.length).split('').forEach((digit,i)=>{
-          inputs[i].value = digit;
-
-        });
-        const lastIndex = Math.min(pastedData.length,inputs.length)-1;
-        if(lastIndex>=0){
-          inputs[lastIndex].focus();
-        }
-      })
-    });
-
-  });
-  function validateOtpForm(){
-      const boxes = document.querySelectorAll(".code-box");
-    
-    let otpInput = "";
-    boxes.forEach(box => {
-      otpInput += box.value.trim();
-    });
-    $.ajax({
-      type:"POST",
-      url:"/verify-otp",
-      contentType: "application/json; charset=utf-8",
-      dataType: "json",
-      data:JSON.stringify({otp:otpInput}),
-      success:function(response){
-        if(response.success){
-          Swal.fire({
-            icon:"success",
-            title:"OTP Verified Successfully",
-            showConfirmButton:false,
-            timer:1500,
-          }).then(()=>{
-            window.location.href= response.redirectUrl;
-          })
-        }else{
-          Swal.fire({
-            icon:"error",
-            title:"",
-            text:response.message,
-          })
-        }
-      },
-      error:function(xhr){
-        console.log('status:',xhr.status);
-        console.log('response:',xhr.responseText);
-        const message = xhr.responseJSON?.message||'Somthing went wrong';
-        Swal.fire({
-          icon:"error",
-          title:"",
-          text:message
-        })
-      }
-    })
-    return false
-  }
-</script>
+    <div id="timer-container" data-expires-at="<%=expiresAt.toISOString()%>"></div>
+  </body>
+  <script src="/user/js/verify-otp.js"></script>
 </html>

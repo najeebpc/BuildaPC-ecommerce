@@ -1,297 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>BuildaPC - Sign Up</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <title>BuildaPC - Sign Up</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Google Font: Inter -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
 
-  <!-- Common Auth CSS -->
-  <link rel="stylesheet" href="/user/css/auth.css">
-</head>
-<body>
-
-  <div class="auth-page">
-    <div class="auth-card">
-
-      <!-- CENTERED HEADER -->
-      <div class="auth-header">
-        <div class="auth-logo">BuildaPC</div>
-        <h1 class="auth-title">Create an Account</h1>
-        <p class="auth-subtext">Join us and start building your dream PC</p>
-      </div>
-
-      <!-- SIGNUP FORM -->
-      <form class="auth-form" id="signform" action="/signup" method="POST">
-        <div class="form-group">
-          <label for="name">Name</label>
-          <input
-           
-            id="name"
-            name="name"
-            placeholder="Enter your name"
-            value="<%= formData.name ||'' %>"
-          />
-          <p class="error-text" id="nameError"><% if(message&&field==='name'){ %>
-            <%=message %>
-            <% } %>
-            </p>
+    <link rel="stylesheet" href="/user/css/auth.css" />
+  </head>
+  <body>
+    <div class="auth-page">
+      <div class="auth-card">
+        <div class="auth-header">
+          <div class="auth-logo">BuildaPC</div>
+          <h1 class="auth-title">Create an Account</h1>
+          <p class="auth-subtext">Join us and start building your dream PC</p>
         </div>
 
-        <!-- Email -->
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input
-            
-            id="email"
-            name="email"
-            placeholder="Enter your email"
-            value="<%= formData.email || '' %>"
-          />
-          <p class="error-text" id="mailerror"><% if(message&&field==='email'){ %>
-            <%=message %>
-            <% } %>
-            </p>
-        </div>
-
-        <!-- Password -->
-        <div class="form-group">
-          <label for="password">Password</label>
-          <div class="password-input-wrapper">
-          <input
-            type="password"
-            id="password"
-            name="password"
-            placeholder="Enter your password"/>
-            <button type="button" class="password-toggle" title="show" onclick="togglePassword('password', this)">
-            👁 
-          </button>
-        </div>
-        <p class="error-text" id="passerror"><% if(message&&field==='password'){%>
-            <%=message%>
-            <% }%>
-          </p>
-          <p class="password-hint">
-          Use 8+ characters with uppercase, lowercase, a number and a special character.
-        </p>
-        </div>
-        <!-- Confirm Password -->
-        <div class="form-group">
-          <label for="confirmPassword">Confirm Password</label>
-          <div class="password-input-wrapper">
-          <input
-            type="password"
-            id="confirmPassword"
-            name="cpassword"
-            placeholder="Re-enter your password"
-          />
-          <button type="button" class="password-toggle" title="show" onclick="togglePassword('confirmPassword', this)">
-            👁 
-          </button>
-          </div>
-          <p class="error-text" id="cpasserror"><% if(message&&field==='cpass'){%>
-            <%=message%>
-            <% }%>
-          </p>
-        </div>
-        
-        <!-- Referral -->
-        <div class="form-group">
-          <label for="referral">Referral Code (Optional)</label>
-
-          <div class="referral-wrapper">
-            <img src="user/icons/referral.svg" class="referral-icon" alt="referral">
+        <form class="auth-form" id="signform" action="/signup" method="POST">
+          <div class="form-group">
+            <label for="name">Name</label>
             <input
-              type="text"
-              id="referral"
-              name="referralCode"
-              value="<%=(typeof referralCode !=='undefined'?referralCode:'')||formData?.referralCode||''%>"
-              placeholder="Enter referral code if you have one"
+              id="name"
+              name="name"
+              placeholder="Enter your name"
+              value="<%= formData.name ||'' %>"
             />
-            <p class="error-text" id="mailerror"><% if(message&&field==='referralCode'){ %>
-            <%=message %>
-            <% } %>
+            <p class="error-text" id="nameError">
+              <% if(message&&field==='name'){ %> <%=message %> <% } %>
             </p>
           </div>
-        </div>
 
-        <!-- Signup Button -->
-        <button type="submit" class="btn-primary" id="signupBtn">Sign Up</button>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input
+              id="email"
+              name="email"
+              placeholder="Enter your email"
+              value="<%= formData.email || '' %>"
+            />
+            <p class="error-text" id="mailerror">
+              <% if(message&&field==='email'){ %> <%=message %> <% } %>
+            </p>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <div class="password-input-wrapper">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter your password"
+              />
+              <button
+                type="button"
+                class="password-toggle"
+                title="show"
+                onclick="togglePassword('password', this)"
+              >
+                👁
+              </button>
+            </div>
+            <p class="error-text" id="passerror">
+              <% if(message&&field==='password'){%> <%=message%> <% }%>
+            </p>
+            <p class="password-hint">
+              Use 8+ characters with uppercase, lowercase, a number and a special character.
+            </p>
+          </div>
+
+          <div class="form-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <div class="password-input-wrapper">
+              <input
+                type="password"
+                id="confirmPassword"
+                name="cpassword"
+                placeholder="Re-enter your password"
+              />
+              <button
+                type="button"
+                class="password-toggle"
+                title="show"
+                onclick="togglePassword('confirmPassword', this)"
+              >
+                👁
+              </button>
+            </div>
+            <p class="error-text" id="cpasserror">
+              <% if(message&&field==='cpass'){%> <%=message%> <% }%>
+            </p>
+          </div>
+
+          <div class="form-group">
+            <label for="referral">Referral Code (Optional)</label>
+
+            <div class="referral-wrapper">
+              <img src="user/icons/referral.svg" class="referral-icon" alt="referral" />
+              <input
+                type="text"
+                id="referral"
+                name="referralCode"
+                value="<%=(typeof referralCode !=='undefined'?referralCode:'')||formData?.referralCode||''%>"
+                placeholder="Enter referral code if you have one"
+              />
+              <p class="error-text" id="mailerror">
+                <% if(message&&field==='referralCode'){ %> <%=message %> <% } %>
+              </p>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary" id="signupBtn">Sign Up</button>
         </form>
-        <!-- Divider -->
+
         <div class="divider">
           <span>or continue with</span>
         </div>
 
-        <!-- Google Button -->
-        <a href="/auth/google"><button type="button" class="btn-google">
-          Continue with Google
-        </button></a>
-      
+        <a href="/auth/google"
+          ><button type="button" class="btn-google">Continue with Google</button></a
+        >
 
-      <!-- Footer -->
-      <div class="auth-footer">
-        Already have an account? <a href="/login">Login</a>
+        <div class="auth-footer">Already have an account? <a href="/login">Login</a></div>
       </div>
-
     </div>
-  </div>
-<script>
-
-
-  document.addEventListener("DOMContentLoaded", () => {
-    const nameid = document.getElementById("name");
-    const emailid = document.getElementById("email");
-    const passid = document.getElementById("password");
-    const cpassid = document.getElementById("confirmPassword");
-
-    const nameError  = document.getElementById("nameError");
-    const mailerror = document.getElementById("mailerror");
-    const passerror = document.getElementById("passerror");
-    const cpasserror = document.getElementById("cpasserror");
-
-    const signform = document.getElementById("signform");
-    const signupBtn = document.getElementById("signupBtn");
-
-    if (!signform) {
-      console.error("Form with id 'signform' not found.");
-      return;
-    }
-
-  
-    signform.setAttribute("novalidate", "true");
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const nameRegex = /^[A-Za-z ]{3,}$/;
-
-    function showError(elInput, elError, message) {
-      elError.textContent = message;
-      elInput.classList.add("invalid");
-    }
-    function clearError(elInput, elError) {
-      elError.textContent = "";
-      elInput.classList.remove("invalid");
-    }
-
-    function validateName() {
-      const val = nameid.value.trim();
-      if (!val) {
-        showError(nameid, nameError, "Name is required.");
-        return false;
-      }
-      if (!nameRegex.test(val)) {
-        showError(nameid, nameError, "Enter a valid name (letters only).");
-        return false;
-      }
-      clearError(nameid, nameError);
-      return true;
-    }
-
-    function validateEmail() {
-      const val = emailid.value.trim();
-      if (!val) {
-        showError(emailid, mailerror, "Email is required.");
-        return false;
-      }
-      if (!emailRegex.test(val)) {
-        showError(emailid, mailerror, "Please enter a valid email.");
-        return false;
-      }
-      clearError(emailid, mailerror);
-      return true;
-    }
-
-    function validatePassword() {
-      const val = passid.value;
-      if (!val) {
-        showError(passid, passerror, "Password is required.");
-        return false;
-      }
-      if (val.length < 8) {
-        showError(passid, passerror, "Password must be at least 8 characters.");
-        return false;
-      }
-      if(!/[A-Z]/.test(val)){
-        showError(passid,passerror,'Inlcude at least one uppercase letter');
-        return false;
-      }
-      if (!/[a-z]/.test(val)) {
-      showError(passid, passerror, "Include at least one lowercase letter.");
-      return false;
-      }
-      if (!/[0-9]/.test(val)) {
-      showError(passid, passerror, "Include at least one number.");
-      return false;
-      }
-      if (!/[^A-Za-z0-9]/.test(val)) {
-      showError(passid, passerror, "Include at least one special character.");
-      return false;
-      }
-      clearError(passid, passerror);
-      return true;
-    }
-
-    function validateConfirmPassword() {
-      const val = cpassid.value;
-      if (!val) {
-        showError(cpassid, cpasserror, "Please confirm your password.");
-        return false;
-      }
-      if (val !== passid.value) {
-        showError(cpassid, cpasserror, "Passwords do not match.");
-        return false;
-      }
-      clearError(cpassid, cpasserror);
-      return true;
-    }
-
-    nameid.addEventListener("input", validateName);
-    emailid.addEventListener("input", validateEmail);
-    passid.addEventListener("input", () => { validatePassword(); if (cpassid.value) validateConfirmPassword(); });
-    cpassid.addEventListener("input", validateConfirmPassword);
-
-    signform.addEventListener("submit", function (e) {
-      console.log("submit triggered");
-      const isNameOk = validateName();
-      const isEmailOk = validateEmail();
-      const isPassOk = validatePassword();
-      const isCpassOk = validateConfirmPassword();
-
-      const isFormValid = isNameOk && isEmailOk && isPassOk && isCpassOk;
-
-      if (!isFormValid) {
-        e.preventDefault(); 
-        console.log("Form invalid — prevented submit");
-        if (!isNameOk) nameid.focus();
-        else if (!isEmailOk) emailid.focus();
-        else if (!isPassOk) passid.focus();
-        else if (!isCpassOk) cpassid.focus();
-      } else {
-        
-        signupBtn.disabled = true;
-        signupBtn.textContent = "Signing up...";
-       
-      }
-    });
-
-  }); 
-  function togglePassword(inputId,button){
-    const input = document.getElementById(inputId);
-      if(input.type==='password'){
-          input.type='text';
-          button.textContent = '⌣'
-          button.title = 'hide'
-      }else{
-        input.type='password';
-        button.textContent = '👁';
-        button.title = 'show'
-      }
-  }
-
-</script>
-</body>
+    <script src="/user/js/signup.js"></script>
+  </body>
 </html>

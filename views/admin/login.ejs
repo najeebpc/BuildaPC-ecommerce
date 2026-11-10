@@ -1,90 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>BuildaPC Admin - Login</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <title>BuildaPC Admin - Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Inter font -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
 
-  <!-- Admin auth CSS (Live Server path from views/admin) -->
-  <link rel="stylesheet" href="/admin/css/auth.css">
-</head>
-<body>
+    <link rel="stylesheet" href="/admin/css/auth.css" />
+  </head>
+  <body>
+    <div class="admin-auth-page">
+      <div class="admin-auth-card">
+        <div class="admin-auth-header">
+          <h1 class="admin-title">BuildaPC Admin</h1>
+          <p class="admin-subtext">Sign in to access the admin panel</p>
+        </div>
+        <% if (passSuccess) { %>
+        <p class="success-text"><%= passSuccess.message %></p>
+        <% } %>
 
-  <div class="admin-auth-page">
-  
-    <div class="admin-auth-card">
+        <form class="admin-auth-form" action="/admin/login" method="post">
+          <div class="admin-form-group">
+            <label>Admin email</label>
+            <input
+              type="text"
+              id="adminEmail"
+              name="email"
+              value="<%= formData.email || '' %>"
+              placeholder="Enter your username"
+              required
+            />
+            <p class="error-text" id="mailError">
+              <% if(field === "email" && message){ %> <%=message %> <% } %>
+            </p>
+          </div>
 
-      <!-- Header -->
-      <div class="admin-auth-header">
-        <h1 class="admin-title">BuildaPC Admin</h1>
-        <p class="admin-subtext">Sign in to access the admin panel</p>
+          <div class="admin-form-group">
+            <label>Password</label>
+            <div class="password-input-wrapper">
+              <input
+                id="password"
+                type="password"
+                name="password"
+                placeholder="Enter your password"
+                required
+              />
+              <button
+                type="button"
+                class="password-toggle"
+                title="show"
+                onclick="togglePassword('password', this)"
+              >
+                👁
+              </button>
+            </div>
+            <p class="error-text">
+              <% if(field === "password" && message){ %> <%=message %> <% } %>
+            </p>
+            <div class="admin-options">
+              <a href="/admin/forgot-password" class="admin-forgot-link">Forgot Password?</a>
+            </div>
+          </div>
+
+          <button type="submit" class="admin-btn-primary">Login</button>
+        </form>
       </div>
-      <% if (passSuccess) { %>
-      <p class="success-text">
-        <%= passSuccess.message %>
-      </p>
-      <% } %>
-      <!-- Form -->
-      <form class="admin-auth-form" action="/admin/login" method="post">
-        <div class="admin-form-group">
-          <label>Admin email</label>
-          <input type="text" id="adminEmail" name="email" value="<%= formData.email || '' %>" placeholder="Enter your username" required>
-          <p class="error-text" id="mailError"><% if(field === "email" && message){ %>
-            <%=message %>
-            <% } %>
-            </p>
-        </div>
-
-        <div class="admin-form-group">
-          <label>Password</label>
-          <div class="password-input-wrapper">
-          <input id="password" type="password" name="password"  placeholder="Enter your password" required>
-          <button type="button" class="password-toggle" title="show" onclick="togglePassword('password', this)">
-            👁 
-          </button>
-          </div>
-          <p class="error-text" ><% if(field === "password" && message){ %>
-            <%=message %>
-            <% } %>
-            </p>
-          <div class="admin-options">
-          <a href="/admin/forgot-password" class="admin-forgot-link" >Forgot Password?</a>
-          </div>
-        </div>
-
-        <button type="submit" class="admin-btn-primary">Login</button>
-
-      </form>
-
-      
     </div>
-
-  </div>
-  <script>
-    function togglePassword(inputId,button){
-      const input = document.getElementById(inputId);
-      if(input.type==='password'){
-        input.type = 'text';
-        button.textContent = '⌣';
-        button.title='hide';
-      }else{
-        input.type='password';
-        button.textContent = '👁';
-        button.title = 'show';
+    <script>
+      function togglePassword(inputId, button) {
+        const input = document.getElementById(inputId);
+        if (input.type === 'password') {
+          input.type = 'text';
+          button.textContent = '⌣';
+          button.title = 'hide';
+        } else {
+          input.type = 'password';
+          button.textContent = '👁';
+          button.title = 'show';
+        }
       }
-    }
-    const adminEmail = document.getElementById('adminEmail');
-    const adminPass = document.getElementById('password');
-    const mailError = document.getElementById('mailError');
-    adminEmail.addEventListener('input',()=>{
-      mailError.textContent='';
-    });
-
-  </script>
-</body>
+      const adminEmail = document.getElementById('adminEmail');
+      const adminPass = document.getElementById('password');
+      const mailError = document.getElementById('mailError');
+      adminEmail.addEventListener('input', () => {
+        mailError.textContent = '';
+      });
+    </script>
+  </body>
 </html>

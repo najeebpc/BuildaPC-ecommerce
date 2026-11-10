@@ -1,19 +1,21 @@
-/* GLOBAL RESET */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* FONT + PAGE BG */
 body {
   min-height: 100vh;
-  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
   background-color: #eef1f6;
 }
 
-/* CENTER CARD */
 .auth-page {
   min-height: 100vh;
   display: flex;
@@ -21,9 +23,8 @@ body {
   align-items: center;
   justify-content: center;
   padding: 24px;
-  
 }
-/* SUCCESS ALERT BOX */
+
 .auth-alert {
   width: 100%;
   max-width: 380px;
@@ -39,9 +40,9 @@ body {
 }
 
 .success-alert {
-  background-color: #14532D; /* Your green color */
+  background-color: #14532d;
 }
-.error-alert{
+.error-alert {
   background-color: red;
 }
 .alert-content {
@@ -63,7 +64,6 @@ body {
   box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
 }
 
-/* HEADER */
 .auth-header {
   text-align: center;
   margin-bottom: 20px;
@@ -118,7 +118,6 @@ body {
   color: #9ca3af;
 }
 
-/* ERROR */
 .input-error {
   border-color: #f87171;
   background-color: #fef2f2;
@@ -130,35 +129,35 @@ body {
   color: #ef4444;
 }
 .password-input-wrapper {
-    position: relative;
-    width: 100%;
+  position: relative;
+  width: 100%;
 }
 
 .password-input-wrapper input {
-    width: 100%;
-    padding-right: 45px;
+  width: 100%;
+  padding-right: 45px;
 }
 
 .password-toggle {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
 
-    border: none;
-    background: transparent;
+  border: none;
+  background: transparent;
 
-    cursor: pointer;
-    font-size: 17px;
-    color: #6b7280;
+  cursor: pointer;
+  font-size: 17px;
+  color: #6b7280;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .password-toggle:hover {
-    color: #2563eb;
+  color: #2563eb;
 }
 /* BUTTONS */
 .btn-primary {
@@ -176,6 +175,11 @@ body {
 
 .btn-primary:hover {
   background-color: #1d4ed8;
+}
+.btn-primary:disabled {
+  background-color: #93c5fd;
+  cursor: not-allowed;
+  opacity: 0.8;
 }
 .btn-google {
   width: 100%;
@@ -233,13 +237,12 @@ body {
 }
 
 .referral-wrapper input {
-  padding-left: 42px;   /* space for SVG */
+  padding-left: 42px;
 }
 
-/* DIVIDER CENTER FIX */
 .divider {
   margin: 16px 0 10px;
-  text-align: center;    /* ⭐ THIS CENTERS THE TEXT */
+  text-align: center;
   position: relative;
   font-size: 12px;
   color: #9ca3af;
@@ -249,7 +252,7 @@ body {
   background: #fff;
   padding: 0 8px;
 }
-/* Remember me + Forgot password row */
+
 .auth-options {
   display: flex;
   justify-content: space-between;
@@ -270,7 +273,6 @@ body {
   cursor: pointer;
 }
 
-/* Forgot Password link */
 .forgot-link {
   font-size: 13px;
   color: #2563eb;
@@ -281,7 +283,7 @@ body {
 .forgot-link:hover {
   text-decoration: underline;
 }
-/* 6-digit code input boxes */
+
 .code-inputs {
   display: flex;
   justify-content: center;
@@ -307,7 +309,6 @@ body {
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.18);
 }
 
-/* Resend Code link */
 .resend-wrapper {
   margin-top: 14px;
   text-align: center;
@@ -323,18 +324,16 @@ body {
 .resend-link:hover {
   text-decoration: underline;
 }
-/* email verification page */
-/* verify email header spacing */
+
 .verify-header .auth-subtext {
   margin-top: 6px;
 }
 
-/* circular email icon */
 .email-circle {
   width: 72px;
   height: 72px;
   border-radius: 999px;
-  background-color: #0f172a; /* dark circle */
+  background-color: #0f172a;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -346,12 +345,11 @@ body {
   height: 30px;
 }
 
-/* info box under text */
 .verify-info-box {
   margin-top: 14px;
   padding: 10px 14px;
   border-radius: 8px;
-  background-color: #e5f0ff; /* soft blue */
+  background-color: #e5f0ff;
   display: flex;
   align-items: flex-start;
   gap: 8px;
@@ -359,7 +357,6 @@ body {
   color: #4b5563;
 }
 
-/* resend + back links */
 .verify-links {
   margin-top: 18px;
   text-align: center;
@@ -380,10 +377,10 @@ body {
 }
 
 .back-link {
-  color: #6b7280;          /* slightly softer for "Back to Login" */
+  color: #6b7280;
   font-weight: 400;
 }
-/*resend timer */
+
 .resend-link.disabled {
   pointer-events: none;
   color: #9ca3af;
@@ -412,11 +409,9 @@ body {
   color: red;
 }
 
-
-/* Dark success card */
 .success-card {
   width: 480px;
-  background-color: #020617;      /* very dark navy */
+  background-color: #020617;
   border-radius: 16px;
   padding: 50px 32px 50px;
   box-shadow: 0 24px 60px rgba(15, 23, 42, 0.6);
@@ -424,12 +419,11 @@ body {
   color: #e5e7eb;
 }
 
-/* green circle with check */
 .success-icon-circle {
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  border: 2px solid #22c55e;    
+  border: 2px solid #22c55e;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -441,7 +435,6 @@ body {
   height: 30px;
 }
 
-/* text styles */
 .success-title {
   font-size: 20px;
   font-weight: 600;
@@ -455,9 +448,9 @@ body {
   margin: 2px 0;
 }
 .password-hint {
-    display: block;
-    font-size: 11px;
-    color: #6b7280;
-    margin: 3px 0 0;
-    line-height: 1.3;
+  display: block;
+  font-size: 11px;
+  color: #6b7280;
+  margin: 3px 0 0;
+  line-height: 1.3;
 }

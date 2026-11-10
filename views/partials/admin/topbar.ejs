@@ -1,61 +1,42 @@
-
 <div class="admin-topbar">
-    <div class="topbar-right">
+  <div class="topbar-right">
+    <div class="notification-wrapper">
+      <button
+        type="button"
+        class="notification-btn"
+        id="notificationBtn"
+        aria-label="Notifications"
+        aria-expanded="false"
+      >
+        <i class="fa-solid fa-bell"></i>
+        <span class="notification-count" id="notificationCount"></span>
+      </button>
 
-        <!-- Notifications -->
-        <div class="notification-wrapper">
-            <button
-                type="button"
-                class="notification-btn"
-                id="notificationBtn"
-                aria-label="Notifications"
-                aria-expanded="false"
-            >
-                <i class="fa-solid fa-bell"></i>
-                <span class="notification-count" id="notificationCount"></span>
-            </button>
-
-            <div
-                class="notification-dropdown"
-                id="notificationDropdown"
-                aria-label="Notifications"
-            >
-                <div class="notification-header">
-                    <h3>Notifications</h3>
-                </div>
-
-                <div class="notification-empty" id="notificationEmpty">
-                    No new notifications
-                </div>
-
-                <div class="notification-list" id="notificationList"></div>
-            </div>
+      <div class="notification-dropdown" id="notificationDropdown" aria-label="Notifications">
+        <div class="notification-header">
+          <h3>Notifications</h3>
         </div>
 
-        <!-- Admin Profile -->
-        <div class="admin-profile">
-            <!-- <div class="admin-avatar">
-                <i class="fa-regular fa-user"></i>
-            </div> -->
+        <div class="notification-empty" id="notificationEmpty">No new notifications</div>
 
-            <div class="admin-profile-info">
-                <span class="admin-name">
-                    <%= typeof admin !== 'undefined' && admin
-                        ? admin.name
-                        : 'Admin' %>
-                </span>
-
-                <span class="admin-role">Administrator</span>
-            </div>
-        </div>
-
+        <div class="notification-list" id="notificationList"></div>
+      </div>
     </div>
+
+    <div class="admin-profile">
+      <div class="admin-profile-info">
+        <span class="admin-name">
+          <%= typeof admin !== 'undefined' && admin ? admin.name : 'Admin' %>
+        </span>
+
+        <span class="admin-role">Administrator</span>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
-
-
-document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('DOMContentLoaded', function () {
     const notificationBtn = document.getElementById('notificationBtn');
     const notificationDropdown = document.getElementById('notificationDropdown');
     const notificationCount = document.getElementById('notificationCount');
@@ -63,160 +44,156 @@ document.addEventListener('DOMContentLoaded', function () {
     const notificationList = document.getElementById('notificationList');
 
     if (
-        !notificationBtn ||
-        !notificationDropdown ||
-        !notificationCount ||
-        !notificationEmpty ||
-        !notificationList
+      !notificationBtn ||
+      !notificationDropdown ||
+      !notificationCount ||
+      !notificationEmpty ||
+      !notificationList
     ) {
-        return;
+      return;
     }
     notificationBtn.addEventListener('click', function (event) {
-        event.stopPropagation();
+      event.stopPropagation();
 
-        const isOpen = notificationDropdown.classList.toggle('show');
-        notificationBtn.setAttribute('aria-expanded', String(isOpen));
+      const isOpen = notificationDropdown.classList.toggle('show');
+      notificationBtn.setAttribute('aria-expanded', String(isOpen));
 
-        if (isOpen) {
-            loadNotifications();
-        }
+      if (isOpen) {
+        loadNotifications();
+      }
     });
 
     document.addEventListener('click', function (event) {
-        if (!event.target.closest('.notification-wrapper')) {
-            notificationDropdown.classList.remove('show');
-            notificationBtn.setAttribute('aria-expanded', 'false');
-        }
+      if (!event.target.closest('.notification-wrapper')) {
+        notificationDropdown.classList.remove('show');
+        notificationBtn.setAttribute('aria-expanded', 'false');
+      }
     });
 
     document.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape') {
-            notificationDropdown.classList.remove('show');
-            notificationBtn.setAttribute('aria-expanded', 'false');
-        }
+      if (event.key === 'Escape') {
+        notificationDropdown.classList.remove('show');
+        notificationBtn.setAttribute('aria-expanded', 'false');
+      }
     });
 
     async function loadNotifications() {
-        try {
-            const response = await fetch('/admin/notifications');
+      try {
+        const response = await fetch('/admin/notifications');
 
-            if (!response.ok) {
-                throw new Error('Failed to load notifications');
-            }
-
-            const data = await response.json();
-
-            if (!data.success) {
-                throw new Error(data.message || 'Failed to load notifications');
-            }
-
-            renderNotifications(data.notifications || []);
-        } catch (error) {
-            console.error('Notification loading error:', error);
-            notificationList.replaceChildren();
-            notificationEmpty.textContent = 'Unable to load notifications';
-            notificationEmpty.hidden = false;
-            notificationCount.textContent = '';
+        if (!response.ok) {
+          throw new Error('Failed to load notifications');
         }
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.message || 'Failed to load notifications');
+        }
+
+        renderNotifications(data.notifications || []);
+      } catch (error) {
+        console.error('Notification loading error:', error);
+        notificationList.replaceChildren();
+        notificationEmpty.textContent = 'Unable to load notifications';
+        notificationEmpty.hidden = false;
+        notificationCount.textContent = '';
+      }
     }
 
     function renderNotifications(notifications) {
-        notificationList.replaceChildren();
+      notificationList.replaceChildren();
 
-        const unreadCount = notifications.filter(
-            notification => !notification.isRead
-        ).length;
+      const unreadCount = notifications.filter((notification) => !notification.isRead).length;
 
-        notificationCount.textContent = unreadCount
-            ? unreadCount > 99 ? '99+' : String(unreadCount)
-            : '';
+      notificationCount.textContent = unreadCount
+        ? unreadCount > 99
+          ? '99+'
+          : String(unreadCount)
+        : '';
 
-        notificationEmpty.textContent = notifications.length
-            ? ''
-            : 'No notifications';
+      notificationEmpty.textContent = notifications.length ? '' : 'No notifications';
 
-        notificationEmpty.hidden = notifications.length > 0;
+      notificationEmpty.hidden = notifications.length > 0;
 
-        notifications.forEach(function (notification) {
-            const item = document.createElement('div');
-            item.className = 'notification-item';
+      notifications.forEach(function (notification) {
+        const item = document.createElement('div');
+        item.className = 'notification-item';
 
-            if (!notification.isRead) {
-                item.classList.add('unread');
-            }
+        if (!notification.isRead) {
+          item.classList.add('unread');
+        }
 
-            const content = document.createElement('div');
-            content.className = 'notification-content';
+        const content = document.createElement('div');
+        content.className = 'notification-content';
 
-            const title = document.createElement('span');
-            title.className = 'notification-item-title';
-            title.textContent = notification.title || 'Notification';
+        const title = document.createElement('span');
+        title.className = 'notification-item-title';
+        title.textContent = notification.title || 'Notification';
 
-            const message = document.createElement('span');
-            message.className = 'notification-item-message';
-            message.textContent = notification.message || '';
+        const message = document.createElement('span');
+        message.className = 'notification-item-message';
+        message.textContent = notification.message || '';
 
-            content.append(title, message);
-            item.appendChild(content);
+        content.append(title, message);
+        item.appendChild(content);
 
-            if (!notification.isRead) {
-                const markReadBtn = document.createElement('button');
-                markReadBtn.type = 'button';
-                markReadBtn.className = 'mark-notification-read';
-                markReadBtn.textContent = 'Mark as read';
+        if (!notification.isRead) {
+          const markReadBtn = document.createElement('button');
+          markReadBtn.type = 'button';
+          markReadBtn.className = 'mark-notification-read';
+          markReadBtn.textContent = 'Mark as read';
 
-                markReadBtn.addEventListener('click', function () {
-                    markNotificationAsRead(notification._id, markReadBtn);
-                });
+          markReadBtn.addEventListener('click', function () {
+            markNotificationAsRead(notification._id, markReadBtn);
+          });
 
-                item.appendChild(markReadBtn);
-            } else {
-                const readLabel = document.createElement('span');
-                readLabel.className = 'notification-read-label';
-                readLabel.textContent = 'Read';
-                item.appendChild(readLabel);
-            }
+          item.appendChild(markReadBtn);
+        } else {
+          const readLabel = document.createElement('span');
+          readLabel.className = 'notification-read-label';
+          readLabel.textContent = 'Read';
+          item.appendChild(readLabel);
+        }
 
-            notificationList.appendChild(item);
-        });
+        notificationList.appendChild(item);
+      });
     }
 
     async function markNotificationAsRead(notificationId, button) {
-        button.disabled = true;
-        button.textContent = 'Updating...';
+      button.disabled = true;
+      button.textContent = 'Updating...';
 
-        try {
-            const response = await fetch(
-                `/admin/notifications/${encodeURIComponent(notificationId)}/read`,
-                {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }
-            );
+      try {
+        const response = await fetch(
+          `/admin/notifications/${encodeURIComponent(notificationId)}/read`,
+          {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          },
+        );
 
-            const data = await response.json();
+        const data = await response.json();
 
-            if (!response.ok || !data.success) {
-                throw new Error(data.message || 'Could not mark as read');
-            }
-
-            await loadNotifications();
-        } catch (error) {
-            console.error('Mark as read error:', error);
-            button.disabled = false;
-            button.textContent = 'Mark as read';
-            alert(error.message || 'Failed to mark notification as read');
+        if (!response.ok || !data.success) {
+          throw new Error(data.message || 'Could not mark as read');
         }
+
+        await loadNotifications();
+      } catch (error) {
+        console.error('Mark as read error:', error);
+        button.disabled = false;
+        button.textContent = 'Mark as read';
+        alert(error.message || 'Failed to mark notification as read');
+      }
     }
 
-    // Load the unread count when the admin page opens.
     loadNotifications();
 
-    // Refresh notifications periodically while the page is open.
     setInterval(loadNotifications, 10000);
-});
+  });
 </script>
 <%- include('../partials/admin/toast') %>
 <script src="/admin/js/adminToast.js"></script>

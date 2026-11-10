@@ -1,517 +1,351 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-    <title>
-        Order Details | BuildaPC
-    </title>
-    <link  rel="stylesheet" href="/admin/css/admin-base.css" >
-    <link rel="stylesheet" href="/admin/css/order-details.css" >
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-</head>
-<body>
-<div class="admin-wrapper">
-    <!-- ADMIN SIDEBAR -->
-    <%- include("../partials/admin/sidebar", {
-        active: 'orders'
-    }) %>
-    <div class="admin-content">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Order Details | BuildaPC</title>
+    <link rel="stylesheet" href="/admin/css/admin-base.css" />
+    <link rel="stylesheet" href="/admin/css/order-details.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="admin-wrapper">
+      <%- include("../partials/admin/sidebar", { active: 'orders' }) %>
+      <div class="admin-content">
         <%- include('../partials/admin/topbar') %>
-        <!-- PAGE HEADER -->
+
         <div class="order-details-header">
-            <div>
-                <h1 class="page-title">
-                    Order Details
-                </h1>
-                <p class="page-subtitle">
-                    View complete order information
-                </p>
-            </div>
-            <a
-                href="/admin/orders"
-                class="back-orders-btn"
-            >
-                ← Back to Orders
-            </a>
+          <div>
+            <h1 class="page-title">Order Details</h1>
+            <p class="page-subtitle">View complete order information</p>
+          </div>
+          <a href="/admin/orders" class="back-orders-btn"> ← Back to Orders </a>
         </div>
-        <!-- ORDER INFORMATION -->
+
         <div class="order-details-card">
-            <div class="order-info-header">
-                <div>
-                    <span class="order-label">
-                        Order ID
-                    </span>
-                    <h2 class="order-id">
-                        <%= order.orderId %>
-                    </h2>
-                </div>
-                <div class="order-status-section">
-                    <span class="order-label">
-                        Order Status
-                    </span>
-                    <span
-                        class="order-status <%= order.orderStatus
-                            .replace(/ /g, '-') %>"
-                    >
-                        <%= order.orderStatus %>
-                    </span>
-                </div>
+          <div class="order-info-header">
+            <div>
+              <span class="order-label"> Order ID </span>
+              <h2 class="order-id"><%= order.orderId %></h2>
             </div>
-            <div class="order-meta">
-                <div class="order-meta-item">
-                    <span>
-                        Order Date
-                    </span>
-                    <strong>
-                        <%= new Date(
+            <div class="order-status-section">
+              <span class="order-label"> Order Status </span>
+              <span class="order-status <%= order.orderStatus .replace(/ /g, '-') %>">
+                <%= order.orderStatus %>
+              </span>
+            </div>
+          </div>
+          <div class="order-meta">
+            <div class="order-meta-item">
+              <span> Order Date </span>
+              <strong>
+                <%= new Date(
                             order.createdAt
                         ).toLocaleDateString('en-IN') %>
-                    </strong>
-                </div>
-                <div class="order-meta-item">
-                    <span>
-                        Payment Method
-                    </span>
-                    <strong>
-                        <%= order.paymentMethod === 'cod'
+              </strong>
+            </div>
+            <div class="order-meta-item">
+              <span> Payment Method </span>
+              <strong>
+                <%= order.paymentMethod === 'cod'
                             ? 'Cash on Delivery'
                             : 'Online Payment' %>
-                    </strong>
-                </div>
-                <div class="order-meta-item">
-                    <span>
-                        Payment Status
-                    </span>
-                    <strong>
-                        <%= order.paymentStatus %>
-                    </strong>
-                </div>
+              </strong>
             </div>
-        </div>
-        <!-- RETURN REQUEST DETAILS -->
-        <!-- <% if (order.returnReason) { %>
-        <div class="order-details-card return-request-card">
-        <div class="return-request-header">
-            <div>
-                <h2 class="section-title">
-                    Return Request Details
-                </h2>
-                <p class="return-request-subtitle">
-                    Review the customer's return request before making a decision.
-                </p>
+            <div class="order-meta-item">
+              <span> Payment Status </span>
+              <strong>
+                <%= order.paymentStatus %>
+              </strong>
             </div>
-            <span class="return-pending-badge">
-            <i class="fa-solid fa-clock"></i>
-            <%= order.orderStatus === 'Return requested'
-            ? 'Pending Review'
-            : order.orderStatus === 'Return approved'
-            ? 'Approved — Awaiting Receipt'
-            : order.orderStatus === 'Return received'
-                ? 'Received'
-                : order.orderStatus === 'Return rejected'
-                    ? 'Rejected'
-                    : order.orderStatus %>
-            </span>
+          </div>
         </div>
-        <div class="return-request-info">
-            <div class="return-info-item">
-                <span>Request Date</span>
-                <strong>
-                    <%= order.returnedAt
-                        ? new Date(order.returnedAt).toLocaleString('en-IN')
-                        : 'Not available' %>
-                </strong>
-            </div>
-            <div class="return-info-item return-reason">
-                <span>Customer's Reason</span>
-                <p>
-                    <%= order.returnReason || 'No reason provided' %>
-                </p>
-            </div>
-        </div>
-        <div class="return-request-actions">
-        <% if (order.orderStatus === 'Return requested') { %>
-        <button
-            type="button"
-            class="approve-return-btn"
-            onclick="reviewReturnRequest('<%= order.orderId %>', 'approved')">
-            <i class="fa-solid fa-check"></i>
-            Approve Return
-        </button>
-        <button
-            type="button"
-            class="reject-return-btn"
-            onclick="reviewReturnRequest('<%= order.orderId %>', 'rejected')">
-            <i class="fa-solid fa-xmark"></i>
-            Reject Return
-        </button>
-        <% } else if (
-        order.orderStatus === 'Return approved' &&
-        !order.returnStockRestored
-        ) { %>
-        <button
-            type="button"
-            class="approve-return-btn"
-            onclick="markReturnReceived('<%= order.orderId %>')">
-            <i class="fa-solid fa-box-open"></i>
-            Mark as Received &amp; Restore Stock
-        </button>
-        <% } else if (order.orderStatus === 'Return received') { %>
-        <span class="return-completed-label">
-            <i class="fa-solid fa-check-circle"></i>
-            Stock Restored
-        </span>
-        <% } %>
-        </div>
-        </div>
-        <% } %> -->
-        <!-- CUSTOMER INFORMATION -->
+
         <div class="order-details-card">
-            <h2 class="section-title">
-                Customer Information
-            </h2>
-            <div class="customer-details-grid">
-                <div class="customer-detail">
-                    <span>
-                        Name
-                    </span>
-                    <strong>
-                        <%= order.userId?.name ||
+          <h2 class="section-title">Customer Information</h2>
+          <div class="customer-details-grid">
+            <div class="customer-detail">
+              <span> Name </span>
+              <strong>
+                <%= order.userId?.name ||
                             'User removed' %>
-                    </strong>
-                </div>
-                <div class="customer-detail">
-                    <span>
-                        Email
-                    </span>
-                    <strong>
-                        <%= order.userId?.email || '-' %>
-                    </strong>
-                </div>
-                <div class="customer-detail">
-                    <span>
-                        Phone
-                    </span>
-                    <strong>
-                        <%= order.shippingAddress.phone %>
-                    </strong>
-                </div>
+              </strong>
             </div>
-        </div>
-        <!-- SHIPPING ADDRESS -->
-        <div class="order-details-card">
-            <h2 class="section-title">
-                Delivery Address
-            </h2>
-            <div class="shipping-address">
-                <strong>
-                    <%= order.shippingAddress.fullName %>
-                </strong>
-                <p>
-                    <%= order.shippingAddress.addressLine1 %>
-                    <% if (
-                        order.shippingAddress.addressLine2
-                    ) { %>
-                        ,
-                        <%= order.shippingAddress.addressLine2 %>
-                    <% } %>
-                </p>
-                <p>
-                    <%= order.shippingAddress.city %>,
-                    <%= order.shippingAddress.state %>
-                    -
-                    <%= order.shippingAddress.pincode %>
-                </p>
-                <p>
-                    Phone:
-                    <%= order.shippingAddress.phone %>
-                </p>
+            <div class="customer-detail">
+              <span> Email </span>
+              <strong>
+                <%= order.userId?.email || '-' %>
+              </strong>
             </div>
+            <div class="customer-detail">
+              <span> Phone </span>
+              <strong>
+                <%= order.shippingAddress.phone %>
+              </strong>
+            </div>
+          </div>
         </div>
-        <!-- ORDER ITEMS -->
+
         <div class="order-details-card">
-            <h2 class="section-title">
-                Ordered Products
-            </h2>
-            <div class="order-items">
-                <% order.items.forEach(item => { %>
-                    <div class="order-item">
-                        <!-- IMAGE -->
-                        <div class="order-item-image">
-                            <img
-                                src="<%= item.productImage %>"
-                                alt="<%= item.productName %>"
-                            >
-                        </div>
-                        <!-- PRODUCT INFO -->
-                        <div class="order-item-info">
-                            <h3>
-                                <%= item.productName %>
-                            </h3>
-                            <% if (
-                                item.variantAttributes &&
-                                item.variantAttributes.length > 0
-                            ) { %>
-                                <div class="variant-details">
-                                    <% item.variantAttributes.forEach(
-                                        attribute => {
-                                    %>
-                                        <span>
-                                            <%= attribute.name %>:
-                                            <%= attribute.value %>
-                                        </span>
-                                    <% }) %>
-                                </div>
-                            <% } %>
-                            <p>
-                                Quantity:
-                                <%= item.quantity %>
-                            </p>
-                            <p class="admin-item-status">
-                            Status:
-                            <span class="item-status <%= String(item.itemStatus || 'active').toLowerCase() %>">
-                                    <%= item.itemStatus || 'active' %>
-                            </span>
-                        </p>
-                        <% if (item.returnStatus && item.returnStatus !== 'none') { %>
-
-    <div class="item-return-request">
-
-        <div class="item-return-header">
-            <h4>Return Request</h4>
-
-            <span class="item-return-badge <%= item.returnStatus %>">
-                <%= item.returnStatus %>
-            </span>
-        </div>
-
-        <div class="item-return-info">
+          <h2 class="section-title">Delivery Address</h2>
+          <div class="shipping-address">
+            <strong>
+              <%= order.shippingAddress.fullName %>
+            </strong>
             <p>
-                <strong>Customer's Reason:</strong>
-                <%= item.returnReason || 'No reason provided' %>
+              <%= order.shippingAddress.addressLine1 %> <% if ( order.shippingAddress.addressLine2 )
+              { %> , <%= order.shippingAddress.addressLine2 %> <% } %>
             </p>
-
             <p>
-                <strong>Request Date:</strong>
-                <%= item.returnRequestedAt
+              <%= order.shippingAddress.city %>, <%= order.shippingAddress.state %> - <%=
+              order.shippingAddress.pincode %>
+            </p>
+            <p>Phone: <%= order.shippingAddress.phone %></p>
+          </div>
+        </div>
+
+        <div class="order-details-card">
+          <h2 class="section-title">Ordered Products</h2>
+          <div class="order-items">
+            <% order.items.forEach(item => { %>
+            <div class="order-item">
+              <div class="order-item-image">
+                <img src="<%= item.productImage %>" alt="<%= item.productName %>" />
+              </div>
+
+              <div class="order-item-info">
+                <h3>
+                  <%= item.productName %>
+                </h3>
+                <% if ( item.variantAttributes && item.variantAttributes.length > 0 ) { %>
+                <div class="variant-details">
+                  <% item.variantAttributes.forEach( attribute => { %>
+                  <span>
+                    <%= attribute.name %>:
+                    <%= attribute.value %>
+                  </span>
+                  <% }) %>
+                </div>
+                <% } %>
+                <p>Quantity: <%= item.quantity %></p>
+                <p class="admin-item-status">
+                  Status:
+                  <span
+                    class="item-status <%= String(item.itemStatus || 'active').toLowerCase() %>"
+                  >
+                    <%= item.itemStatus || 'active' %>
+                  </span>
+                </p>
+                <% if (item.returnStatus && item.returnStatus !== 'none') { %>
+
+                <div class="item-return-request">
+                  <div class="item-return-header">
+                    <h4>Return Request</h4>
+
+                    <span class="item-return-badge <%= item.returnStatus %>">
+                      <%= item.returnStatus %>
+                    </span>
+                  </div>
+
+                  <div class="item-return-info">
+                    <p>
+                      <strong>Customer's Reason:</strong>
+                      <%= item.returnReason || 'No reason provided' %>
+                    </p>
+
+                    <p>
+                      <strong>Request Date:</strong>
+                      <%= item.returnRequestedAt
                     ? new Date(item.returnRequestedAt).toLocaleString('en-IN')
                     : 'Not available' %>
-            </p>
+                    </p>
 
-            <% if (item.returnRejectedReason) { %>
-                <p>
-                    <strong>Rejection Reason:</strong>
-                    <%= item.returnRejectedReason %>
-                </p>
-            <% } %>
-        </div>
+                    <% if (item.returnRejectedReason) { %>
+                    <p>
+                      <strong>Rejection Reason:</strong>
+                      <%= item.returnRejectedReason %>
+                    </p>
+                    <% } %>
+                  </div>
 
-        <div class="item-return-actions">
+                  <div class="item-return-actions">
+                    <% if (item.returnStatus === 'requested') { %>
 
-            <% if (item.returnStatus === 'requested') { %>
+                    <button
+                      type="button"
+                      class="approve-return-btn"
+                      onclick="
+                        reviewReturnRequest('<%= order.orderId %>', '<%= item._id %>', 'approved')
+                      "
+                    >
+                      <i class="fa-solid fa-check"></i>
+                      Approve Return
+                    </button>
 
-                <button
-                    type="button"
-                    class="approve-return-btn"
-                    onclick="reviewReturnRequest('<%= order.orderId %>', '<%= item._id %>', 'approved')"
-                >
-                    <i class="fa-solid fa-check"></i>
-                    Approve Return
-                </button>
+                    <button
+                      type="button"
+                      class="reject-return-btn"
+                      onclick="
+                        reviewReturnRequest('<%= order.orderId %>', '<%= item._id %>', 'rejected')
+                      "
+                    >
+                      <i class="fa-solid fa-xmark"></i>
+                      Reject Return
+                    </button>
 
-                <button
-                    type="button"
-                    class="reject-return-btn"
-                    onclick="reviewReturnRequest('<%= order.orderId %>', '<%= item._id %>', 'rejected')"
-                >
-                    <i class="fa-solid fa-xmark"></i>
-                    Reject Return
-                </button>
-
-            <% } else if (
+                    <% } else if (
                 item.returnStatus === 'approved' &&
                 !item.returnStockRestored
             ) { %>
 
-                <button
-                    type="button"
-                    class="approve-return-btn"
-                    onclick="markReturnReceived('<%= order.orderId %>', '<%= item._id %>')"
-                >
-                    <i class="fa-solid fa-box-open"></i>
-                    Mark as Received &amp; Restore Stock
-                </button>
+                    <button
+                      type="button"
+                      class="approve-return-btn"
+                      onclick="markReturnReceived('<%= order.orderId %>', '<%= item._id %>')"
+                    >
+                      <i class="fa-solid fa-box-open"></i>
+                      Mark as Received &amp; Restore Stock
+                    </button>
 
-            <% } else if (item.returnStatus === 'received') { %>
+                    <% } else if (item.returnStatus === 'received') { %>
 
-                <span class="return-completed-label">
-                    <i class="fa-solid fa-check-circle"></i>
-                    Stock Restored
-                </span>
+                    <span class="return-completed-label">
+                      <i class="fa-solid fa-check-circle"></i>
+                      Stock Restored
+                    </span>
 
-            <% } %>
+                    <% } %>
+                  </div>
+                </div>
 
-        </div>
-    </div>
-
-<% } %>
-                        </div>
-                        <!-- PRICE -->
-                        <div class="order-item-price">
-                            ₹<%= Number(
-                                item.price *
-                                item.quantity
-                            ).toLocaleString('en-IN') %>
-                        </div>
-                    </div>
-                <% }) %>
-            </div>
-        </div>
-     
-<!-- ORDER SUMMARY -->
-<div class="order-details-card order-summary-card">
-    <h2 class="section-title">Order Summary</h2>
-
-    <%
-        const activeItems = order.items.filter(
-            item => item.itemStatus === 'active'
-        );
-
-        const itemCount = activeItems.reduce(
-            (total, item) => total + Number(item.quantity || 0),
-            0
-        );
-
-        const totalOfferDiscount = activeItems.reduce(
-            (total, item) => total +
-                (Number(item.discountAmount || 0) * Number(item.quantity || 0)),
-            0
-        );
-
-        const subtotalAfterOffers = Number(order.subtotal || 0);
-        const originalSubtotal = subtotalAfterOffers + totalOfferDiscount;
-        const couponDiscount = Number(order.couponDiscount || 0);
-        const finalTotal = Number(
-            order.originalTotalAmount ?? order.totalAmount ?? 0
-        );
-    %>
-
-    <div class="summary-row">
-        <span>Items</span>
-        <span><%= itemCount %></span>
-    </div>
-
-    <div class="summary-row">
-        <span>Original Subtotal</span>
-        <span>₹<%= originalSubtotal.toLocaleString('en-IN') %></span>
-    </div>
-
-    <% if (totalOfferDiscount > 0) { %>
-        <div class="summary-row discount-row">
-            <span>Product / Category Offer Savings</span>
-            <span>
-                −₹<%= totalOfferDiscount.toLocaleString('en-IN') %>
-            </span>
-        </div>
-    <% } %>
-
-    <div class="summary-row">
-        <span>Subtotal After Offers</span>
-        <span>₹<%= subtotalAfterOffers.toLocaleString('en-IN') %></span>
-    </div>
-
-    <% if (couponDiscount > 0) { %>
-        <div class="summary-row discount-row">
-            <span>
-                Coupon Discount
-                <% if (order.couponCode) { %>
-                    (<%= order.couponCode %>)
                 <% } %>
-            </span>
-            <span>
-                −₹<%= couponDiscount.toLocaleString('en-IN') %>
-            </span>
+              </div>
+
+              <div class="order-item-price">
+                ₹<%= Number( item.price * item.quantity ).toLocaleString('en-IN') %>
+              </div>
+            </div>
+            <% }) %>
+          </div>
         </div>
-    <% } %>
 
-    <div class="summary-row">
-        <span>Shipping</span>
-        <span>Free</span>
-    </div>
+        <div class="order-details-card order-summary-card">
+          <h2 class="section-title">Order Summary</h2>
 
-    <div class="summary-row total-row">
-        <strong>Total</strong>
-        <strong>
-            ₹<%= finalTotal.toLocaleString('en-IN') %>
-        </strong>
+          <% const activeItems = order.items.filter( item => item.itemStatus === 'active' ); const
+          itemCount = activeItems.reduce( (total, item) => total + Number(item.quantity || 0), 0 );
+          const totalOfferDiscount = activeItems.reduce( (total, item) => total +
+          (Number(item.discountAmount || 0) * Number(item.quantity || 0)), 0 ); const
+          subtotalAfterOffers = Number(order.subtotal || 0); const originalSubtotal =
+          subtotalAfterOffers + totalOfferDiscount; const couponDiscount =
+          Number(order.couponDiscount || 0); const finalTotal = Number( order.originalTotalAmount ??
+          order.totalAmount ?? 0 ); %>
+
+          <div class="summary-row">
+            <span>Items</span>
+            <span><%= itemCount %></span>
+          </div>
+
+          <div class="summary-row">
+            <span>Original Subtotal</span>
+            <span>₹<%= originalSubtotal.toLocaleString('en-IN') %></span>
+          </div>
+
+          <% if (totalOfferDiscount > 0) { %>
+          <div class="summary-row discount-row">
+            <span>Product / Category Offer Savings</span>
+            <span> −₹<%= totalOfferDiscount.toLocaleString('en-IN') %> </span>
+          </div>
+          <% } %>
+
+          <div class="summary-row">
+            <span>Subtotal After Offers</span>
+            <span>₹<%= subtotalAfterOffers.toLocaleString('en-IN') %></span>
+          </div>
+
+          <% if (couponDiscount > 0) { %>
+          <div class="summary-row discount-row">
+            <span>
+              Coupon Discount
+              <% if (order.couponCode) { %>
+              (<%= order.couponCode %>)
+              <% } %>
+            </span>
+            <span> −₹<%= couponDiscount.toLocaleString('en-IN') %> </span>
+          </div>
+          <% } %>
+
+          <div class="summary-row">
+            <span>Shipping</span>
+            <span>Free</span>
+          </div>
+
+          <div class="summary-row total-row">
+            <strong>Total</strong>
+            <strong> ₹<%= finalTotal.toLocaleString('en-IN') %> </strong>
+          </div>
+        </div>
+      </div>
     </div>
-</div>
-    </div>
-</div>
-<script>
-    async function reviewReturnRequest(orderId,itemId,decision) {
-        const action = decision ==='approved'?'approve':'reject';
-        if(!confirm(`Are you sure want to ${action} this return request?`)){
-            return;
-        }   
+    <script>
+      async function reviewReturnRequest(orderId, itemId, decision) {
+        const action = decision === 'approved' ? 'approve' : 'reject';
+        if (!confirm(`Are you sure want to ${action} this return request?`)) {
+          return;
+        }
         const buttons = document.querySelectorAll('.return-request-actions button');
-        try{
-            const response = await fetch(
-                `/admin/orders/${orderId}/items/${itemId}/return-review`,
-                {
-                    method:'PATCH',
-                    headers:{'Content-Type':'application/json','Accept':'application/json'},
-                    body:JSON.stringify({decision})
-                }
-            );
-            const result = await response.json();
-            if(!response.ok||!result.success){
-                showToastMessage(result.message,'error')
-                buttons.forEach(button=>button.disabled=false);
-                return;
-            }
-            showToastMessage(result.message,'success')
-            setTimeout(() => {
-                window.location.reload();
-            }, 1500);
-        }catch(error){
-            console.log('review return errorw',error);
-            showToastMessage('Unable to review return request','error')
-            buttons.forEach(button=>button.disabled=false);
-        }
-    }
-    async function markReturnReceived(orderId,itemId) {
-        const confirmed = confirm('Conform that the returned product has been received and inspected? Stock will be restored.');
-        if(!confirmed){
+        try {
+          const response = await fetch(`/admin/orders/${orderId}/items/${itemId}/return-review`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify({ decision }),
+          });
+          const result = await response.json();
+          if (!response.ok || !result.success) {
+            showToastMessage(result.message, 'error');
+            buttons.forEach((button) => (button.disabled = false));
             return;
+          }
+          showToastMessage(result.message, 'success');
+          setTimeout(() => {
+            window.location.reload();
+          }, 1500);
+        } catch (error) {
+          console.log('review return errorw', error);
+          showToastMessage('Unable to review return request', 'error');
+          buttons.forEach((button) => (button.disabled = false));
         }
-        try{
-            const response = await fetch(`/admin/orders/${orderId}/items/${itemId}/return-received`,
-                {
-                    method:'PATCH',
-                    headers:{'Accept':'application/json'}
-                }
-            );
-            const result = await response.json();
-            if(!response.ok||!result.success){
-                showToastMessage(result.message,'error');
-                return;
-            }
-            showToastMessage(result.message,'success');
+      }
+      async function markReturnReceived(orderId, itemId) {
+        const confirmed = confirm(
+          'Conform that the returned product has been received and inspected? Stock will be restored.',
+        );
+        if (!confirmed) {
+          return;
+        }
+        try {
+          const response = await fetch(`/admin/orders/${orderId}/items/${itemId}/return-received`, {
+            method: 'PATCH',
+            headers: { Accept: 'application/json' },
+          });
+          const result = await response.json();
+          if (!response.ok || !result.success) {
+            showToastMessage(result.message, 'error');
+            return;
+          }
+          showToastMessage(result.message, 'success');
 
-            setTimeout(() => {
-                window.location.reload();
-            }, 1500);
-        }catch(error){
-            console.log('return receipt error',error);
-            showToastMessage('Unable to process the returned items','error');
+          setTimeout(() => {
+            window.location.reload();
+          }, 1500);
+        } catch (error) {
+          console.log('return receipt error', error);
+          showToastMessage('Unable to process the returned items', 'error');
         }
-    }
-</script>
-</body>
+      }
+    </script>
+  </body>
 </html>

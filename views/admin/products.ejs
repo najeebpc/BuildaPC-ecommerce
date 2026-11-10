@@ -1,1513 +1,473 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
 
     <title>Product Management | BuildaPC Admin</title>
 
-    <link rel="stylesheet"href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css"rel="stylesheet"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="/admin/css/admin-base.css">
-    <link rel="stylesheet" href="/admin/css/products.css">
-</head>
-<body>
-<div class="admin-wrapper">
-    <!-- Sidebar -->
-    <%- include('../partials/admin/sidebar',{active:'products'}) %>
-    <!-- Product Management Content -->
-    <main class="admin-content">
-         <%- include('../partials/admin/topbar') %>
-        <!-- Page Header -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css"
+    />
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/admin/css/admin-base.css" />
+    <link rel="stylesheet" href="/admin/css/products.css" />
+  </head>
+  <body>
+    <div class="admin-wrapper">
+      <%- include('../partials/admin/sidebar',{active:'products'}) %>
+      <main class="admin-content">
+        <%- include('../partials/admin/topbar') %>
+
         <div class="product-page-header">
-            <div>
-                <h1 class="page-title">
-                    Product Management
-                </h1>
-                <p class="page-subtitle">
-                    Manage your product inventory
-                </p>
-            </div>
-            <button
-                type="button"
-                class="add-product-btn"
-                onclick="openAddProductModal()"
-            >
-                <span class="add-product-icon">+</span>
-                Add New Product
-            </button>
+          <div>
+            <h1 class="page-title">Product Management</h1>
+            <p class="page-subtitle">Manage your product inventory</p>
+          </div>
+          <button type="button" class="add-product-btn" onclick="openAddProductModal()">
+            <span class="add-product-icon">+</span>
+            Add New Product
+          </button>
         </div>
-        <div id="productMessage" class="product-message"> </div>
-        <!-- Product Card -->
+        <div id="productMessage" class="product-message"></div>
+
         <div class="product-card">
-            <!-- Search and Filter -->
-            <div class="product-toolbar">
-              <div class="product-search">
+          <div class="product-toolbar">
+            <div class="product-search">
               <form method="GET" action="/admin/products" class="search-form">
-              <input
-              type="text"
-               name="search"
-              placeholder="Search products by name or category..."
-              value="<%= search || '' %>"
-               >
-              <button type="submit" class="search-btn">
-             Search
-             </button>
-                 <% if (search) { %>
-                <a href="/admin/products" class="clear-search">
-                Cancel
-             </a>
-              <% } %>
-               </form>
-        </div>
-                <div class="product-filter">
-                    <select id="productFilter">
-                        <option value="all">
-                            All Products
-                        </option>
-                        <option value="listed">
-                            Listed Products
-                        </option>
-                        <option value="unlisted">
-                            Unlisted Products
-                        </option>
-                    </select>
-                </div>
-
-            </div>
-            <!-- Product Table -->
-            <div class="product-table-wrapper">
-                <table class="product-table">
-                    <thead>
-                        <tr>
-                            <th class="product-name-column">
-                                Product Name
-                            </th>
-                            <th>
-                                Product Type
-                            </th>
-                            <th>
-                                Category
-                            </th>
-                            <th>
-                                Price
-                            </th>
-                            <th>
-                                Stock Level
-                            </th>
-                            <th>
-                                Variants
-                            </th>
-                            <th>
-                                List / Unlist
-                            </th>
-                            <th>
-                                Actions
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% if (products && products.length > 0) { %>
-
-                            <% products.forEach(product => { %>
-                                <tr>
-                                    <td>
-                                        <%= product.name %>
-                                    </td>
-                                    <td>
-                                        <%= product.productType %>
-                                    </td>
-                                    <td>
-                                        <%= product.categoryId ? product.categoryId.name : 'N/A' %>
-                                    </td>
-                                    <td>
-                                        <%= product.basePrice %>
-                                    </td>
-                                    <td>
-                                        <%= product.totalStock %>
-                                    </td>
-                                    <td>
-                                        <div class="variant-cell">
-                                        <span class="variant-count"><%=product.variantCount%></span>
-                                        <a type="button" class="manage-variants-link"
-                                                onclick="openManageVariantsModal('<%=product._id%>');return false;">
-                                        Manage
-                                        </a>
-                                        </div>                                                
-                                    </td>
-                                    <td>
-                                        <label class="product-toggle">
-                                         <input
-                                              type="checkbox"
-                                               <%= product.isListed ? 'checked' : '' %>
-                                                   onchange="toggleProductStatus('<%= product._id %>', this.checked,this)">
-                                                 <span class="product-toggle-slider"></span>
-                                        </label>
-                                    </td>
-                                    <td>
-                                        <div class="product-actions">
-                                            <a href="#"
-                                               class="edit-product-link"
-                                               data-product="<%= encodeURIComponent(JSON.stringify(product)) %>">
-                                                Edit
-                                            </a>
-                                            <a href="#"
-                                               class="delete-product-link"
-                                               data-product-id="<%= product._id %>"
-                                               data-product-name="<%= product.name %>">
-                                                Delete
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            <% }) %>
-                        <% } else { %>
-                            <tr>
-                                <td colspan="8" class="product-empty-row">
-                                    No products found
-                                </td>
-                            </tr>
-
-                        <% } %>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <!-- Pagination -->
-        <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
-            <div class="product-pagination">
-
-                <% for (let i = 1; i <= totalPages; i++) { %>
-                    <a
-                        href="/admin/products?page=<%= i %>&search=<%= search || '' %>"
-                        class="<%= currentPage === i ? 'active' : '' %>"
-                    >
-                        <%= i %>
-                    </a>
+                <input
+                  type="text"
+                  name="search"
+                  placeholder="Search products by name or category..."
+                  value="<%= search || '' %>"
+                />
+                <button type="submit" class="search-btn">Search</button>
+                <% if (search) { %>
+                <a href="/admin/products" class="clear-search"> Cancel </a>
                 <% } %>
+              </form>
             </div>
-        <% } %>
-    </main>
-</div>
-<div class="product-modal-overlay" id="productModal">
-    <div class="product-modal">
-        <!-- Header -->
-        <div class="product-modal-header">
-            <div>
-                <h2 id="productModalTitle">
-                    Add New Product
-                </h2>
-                <p id="productModalSubtitle">
-                    Create a new product
-                </p>
+            <div class="product-filter">
+              <select id="productFilter">
+                <option value="all">All Products</option>
+                <option value="listed">Listed Products</option>
+                <option value="unlisted">Unlisted Products</option>
+              </select>
             </div>
-            <button
-                type="button"
-                class="product-modal-close"
-                onclick="closeProductModal()"
-            >
-                ×
-            </button>
-        </div>
-        <!-- Body -->
-        <div class="product-modal-body">
-            <!-- ================= Basic Information ================= -->
-            <div class="product-form-section">
-                <h3>Basic Information</h3>
-                <div class="product-form-group">
-                    <label for="productName">
-                        Product Name
-                    </label>
-                    <input
-                        type="text"
-                        id="productName"
-                        class="product-input"
-                        placeholder=""
-                    >
-                    <p
-                        id="productNameError"
-                        class="product-field-error"
-                    ></p>
-                </div>
-                <div class="product-form-row">
-                    <div class="product-form-group">
-                        <label for="productPrice">
-                            Price
-                        </label>
-                        <input
-                            type="number"
-                            id="productPrice"
-                            class="product-input"
-                            placeholder="₹499.99"
-                            min="0"
-                            step="0.01"
-                        >
-                        <p
-                            id="productPriceError"
-                            class="product-field-error"
-                        ></p>
-                    </div>
-                    <div class="product-form-group">
-                        <label for="productStock">
-                            Stock Level
-                        </label>
-                        <input
-                            type="number"
-                            id="productStock"
-                            class="product-input"
-                            placeholder="1"
-                            min="0"
-                        >
-                        <p
-                            id="productStockError"
-                            class="product-field-error"
-                        ></p>
-                    </div>
-                </div>
-            </div>
-            <!-- ================= Classification ================= -->
-            <div class="product-form-section">
-                <h3>Classification</h3>
-                <div class="product-form-row">
-                    <div class="product-form-group">
-                        <label for="productType">
-                            Product Type
-                        </label>
-                        <select
-                            id="productType"
-                            class="product-input"
-                        >
-                            <option value="component">
-                                PC Component
-                            </option>
-                            <option value="pre_built">
-                                Pre-Built PC
-                            </option>
-                        </select>
-                        <p id="productTypeError" class="product-field-error"></p>
-                    </div>
-                    <div class="product-form-group">
-                        <label for="productCategory">
-                            Specific Category
-                        </label>
-                        <select
-                            id="productCategory"
-                            class="product-input"
-                        >
-                            <option value="">
-                                Select Category
-                            </option>
-                            <% if (categories) { %>
-                                <% categories.forEach(category => { %>
-                                    <option
-                                        value="<%= category._id %>"
-                                    >
-                                        <%= category.name %>
-                                    </option>
-                                <% }) %>
-                            <% } %>
-                        </select>
-                        <p
-                            id="productCategoryError"
-                            class="product-field-error"
-                        ></p>
-                    </div>
-                </div>
-            </div>
-            <!-- ================= Image Management ================= -->
-            <div class="product-form-section">
-                <h3>Image Management</h3>
-                <div class="product-form-group">
-                    <label>
-                        Primary Product Image
-                    </label>
-                    <div class="primary-image-wrapper">
-                        <div
-                         class="primary-image-upload"
-                        id="primaryImageUpload"
-                        >
-                        <span class="gallery-placeholder">+</span>
-                         <input
-                        type="file"
-                        id="primaryImageInput"
-                        accept="image/png,image/jpeg,image/webp"
-                        hidden
-                        >
-                        </div>
-                    </div>
-                    <p
-                        id="primaryImageError"
-                        class="product-field-error"
-                    ></p>
-                </div>
-                <div class="product-form-group">
-    <label>
-        Additional  Images
-    </label>
-    <div
-        class="gallery-upload-grid"
-        id="galleryUploadGrid"
-    >
-    </div>
-    <button
-        type="button"
-        class="add-gallery-image-btn"
-        id="addGalleryImageBtn"
-    >
-        + Add Image
-    </button>
-    <p class="product-image-help">
-        Add additional product images. At least 3 images are required in total.
-    </p>
-</div>
-            </div>
-            <!-- ================= Description ================= -->
-            <div class="product-form-section">
-                <div class="product-form-group">
-                    <label for="productDescription">
-                        Short Description
-                    </label>
-                    <textarea
-                        id="productDescription"
-                        class="product-textarea"
-                        placeholder="Brief product summary (1-5 sentences)"
-                    ></textarea>
-                </div>
-            </div>
-            <!-- ================= Features ================= -->
-            <div class="product-form-section">
-                <div class="product-form-group">
-                    <label>
-                        Product Features
-                    </label>
-                    <div id="productFeaturesEditor"></div>
-                    <!-- <textarea
-                        id="productFeatures"
-                        class="product-features-editor"
-                        placeholder="Example:
-                        • Base clock: 3.0 GHz
-                        • Boost clock: 5.8 GHz
-                        • Compatible with: LGA 1700 socket
-                        • Includes advanced thermal management"
-                    ></textarea> -->
-                    <p class="product-editor-help">
-                        Use the editor above to format your text with bold,
-                        italic, and bullet points
-                    </p>
-                </div>
-            </div>
-            <!-- ================= Specifications ================= -->
-            <div class="product-form-section">
-                <div class="product-form-group">
-                    <label>
-                        Product Specifications
-                    </label>
-                    <div
-                        id="specificationsContainer"
-                        class="specifications-container"
-                    >
-                    </div>
-                    <button
+          </div>
+
+          <div class="product-table-wrapper">
+            <table class="product-table">
+              <thead>
+                <tr>
+                  <th class="product-name-column">Product Name</th>
+                  <th>Product Type</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Stock Level</th>
+                  <th>Variants</th>
+                  <th>List / Unlist</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (products && products.length > 0) { %> <% products.forEach(product => { %>
+                <tr>
+                  <td>
+                    <%= product.name %>
+                  </td>
+                  <td>
+                    <%= product.productType %>
+                  </td>
+                  <td>
+                    <%= product.categoryId ? product.categoryId.name : 'N/A' %>
+                  </td>
+                  <td>
+                    <%= product.basePrice %>
+                  </td>
+                  <td>
+                    <%= product.totalStock %>
+                  </td>
+                  <td>
+                    <div class="variant-cell">
+                      <span class="variant-count"><%=product.variantCount%></span>
+                      <a
                         type="button"
-                        class="add-specification-btn"
-                        onclick="addSpecification()"
-                    >
-                        <span>+</span>
-                        Add Specification
-                    </button>
-                </div>
-            </div>
+                        class="manage-variants-link"
+                        onclick="
+                          openManageVariantsModal('<%=product._id%>');
+                          return false;
+                        "
+                      >
+                        Manage
+                      </a>
+                    </div>
+                  </td>
+                  <td>
+                    <label class="product-toggle">
+                      <% if (product.isListed) { %>
+                      <input
+                        type="checkbox"
+                        checked
+                        onchange="toggleProductStatus('<%= product._id %>', this.checked, this)"
+                      />
+                      <% } else { %>
+                      <input
+                        type="checkbox"
+                        onchange="toggleProductStatus('<%= product._id %>', this.checked, this)"
+                      />
+                      <% } %>
+
+                      <span class="product-toggle-slider"></span>
+                    </label>
+                  </td>
+                  <td>
+                    <div class="product-actions">
+                      <a
+                        href="#"
+                        class="edit-product-link"
+                        data-product="<%= encodeURIComponent(JSON.stringify(product)) %>"
+                      >
+                        Edit
+                      </a>
+                      <a
+                        href="#"
+                        class="delete-product-link"
+                        data-product-id="<%= product._id %>"
+                        data-product-name="<%= product.name %>"
+                      >
+                        Delete
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                <% }) %>
+                <% } else { %>
+                <tr>
+                  <td colspan="8" class="product-empty-row">No products found</td>
+                </tr>
+
+                <% } %>
+              </tbody>
+            </table>
+          </div>
         </div>
-        <!-- Footer -->
-        <div class="product-modal-footer">
-            <button
-                type="button"
-                class="product-modal-cancel-btn"
-                id="productModalCancelBtn"
-                onclick="closeProductModal()"
-            >
-                Cancel
-            </button>
-            <button
-                type="button"
-                class="product-modal-save-btn"
-                id="productModalSaveBtn"
-                onclick="saveProduct()"
-            >
-                Save Product
-            </button>
+
+        <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
+        <div class="product-pagination">
+          <% for (let i = 1; i <= totalPages; i++) { %>
+          <a
+            href="/admin/products?page=<%= i %>&search=<%= search || '' %>"
+            class="<%= currentPage === i ? 'active' : '' %>"
+          >
+            <%= i %>
+          </a>
+          <% } %>
         </div>
+        <% } %>
+      </main>
     </div>
-</div>
-<div class="image-crop-modal" id="imageCropModal">
-    <div class="image-crop-modal-content">
+    <div class="product-modal-overlay" id="productModal">
+      <div class="product-modal">
+        <div class="product-modal-header">
+          <div>
+            <h2 id="productModalTitle">Add New Product</h2>
+            <p id="productModalSubtitle">Create a new product</p>
+          </div>
+          <button type="button" class="product-modal-close" onclick="closeProductModal()">×</button>
+        </div>
+
+        <div class="product-modal-body">
+          <div class="product-form-section">
+            <h3>Basic Information</h3>
+            <div class="product-form-group">
+              <label for="productName"> Product Name </label>
+              <input type="text" id="productName" class="product-input" placeholder="" />
+              <p id="productNameError" class="product-field-error"></p>
+            </div>
+            <div class="product-form-row">
+              <div class="product-form-group">
+                <label for="productPrice"> Price </label>
+                <input
+                  type="number"
+                  id="productPrice"
+                  class="product-input"
+                  placeholder="₹499.99"
+                  min="0"
+                  step="0.01"
+                />
+                <p id="productPriceError" class="product-field-error"></p>
+              </div>
+              <div class="product-form-group">
+                <label for="productStock"> Stock Level </label>
+                <input
+                  type="number"
+                  id="productStock"
+                  class="product-input"
+                  placeholder="1"
+                  min="0"
+                />
+                <p id="productStockError" class="product-field-error"></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-form-section">
+            <h3>Classification</h3>
+            <div class="product-form-row">
+              <div class="product-form-group">
+                <label for="productType"> Product Type </label>
+                <select id="productType" class="product-input">
+                  <option value="component">PC Component</option>
+                  <option value="pre_built">Pre-Built PC</option>
+                </select>
+                <p id="productTypeError" class="product-field-error"></p>
+              </div>
+              <div class="product-form-group">
+                <label for="productCategory"> Specific Category </label>
+                <select id="productCategory" class="product-input">
+                  <option value="">Select Category</option>
+                  <% if (categories) { %>
+                  <% categories.forEach(category => { %>
+                  <option value="<%= category._id %>"><%= category.name %></option>
+                  <% }) %>
+                  <% } %>
+                </select>
+                <p id="productCategoryError" class="product-field-error"></p>
+              </div>
+            </div>
+          </div>
+          <div class="product-form-section">
+            <h3>Image Management</h3>
+            <div class="product-form-group">
+              <label> Primary Product Image </label>
+              <div class="primary-image-wrapper">
+                <div class="primary-image-upload" id="primaryImageUpload">
+                  <span class="gallery-placeholder">+</span>
+                  <input
+                    type="file"
+                    id="primaryImageInput"
+                    accept="image/png,image/jpeg,image/webp"
+                    hidden
+                  />
+                </div>
+              </div>
+              <p id="primaryImageError" class="product-field-error"></p>
+            </div>
+            <div class="product-form-group">
+              <label> Additional Images </label>
+              <div class="gallery-upload-grid" id="galleryUploadGrid"></div>
+              <button type="button" class="add-gallery-image-btn" id="addGalleryImageBtn">
+                + Add Image
+              </button>
+              <p class="product-image-help">
+                Add additional product images. At least 3 images are required in total.
+              </p>
+            </div>
+          </div>
+
+          <div class="product-form-section">
+            <div class="product-form-group">
+              <label for="productDescription"> Short Description </label>
+              <textarea
+                id="productDescription"
+                class="product-textarea"
+                placeholder="Brief product summary (1-5 sentences)"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="product-form-section">
+            <div class="product-form-group">
+              <label> Product Features </label>
+              <div id="productFeaturesEditor"></div>
+
+              <p class="product-editor-help">
+                Use the editor above to format your text with bold, italic, and bullet points
+              </p>
+            </div>
+          </div>
+
+          <div class="product-form-section">
+            <div class="product-form-group">
+              <label> Product Specifications </label>
+              <div id="specificationsContainer" class="specifications-container"></div>
+              <button type="button" class="add-specification-btn" onclick="addSpecification()">
+                <span>+</span>
+                Add Specification
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-modal-footer">
+          <button
+            type="button"
+            class="product-modal-cancel-btn"
+            id="productModalCancelBtn"
+            onclick="closeProductModal()"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="product-modal-save-btn"
+            id="productModalSaveBtn"
+            onclick="saveProduct()"
+          >
+            Save Product
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="image-crop-modal" id="imageCropModal">
+      <div class="image-crop-modal-content">
         <div class="image-crop-header">
-            <h3>Crop Image</h3>
-            <button
-                type="button"
-                id="closeCropModal"
-                class="crop-close-btn"
-            >
-                ×
-            </button>
+          <h3>Crop Image</h3>
+          <button type="button" id="closeCropModal" class="crop-close-btn">×</button>
         </div>
         <div class="crop-container">
-            <img
-                id="cropImage"
-                src=""
-                alt="Crop image"
-            >
+          <img id="cropImage" src="" alt="Crop image" />
         </div>
         <div class="image-crop-footer">
-            <button
-                type="button"
-                id="cancelCropBtn"
-                class="product-modal-cancel-btn"
-            >
-                Cancel
-            </button>
-            <button
-                type="button"
-                id="applyCropBtn"
-                class="product-modal-save-btn"
-            >
-                Apply Crop
-            </button>
+          <button type="button" id="cancelCropBtn" class="product-modal-cancel-btn">Cancel</button>
+          <button type="button" id="applyCropBtn" class="product-modal-save-btn">Apply Crop</button>
         </div>
+      </div>
     </div>
-</div>
-<div class="product-delete-modal-overlay" id="deleteProductModal">
-    <div class="product-delete-modal-box">
+    <div class="product-delete-modal-overlay" id="deleteProductModal">
+      <div class="product-delete-modal-box">
         <div class="product-delete-modal-header">
-            <h3>Delete Product</h3>
-            <button
-                type="button"
-                class="product-delete-modal-close"
-                id="closeProductDeleteModal"
-                onclick="closeDeleteProductModal()"
-            >
-                ×
-            </button>
+          <h3>Delete Product</h3>
+          <button
+            type="button"
+            class="product-delete-modal-close"
+            id="closeProductDeleteModal"
+            onclick="closeDeleteProductModal()"
+          >
+            ×
+          </button>
         </div>
         <div class="product-delete-modal-body">
-            <div class="product-delete-warning-icon">
-                ⚠️
-            </div>
-            <p id="productDeleteModalText">
-            </p>
+          <div class="product-delete-warning-icon">⚠️</div>
+          <p id="productDeleteModalText"></p>
         </div>
         <div class="product-delete-modal-footer">
-            <button
-                type="button"
-                class="product-delete-cancel-btn"
-                id="cancelProductDeleteBtn"
-                onclick="closeDeleteProductModal()"
-            >
-                Cancel
-            </button>
-            <button
-                type="button"
-                class="product-delete-confirm-btn"
-                id="confirmProductDeleteBtn"
-            >
-                Delete Product
-            </button>
+          <button
+            type="button"
+            class="product-delete-cancel-btn"
+            id="cancelProductDeleteBtn"
+            onclick="closeDeleteProductModal()"
+          >
+            Cancel
+          </button>
+          <button type="button" class="product-delete-confirm-btn" id="confirmProductDeleteBtn">
+            Delete Product
+          </button>
         </div>
+      </div>
     </div>
-</div>
-<!-- ================= Manage Variants Modal ================= -->
-<div
-    id="manageVariantsModal"
-    class="variant-modal-overlay"
-    style="display: none;"
->
-    <div class="variant-modal">
-        <!-- Header -->
+
+    <div id="manageVariantsModal" class="variant-modal-overlay" style="display: none">
+      <div class="variant-modal">
         <div class="variant-modal-header">
-            <div>
-                <h2 id="variantModalTitle">
-                    Manage Variants
-                </h2>
-                <p
-                    id="variantProductName"
-                    class="variant-product-name"
-                ></p>
-            </div>
-            <button
-                type="button"
-                class="variant-modal-close"
-                onclick="closeManageVariantsModal()"
-            >
-                &times;
-            </button>
+          <div>
+            <h2 id="variantModalTitle">Manage Variants</h2>
+            <p id="variantProductName" class="variant-product-name"></p>
+          </div>
+          <button type="button" class="variant-modal-close" onclick="closeManageVariantsModal()">
+            &times;
+          </button>
         </div>
-        <!-- ================= Variant List ================= -->
-         <div id="variantResponseMessage" class="variant-response-message"></div>
-        <div
-            id="variantListView"
-            class="variant-modal-content"
-        >
-            <!-- Category Attributes -->
-            <div class="variant-attributes-section">
-                <div class="variant-section-heading">
-                    <h3>Variant Attributes</h3>
-                    <p>
-                        Attributes defined by the product category
-                    </p>
-                </div>
-                <div
-                    id="variantAttributesContainer"
-                    class="variant-attributes-list"
-                >
-                </div>
-            </div>
-            <!-- Product Variants -->
-            <div class="product-variants-section">
-                <div class="variant-section-heading variant-list-heading">
-                    <div>
-                        <h3>Product Variants</h3>
-                        <p>
-                            Manage the available combinations for this product
-                        </p>
-                    </div>
-                    <button
-                        type="button"
-                        class="variant-add-btn"
-                        onclick="showAddVariantForm()"
-                    >
-                        <span>+</span>
-                        Add Variant
-                    </button>
-                </div>
-                <div
-                    id="variantsContainer"
-                    class="variants-list"
-                >
-                </div>
-            </div>
-        </div>
-        <!-- ================= Add / Edit Form ================= -->
-        <div
-            id="variantFormView"
-            class="variant-modal-content"
-            style="display: none;"
-        >
-            <div class="variant-form-heading">
-                <h3 id="variantFormTitle">
-                    Add Variant
-                </h3>
-                <p>
-                    Enter the values and stock details for this variant.
-                </p>
-            </div>
-            <form id="variantForm">
-                <!-- Dynamic attributes -->
-                <div
-                    id="variantFormAttributes"
-                    class="variant-form-attributes"
-                >
-                </div>
-                <!-- Price -->
-                <div class="variant-form-group">
-                    <label for="variantPrice">
-                        Price
-                    </label>
-                    <input
-                        type="number"
-                        id="variantPrice"
-                        min="0"
-                        step="0.01"
-                        placeholder="Enter variant price"
-                    >
-                    <p
-                        id="variantPriceError"
-                        class="variant-form-error"
-                    ></p>
-                </div>
-                <!-- Stock -->
-                <div class="variant-form-group">
-                    <label for="variantStock">
-                        Stock
-                    </label>
-                    <input
-                        type="number"
-                        id="variantStock"
-                        min="0"
-                        step="1"
-                        placeholder="Enter stock quantity"
-                    >
-                    <p
-                        id="variantStockError"
-                        class="variant-form-error"
-                    ></p>
-                </div>
-                <!-- Status -->
-                <div class="variant-form-group">
-                    <label for="variantStatus">
-                        Status
-                    </label>
-                    <select id="variantStatus">
-                        <option value="true">
-                            Active
-                        </option>
 
-                        <option value="false">
-                            Inactive
-                        </option>
-                    </select>
-                </div>
-                <!-- Form buttons -->
-                <div class="variant-form-actions">
-                    <button
-                        type="button"
-                        class="variant-cancel-btn"
-                        onclick="showVariantList()"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        type="submit"
-                        class="variant-save-btn"
-                    >
-                        Save Variant
-                    </button>
-                </div>
-            </form>
+        <div id="variantResponseMessage" class="variant-response-message"></div>
+        <div id="variantListView" class="variant-modal-content">
+          <div class="variant-attributes-section">
+            <div class="variant-section-heading">
+              <h3>Variant Attributes</h3>
+              <p>Attributes defined by the product category</p>
+            </div>
+            <div id="variantAttributesContainer" class="variant-attributes-list"></div>
+          </div>
+
+          <div class="product-variants-section">
+            <div class="variant-section-heading variant-list-heading">
+              <div>
+                <h3>Product Variants</h3>
+                <p>Manage the available combinations for this product</p>
+              </div>
+              <button type="button" class="variant-add-btn" onclick="showAddVariantForm()">
+                <span>+</span>
+                Add Variant
+              </button>
+            </div>
+            <div id="variantsContainer" class="variants-list"></div>
+          </div>
         </div>
-        <!-- Footer -->
-        <div
-            id="variantModalFooter"
-            class="variant-modal-footer"
-        >
-            <button
-                type="button"
-                class="variant-close-btn"
-                onclick="closeManageVariantsModal()"
-            >
-                Close
-            </button>
+
+        <div id="variantFormView" class="variant-modal-content" style="display: none">
+          <div class="variant-form-heading">
+            <h3 id="variantFormTitle">Add Variant</h3>
+            <p>Enter the values and stock details for this variant.</p>
+          </div>
+          <form id="variantForm">
+            <div id="variantFormAttributes" class="variant-form-attributes"></div>
+
+            <div class="variant-form-group">
+              <label for="variantPrice"> Price </label>
+              <input
+                type="number"
+                id="variantPrice"
+                min="0"
+                step="0.01"
+                placeholder="Enter variant price"
+              />
+              <p id="variantPriceError" class="variant-form-error"></p>
+            </div>
+
+            <div class="variant-form-group">
+              <label for="variantStock"> Stock </label>
+              <input
+                type="number"
+                id="variantStock"
+                min="0"
+                step="1"
+                placeholder="Enter stock quantity"
+              />
+              <p id="variantStockError" class="variant-form-error"></p>
+            </div>
+
+            <div class="variant-form-group">
+              <label for="variantStatus"> Status </label>
+              <select id="variantStatus">
+                <option value="true">Active</option>
+
+                <option value="false">Inactive</option>
+              </select>
+            </div>
+
+            <div class="variant-form-actions">
+              <button type="button" class="variant-cancel-btn" onclick="showVariantList()">
+                Cancel
+              </button>
+              <button type="submit" class="variant-save-btn">Save Variant</button>
+            </div>
+          </form>
         </div>
+
+        <div id="variantModalFooter" class="variant-modal-footer">
+          <button type="button" class="variant-close-btn" onclick="closeManageVariantsModal()">
+            Close
+          </button>
+        </div>
+      </div>
     </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
-<script>
-//  Product Modal Elements 
-const productModal = document.getElementById('productModal');
-const productModalTitle = document.getElementById('productModalTitle');
-const productModalSubtitle =document.getElementById('productModalSubtitle');
-const productModalSaveBtn =document.getElementById('productModalSaveBtn');
-const productModalCancelBtn = document.getElementById('productModalCancelBtn');
-const productName =document.getElementById('productName');
-const productPrice =document.getElementById('productPrice');
-const productStock =document.getElementById('productStock');
-const productNameError =document.getElementById('productNameError');
-const productPriceError =document.getElementById('productPriceError');
-const productStockError =document.getElementById('productStockError');
-const productType = document.getElementById('productType');
-const productTypeError = document.getElementById('productTypeError');
-const productCategory =document.getElementById('productCategory');
-const productCategoryError =document.getElementById('productCategoryError');
-const primaryImageUpload = document.getElementById('primaryImageUpload');
-const primaryImageInput =document.getElementById('primaryImageInput');
-const primaryImageError = document.getElementById('primaryImageError');
-const addGalleryImageBtn = document.getElementById('addGalleryImageBtn');
-const galleryUploadGrid =document.getElementById('galleryUploadGrid');
-const productDescription =document.getElementById('productDescription');
-const productFeaturesEditor =document.getElementById('productFeaturesEditor');
-const specificationsContainer =document.getElementById('specificationsContainer');
-// Cropper variables
-const imageCropModal =document.getElementById('imageCropModal');
-const cropImage =document.getElementById('cropImage');
-const applyCropBtn =document.getElementById('applyCropBtn');
-const cancelCropBtn =document.getElementById('cancelCropBtn');
-const closeCropModal =document.getElementById('closeCropModal');
-let cropper = null;
-let cropTarget = null;
-    function openCropModal(file, target){
-        cropTarget =target;
-        const imageUrl = URL.createObjectURL(file);
-        cropImage.src = imageUrl;
-        imageCropModal.style.display = 'flex';
-        cropImage.onload = function(){
-            if(cropper){
-                cropper.destroy();
-            }
-            cropper  = new Cropper(cropImage,{
-                aspectRation:1,
-                viewMode:1,
-                dragMode:'move',
-                autoCropArea:1,
-                responsive:true,
-                background:false
-            });
-        };
-    }
-    applyCropBtn.addEventListener('click',function(){
-        if(!cropper){
-            return
-        }
-        cropper.getCroppedCanvas({
-            width:1000,
-            height:1000,
-            imageSmoothingEnabled:true,
-            imageSmoothingQuality:'high'
-        })
-        .toBlob(function(blob){
-            const file = new File(
-                [blob],
-                'product-image.jpg',
-                {type:'image/jpeg'}
-            )
-            if(cropTarget ==='primary'){
-                newPrimaryImage = file;
-                showPrimaryImagePreview(file);
-                primaryImageError.textContent='';
-            }else{
-                galleryImages.push(file);
-                createGalleryPreview(file);
-                primaryImageError.textContent='';
-            }
-            closeImageCropModal();
-        },'image/type',0.90);
-    });
-    function closeImageCropModal(){
-        imageCropModal.style.display = 'none';
-        if(cropper){
-            cropper.destroy();
-        }
-        cropImage.src = '';
-        cropTarget = null;
-    }
-    cancelCropBtn.addEventListener('click',closeImageCropModal);
-    closeCropModal.addEventListener('click',closeImageCropModal);
-    const featuresEditor = new Quill('#productFeaturesEditor',{
-        theme:'snow',
-        modules:{
-            toolbar:[['bold','italic'],[{list:'bullet'}]]
-        },
-        placeholder:'Enter product features...'
-    });
-
-    let productModalMode = 'add';
-    let editingProductId = null;
-    let existingSecondaryImages = [];
-    let newPrimaryImage = null;
-    let galleryImages =[];
-  
-    primaryImageUpload.addEventListener('click',()=>{
-        primaryImageInput.click();
-    });
-    primaryImageInput.addEventListener('change',function(){
-        if(!this.files.length){
-            return;
-        }
-        openCropModal(this.files[0],'primary');
-        this.value ='';
-    })
-    function showPrimaryImagePreview(file){
-        const imageUrl = URL.createObjectURL(file);
-            primaryImageUpload.innerHTML= `<img
-            src="${imageUrl}"
-            class="primary-image-preview"
-            alt="Primary Product image">`;
-        
-    }
-    addGalleryImageBtn.addEventListener('click',addGalleyImageInput);
-      function addGalleyImageInput(){
-        const input = document.createElement('input');
-        input.type ='file';
-        input.className = 'gallery-image-input';
-        input.accept= 'image/png,image/jpeg,image/werbp';
-        input.hidden = true;
-        input.addEventListener('change',function(){
-            if(!this.files.length>0){
-                return;
-            }
-            openCropModal(this.files[0],'gallery');
-            this.value = '';
-        });
-        galleryUploadGrid.appendChild(input);
-        input.click();
-    }
-    function createGalleryPreview(file){
-        const imageUrl = URL.createObjectURL(file);
-        const preview = document.createElement('div');
-        preview.classList.add('gallery-image-preview');
-        preview.innerHTML = `
-        <img src="${imageUrl}"
-            alt="Product additional image">
-        <button type="button"
-                class="remove-gallery-image">×</button>`;
-        preview.querySelector('.remove-gallery-image')
-        .addEventListener('click',function(){
-            const index = galleryImages.indexOf(file);
-            if(index!==-1){
-                galleryImages.splice(index,);
-            }
-            preview.remove();
-        });
-        galleryUploadGrid.appendChild(preview);
-    }
-    function openAddProductModal(){
-        productModalMode= 'add';
-        editingProductId = null;
-        productModalTitle.textContent = 'Add New Product';
-        productModalSubtitle.textContent="Create a new product";
-        productModalSaveBtn.textContent= 'Save Product';
-        productModalSaveBtn.disabled=false;
-        clearProductForm();
-        productModal.style.display = 'flex';
-    }
-    function clearProductForm(){
-    productName.value = '';
-    productPrice.value = '';
-    productStock.value = '';
-    productType.value = '';
-    productCategory.value = '';
-    primaryImageInput.value = '';
-    newPrimaryImage = null;
-    galleryImages =[];
-    primaryImageUpload.innerHTML = `
-        <span class="upload-icon">+</span>
-    `;
-    galleryUploadGrid.innerHTML = '';
-    productDescription.value = '';
-    featuresEditor.setContents([]);
-    specificationsContainer.innerHTML = '';
-
-    productNameError.textContent = '';
-    productPriceError.textContent = '';
-    productStockError.textContent = '';
-    productTypeError.textContent = ''
-    productCategoryError.textContent = '';
-    primaryImageError.textContent = '';
-    productName.classList.remove('input-error');
-    productPrice.classList.remove('input-error');
-    productStock.classList.remove('input-error');
-    productCategory.classList.remove('input-error');
-    }
-    document.querySelectorAll('.edit-product-link').forEach(link => {
-    link.addEventListener('click', function (e) {
-        e.preventDefault();
-        const product = JSON.parse(
-            decodeURIComponent(this.dataset.product)
-        );
-        openEditProductModal(product);
-    });
-});
-let originalProductCategoryId = null;
-function getCategoryId(category){
-    return String(category?._id||category||'');
-}
-    function openEditProductModal(product){
-        productModalMode = 'edit';
-        editingProductId = product._id;
-        productModalTitle.textContent= `Edit Product: ${product.name}`;
-        productModalSubtitle.textContent='Update product information';
-        productModalSaveBtn.disabled=false;
-        productModalSaveBtn.textContent = 'Save Changes';
-        productName.value = product.name;
-        productPrice.value = product.basePrice;
-        productStock.value = product.stockLevel;
-        productType.value = product.productType;
-        if(product.categoryId){
-            productCategory.value = product.categoryId._id;
-        }else{
-            productCategory.value= '';
-        }
-        originalProductCategoryId = getCategoryId(product.categoryId);
-        productDescription.value = product.description;
-        featuresEditor.root.innerHTML = product.features ||'';
-        loadspecification(product.specifications||[]);
-        loadExistingProductImages(product);
-        productModal.style.display = 'flex';
-    }
-    productCategory.addEventListener('change',function(){
-        if(!originalProductCategoryId)return;
-        const selectedCategoryId = this.value;
-        if(selectedCategoryId &&
-            selectedCategoryId !== originalProductCategoryId
-        ){
-            const confirmed = confirm('All existing variants will be removed. Do you want to continue?');
-            if(!confirmed){
-            this.value= originalProductCategoryId;
-        }
-        }
-    })
-    function closeProductModal(){
-        clearProductForm()
-        productModal.style.display = 'none';
-    }
-    productType.addEventListener('change',function(){
-        if(this.value ==='pre_built'){
-            productCategory.value='';
-            productCategory.disabled = true;
-        }else{
-            productCategory.disabled = false;
-        }
-    });
-
-    function loadExistingProductImages(product){
-        galleryImages = [];
-        primaryImageInput.value = '';
-        if(product.primaryImage){
-            primaryImageUpload.innerHTML=`
-            <img src="${product.primaryImage}"
-                 class="gallery-image-preview"
-                 alt="Primary product image">`;
-        }else{
-            primaryImageUpload.innerHTML = `<span class= "gallery-placeholder">+</span>`;
-        }
-        existingSecondaryImages = [...(product.secondaryImages||[])];
-        renderExistingGalleryImages();
-    }
-    function renderExistingGalleryImages(){
-        galleryUploadGrid.innerHTML = '';
-        existingSecondaryImages.forEach((imageUrl, index)=>{
-            const preview = document.createElement('div');
-            preview.classList.add('gallery-image-preview');
-            preview.innerHTML = `
-            <img src="${imageUrl}"
-                 alt="Product gallery image">
-                 <button type="button"
-                         class="remove-gallery-image"
-                         date-index="${index}">×</button>`;
-            preview.querySelector('.remove-gallery-image')
-            .addEventListener('click',function(){
-                const imageIndex = Number(this.dataset.index);
-                existingSecondaryImages.splice(imageIndex,1  );
-                renderExistingGalleryImages();
-            });
-            galleryUploadGrid.appendChild(preview);
-        });
-        galleryImages.forEach(file=>{
-            createGalleryPreview(file);
-        })
-    }
-    function addSpecification(name ='',value = ''){
-        const row = document.createElement('div');
-        row.classList.add('specification-row');
-        row.innerHTML = `
-        <input type= 'text' class='specification-name' placeholder ='Specification name'
-        value = '${name}'>
-        <input type= 'text' class='specification-value' placeholder='Specification Value'
-        value = '${value}'>
-        <button type= 'button' class='remove-specification-btn' onclick='removeSpecification(this)'> × </button>
-        `;
-        specificationsContainer.appendChild(row);
-    }
-    function loadspecification(specifications){
-        specificationsContainer.innerHTML ='';
-        specifications.forEach(specification => {
-            addSpecification(specification.name,specification.value);
-        });
-    }
-    function removeSpecification(button){
-        button.parentElement.remove();
-    }
-    function getSpecification(){
-        const rows = specificationsContainer.querySelectorAll('.specification-row');
-        return Array.from(rows).map(row =>{
-            const name = row.querySelector('.specification-name').value.trim();
-            const value = row.querySelector('.specification-value').value.trim();
-            return{name,value};
-        });
-    }
-    //save Product
-    async function saveProduct() {
-        
-        const isValid = validateProductForm();
-        if(!isValid){
-            return;
-        }
-        setProductSavingState(true)
-    try{
-        const features = featuresEditor.root.innerHTML;
-        const formData = new FormData();
-
-        formData.append('name',productName.value.trim());
-        formData.append('basePrice',productPrice.value);
-        formData.append('stockLevel',productStock.value);
-        formData.append('productType',productType.value);
-        formData.append('categoryId',productCategory.value || '');
-        formData.append('description',productDescription.value.trim());
-        formData.append('features',features);
-        formData.append('specifications',JSON.stringify(getSpecification()));
-
-        if(productModalMode === 'add'){
-        formData.append('productImages', newPrimaryImage);
-            galleryImages.forEach(image => {
-            formData.append('productImages', image);
-            });
-        }else{
-            if(newPrimaryImage){
-            formData.append('newPrimaryImage', newPrimaryImage);
-            }
-            galleryImages.forEach(image => {
-                   formData.append('galleryImages', image);
-            });
-            formData.append(
-             'existingSecondaryImages',
-             JSON.stringify(existingSecondaryImages)
-            );
-        }
-        console.log('Product modal mode:', productModalMode);
-        console.log('Editing product ID:', editingProductId);
-        let response;
-        if(productModalMode==='add'){
-            response = await fetch('/admin/products',{
-                method:'POST',
-                body:formData
-            });
-        }else{
-            response = await fetch(`/admin/products/${editingProductId}`,{
-                method:'PUT',
-                body:formData
-            });
-        }
-        const result = await response.json();
-        if(!response.ok){
-
-            console.log(result.message);
-            if(result.field&& result.message){
-                showProductFieldError(result.field, result.message);
-            }else{
-                productMessage.textContent = result.message;
-                productMessage.classList.add('error');
-            }
-            setProductSavingState(false)
-            return;
-        }
-        showToastMessage(result.message,'success');
-        closeProductModal();
-        setTimeout(() => {
-            window.location.reload();  
-        }, 1500);
-    }catch(error){
-        productMessage=textContent='Something went wrong. Please try again';
-        productMessage.classList.add('error');
-        setProductSavingState(false);
-    }
-}
-    function setProductSavingState(isSaving){
-        productModalSaveBtn.disabled=isSaving;
-        productModalCancelBtn.disabled=isSaving;
-        if(isSaving){
-            productModalSaveBtn.textContent='Saving...'
-        }else{
-            productModalSaveBtn.textContent=productModalMode ==='add'
-            ?'Save Product':'Save Changes'
-        }
-    }
-    function validateProductForm() {
-    let isValid = true;
-    
-    productNameError.textContent = '';
-    productPriceError.textContent = '';
-    productStockError.textContent = '';
-    productTypeError.textContent = '';
-    productCategoryError.textContent = '';
-    primaryImageError.textContent = '';
-    if (!productName.value.trim()) {
-        productNameError.textContent = 'Product name is required';
-        isValid = false;
-    }
-    
-    if (!productPrice.value.trim()) {
-        productPriceError.textContent = 'Price is required';
-        isValid = false;
-    } else if (Number(productPrice.value) < 0) {
-        productPriceError.textContent = 'Price must be greater than or equal to 0';
-        isValid = false;
-    }
-    
-    if (!productStock.value.trim()) {
-        productStockError.textContent = 'Stock level is required';
-        isValid = false;
-    } else if (Number(productStock.value) < 0) {
-        productStockError.textContent = 'Stock level cannot be negative';
-        isValid = false;
-    }
-    
-    if (!productType.value) {
-        productTypeError.textContent= 'Product Type is required';
-        isValid = false;
-    }
-    if (productType.value === 'component' && !productCategory.value) {
-        productCategoryError.textContent = 'Category is required for component products';
-        isValid = false;
-    }
-    if (productModalMode === 'add' && !newPrimaryImage) {
-        primaryImageError.textContent = 'Primary image is required';
-        isValid = false;
-    }
-    return isValid;
-}   
-productModal.addEventListener('input',function(event){
-    if(event.target===productName){
-        if(productName.value.trim()){
-            productNameError.textContent='';
-        }
-    }
-    if(event.target===productPrice){
-        if(productPrice.value.trim()){
-            productPriceError.textContent='';
-        }
-    }
-    if(event.target===productStock){
-        if(productStock.value.trim()){
-            productStockError.textContent='';
-        }
-    }
-})
-productModal.addEventListener('change',function(event){
-    if(event.target===productType){
-        if(productType.value){
-            productTypeError.textContent='';
-        }
-    }
-    if(event.target===productCategory){
-        if(productCategory.value){
-            productCategoryError.textContent='';
-        }
-    }
-    
-})
-    function showProductFieldError(field, message) {
-    if (field === 'name') {
-        productNameError.textContent = message;
-    }
-    if (field === 'basePrice') {
-        productPriceError.textContent = message;
-    }
-    if (field === 'stockLevel') {
-        productStockError.textContent = message;
-    }
-    if (field === 'productType') {
-        productTypeError.textContent = message;
-    }
-    if (field === 'categoryId') {
-        productCategoryError.textContent = message;
-    }
-    if (field === 'primaryImage') {
-        primaryImageError.textContent = message;
-    }
-}
-    function showProductMessage(message,type){
-        productMessage.textContent = message;
-        productMessage.classList.remove('success','error');
-        productMessage.classList.add(type);
-        setTimeout(() => {
-            productMessage.style.display = 'none';
-            productMessage.textContent = '';
-            productMessage.classList.remove(type);
-        }, 4000);
-    }
-
-    const productMessage = document.getElementById('productMessage');
-    const savedMessage = sessionStorage.getItem('productMessage');
-    const savedMessageType = sessionStorage.getItem('productMessageType');
-    if(savedMessage){
-        productMessage.textContent = savedMessage;
-        productMessage.classList.add(savedMessageType||'success');
-        sessionStorage.removeItem('productMessage');
-        sessionStorage.removeItem('productMessageType');
-    }
-    document.querySelectorAll('.delete-product-link').forEach(link => {
-    link.addEventListener('click', function (e) {
-        e.preventDefault();
-        const productId = this.dataset.productId;
-        const productName = this.dataset.productName;
-        openDeleteProductModal(productId, productName);
-    });
-});
-    const deleteProductModal =document.getElementById('deleteProductModal');
-    const productDeleteModalText =document.getElementById('productDeleteModalText');
-    const confirmProductDeleteBtn =document.getElementById('confirmProductDeleteBtn');
-    let deletingProductId = null;
-    function openDeleteProductModal(productId, productName){
-
-        deletingProductId = productId;
-        productDeleteModalText.textContent = 
-        `Are you sure you want to delete "${productName}"?`;
-        deleteProductModal.style.display = 'flex';
-    }
-    function closeDeleteProductModal(){
-        deleteProductModal.style.display = 'none';
-        deletingProductId= null;
-    }
-    confirmProductDeleteBtn.addEventListener('click',async function (){
-        if(!deletingProductId){
-            return;
-        }
-        try{
-            const response = await fetch(`/admin/products/${deletingProductId}`,
-                {method:'DELETE'}
-            );
-            const result = await response.json();
-            if(!response.ok){
-                console.log(result.message);
-                return;
-            }
-            
-            closeDeleteProductModal();
-            showToastMessage(result.message,'success');
-            setTimeout(() => {
-                window.location.reload();
-            }, 1500);
-        }catch(error){
-            console.log(error);
-
-        }
-    });
-    async function toggleProductStatus(productId, isListed,checkbox ) {
-        try{
-            const response = await fetch(`/admin/products/${productId}/status`,
-                {
-                    method:"PATCH",
-                    headers:{
-                        'Content-Type':'application/json'
-                    },body:JSON.stringify({isListed})
-                }
-            );
-            const result = await response.json();
-            if(!response.ok){
-                checkbox.checked= !isListed;
-                showToastMessage(result.message,'error')
-                console.log(result.message);
-                return;
-            }
-            showToastMessage(result.message,'success');
-            // sessionStorage.setItem('productMessage',result.message);
-            // sessionStorage.setItem('productMessageType','success');
-            setTimeout(() => {
-                window.location.reload();
-            }, 1500);
-        }catch(error){
-            checkbox.checked = isListed;
-            console.log(error);
-        }
-    }
-    // manage variant modal
-    let currentVariantProductId= null;
-    let editingVariantId = null;
-
-    function openManageVariantsModal(productId){
-        console.log('manage product id ', productId)
-        currentVariantProductId = productId;
-        const modal = document.getElementById('manageVariantsModal');
-        modal.style.display = 'flex';
-        loadProductVariants(productId)
-    }
-    function closeManageVariantsModal(){
-        const modal = document.getElementById('manageVariantsModal');
-        modal.style.display = 'none';
-    }
-    async function loadProductVariants(productId){
-        const attributesContainer = document.getElementById('variantAttributesContainer');
-        const variantsContainer = document.getElementById('variantsContainer');
-        const addVariantBtn = document.querySelector('.variant-add-btn');
-        attributesContainer.innerHTML=`<p>Loading variants attributes...</p>`;
-        variantsContainer.innerHTML = `<p> Loading varinats...</p>`;
-        try{
-            const response = await fetch(`/admin/products/${productId}/variants`);
-            const result = await response.json();
-            if(!response.ok){
-                throw new Error(result.message||'failed to load variants');
-            }
-            const data = result.data;
-            window.currentVariantAttributes = data.variantAttributes||[];
-            window.currentVariants = data.variants||[];
-            document.getElementById('variantProductName').textContent= data.product.name;
-            if(data.variantAttributes && data.variantAttributes.length>0){
-                attributesContainer.innerHTML= 
-                data.variantAttributes.map(attribute=>
-                    `<div class='variant-attribute-item'>
-                        ${attribute}
-                        </div>`
-                ).join('');
-                addVariantBtn.disabled= false;
-            }else{
-                attributesContainer.innerHTML = 
-                `<p> No variant attributes are defined
-                    for this category.
-                    </p>`;
-                addVariantBtn.disabled=true;  
-            }
-            if(data.variants && data.variants.length>0){
-            variantsContainer.innerHTML= data.variants.map(variant=>{
-                const attributesHTML = variant.attributes.map(attribute=>
-                    `<span class='variant-item-attribute'>
-                        <strong>${attribute.name}:</strong>
-                        ${attribute.value}</span>`
-                ).join('');
-                return `
-                        <div class= variant-item>
-                            <div class="variant-item-details">
-                                <div class="variant-item-attributes">${attributesHTML}</div>
-                                <div class="variant-item-info">
-                                    <span>Price:₹${variant.price}</span>
-                                    <span>Stock:${variant.stock}</span>
-                                    <span>${variant.isActive?'Active':'Inactive'}</span>
-                                    </div></div>
-                                    <div class = 'variant-item-actions'>
-                                        <a href ="#" class="variant-edit-link"
-                                        onclick="editVariant('${variant._id}');return false;">Edit</a>
-                                        <a href="#" class= ' variant-remove-link' 
-                                        onclick = "removeVariant('${variant._id}'); return false;">Remove</a>
-                                        </div></div>`;
-                 }).join('');
-        }else{
-            variantsContainer.innerHTML = `<p>No Variants have been added yet.</p>`;
-        }
-    }catch(error){
-        console.log('Load variants error',error);
-        attributesContainer.innerHTML =`<p>Failed to load variants attribututes.</p>`;
-    }
-    }
-    function showVariantList(){
-        document.getElementById('variantListView').style.display= 'block';
-        document.getElementById('variantFormView').style.display = 'none';
-        document.getElementById('variantModalFooter').style.display = 'flex';
-        document.getElementById('variantModalTitle').textContent='Manage Variants';
-        document.getElementById('variantFormTitle').textContent='Add Variants';
-        editingVariantId = null;
-    }
-    function showAddVariantForm(){
-        editingVariantId = null;
-        document.getElementById('variantListView').style.display= 'none';
-        document.getElementById('variantFormView').style.display= 'block';
-        document.getElementById('variantModalFooter').style.display= 'none';
-        document.getElementById('variantModalTitle').textContent= 'Add Variant';
-        document.getElementById('variantFormTitle').textContent = 'Add Variant';
-        document.getElementById('variantForm').reset();
-        createVariantFormfields();
-    }
-    document.getElementById('variantForm').addEventListener(
-        'submit',async function(event) {
-            event.preventDefault();
-            const attributes =[];
-            const attributeInput =document.querySelectorAll('.variant-attribute-input');
-            attributeInput.forEach(input=>{
-                attributes.push({
-                    name:input.dataset.attributeName,
-                    value:input.value.trim()
-                })
-            });
-            const price = document.getElementById('variantPrice').value;
-            const stock = document.getElementById('variantStock').value;
-            const isActive = document.getElementById('variantStatus').value==='true';
-            const isEditing = editingVariantId !==null;
-            const url = isEditing
-                ?`/admin/products/${currentVariantProductId}/variants/${editingVariantId}`
-                :`/admin/products/${currentVariantProductId}/variants`;
-            const method = isEditing
-                ?'PUT'
-                :'POST'
-          try{
-            const response = await fetch(
-                    url,
-                {
-                    method:method,
-                    headers:{'Content-Type':'application/json'},    
-                    body: JSON.stringify({
-                    attributes,
-                    price,
-                    stock,
-                    isActive
-                })
-             }
-            );
-            const result = await  response.json();
-            if(!response.ok){
-                throw new Error(
-                    result.message||'Failed to add variants'
-                );
-            }
-            console.log('variants added successfully',result.data);
-            await loadProductVariants(currentVariantProductId);
-            showVariantList();
-            showVariantMessage(isEditing
-                ?'Variant updated successfully.'
-                :'Variant added successfully',
-                'success'
-            );
-          }catch(error){
-            console.log('add variant error',error);
-            showVariantMessage(error.message,'error');
-          }
-        }
-    );
-
-    function createVariantFormfields(existingAttributes=[]){
-        const container = document.getElementById('variantFormAttributes');
-        container.innerHTML = '';
-        const attributes = window.currentVariantAttributes||[];
-        attributes.forEach(attributeName=>{
-            const existingAttribute = existingAttributes.find(attribute=>attribute.name===attributeName);
-            const value = existingAttribute?existingAttribute.value:'';
-            const wrapper = document.createElement('div');
-            wrapper.className= 'variant-attribute-form-group';
-            wrapper.innerHTML= `
-            <label>${attributeName}</label>
-            <input
-                type='text'
-                class='variant-attribute-input'
-                data-attribute-name="${attributeName}"
-                value ="${value}"
-                placeholder = 'Enter ${attributeName}'>`;
-                container.appendChild(wrapper);
-        })
-    }   
-    function editVariant(variantId){
-        const variant = window.currentVariants.find(variant=> variant._id===variantId);
-        if(!variant){
-            showVariantMessage('Variant not found','error');
-            return;
-        }
-        editingVariantId = variantId;
-        document.getElementById('variantListView').style.display= 'none';
-        document.getElementById('variantFormView').style.display = 'block';
-        document.getElementById('variantModalFooter').style.display = 'none';
-        document.getElementById('variantModalTitle').textContent='Edit Variant';
-        document.getElementById('variantFormTitle').textContent = 'Edit Variant';
-        createVariantFormfields(variant.attributes);
-        document.getElementById('variantPrice').value = variant.price;
-        document.getElementById('variantStock').value = variant.stock;
-        document.getElementById('variantStatus').value = String(variant.isActive);
-
-    }
-    async function removeVariant(variantId){
-        if(!confirm('are you sure want to remove this variant')){
-            return;
-        }
-        try{
-            const response = await fetch(
-                `/admin/products/${currentVariantProductId}/variants/${variantId}`,
-                {method:'DELETE'}
-            );
-            const result = await response.json();
-            if(!response.ok){
-                throw new Error(result.message)
-            }
-            await loadProductVariants(currentVariantProductId);
-            showVariantMessage(result.message,'success');
-        }catch(error){
-            showVariantMessage(error.message,'error');
-        }
-        
-    }
-    function showVariantMessage(message, type){
-        const messageBox = document.getElementById('variantResponseMessage');
-        messageBox.textContent = message;
-        messageBox.className = `variant-response-message ${type}`;
-        setTimeout(() => {
-            messageBox.textContent= '';
-            messageBox.className = 'varinat-response-message';
-        }, 4000);
-    }
-</script>                   
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+    <script src="/admin/js/products.js"></script>
+  </body>
 </html>

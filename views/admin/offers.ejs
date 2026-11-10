@@ -1,697 +1,290 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Offer Management</title>
 
-    <link rel="stylesheet" href="/admin/css/admin-base.css">
-    <link rel="stylesheet" href="/admin/css/offers.css">
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body>
+    <link rel="stylesheet" href="/admin/css/admin-base.css" />
+    <link rel="stylesheet" href="/admin/css/offers.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+  </head>
+  <body>
     <div class="admin-wrapper">
-        <%- include('../partials/admin/sidebar', { active: 'offers' }) %>
+      <%- include('../partials/admin/sidebar', { active: 'offers' }) %>
 
-        <main class="admin-content">
-            <%- include('../partials/admin/topbar') %>
+      <main class="admin-content">
+        <%- include('../partials/admin/topbar') %>
 
-            <section class="offers-page">
-                <div class="offers-page-header">
-                    <div>
-                        <h1 class="offers-page-title">Offer Management</h1>
-                        <p class="offers-page-subtitle">
-                            Create and manage product and category offers
-                        </p>
-                    </div>
+        <section class="offers-page">
+          <div class="offers-page-header">
+            <div>
+              <h1 class="offers-page-title">Offer Management</h1>
+              <p class="offers-page-subtitle">Create and manage product and category offers</p>
+            </div>
 
-                    <button type="button"
-                            class="offer-primary-btn"
-                            onclick="openAddOfferModal()">
-                        <i class="fas fa-plus"></i>
-                        Add Offer
-                    </button>
-                </div>
+            <button type="button" class="offer-primary-btn" onclick="openAddOfferModal()">
+              <i class="fas fa-plus"></i>
+              Add Offer
+            </button>
+          </div>
 
-                <% if (typeof message !== 'undefined' && message) { %>
-                    <div class="offer-alert">
-                        <%= message %>
-                    </div>
-                <% } %>
+          <% if (typeof message !== 'undefined' && message) { %>
+          <div class="offer-alert"><%= message %></div>
+          <% } %>
 
-                <div class="offer-card">
-                    <!-- <div class="offer-card-header">
-                        <h2>All Offers</h2>
-                        <span class="offer-count">
-                            <%= offers ? offers.length : 0 %> offers
-                        </span>
-                    </div> -->
+          <div class="offer-card">
+            <div class="offer-table-wrapper">
+              <table class="offer-table">
+                <thead>
+                  <tr>
+                    <th>Offer Type</th>
+                    <th>Target</th>
+                    <th>Discount</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
 
-                    <div class="offer-table-wrapper">
-                        <table class="offer-table">
-                            <thead>
-                                <tr>
-                                    <th>Offer Type</th>
-                                    <th>Target</th>
-                                    <th>Discount</th>
-                                    <th>Start Date</th>
-                                    <th>End Date</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
+                <tbody>
+                  <% if (offers && offers.length > 0) { %> <% offers.forEach(offer => { %> <% const
+                  now = new Date(); const start = new Date(offer.startDate); const end = new
+                  Date(offer.endDate); let statusText = 'Inactive'; let statusClass = 'inactive'; if
+                  (!offer.isActive) { statusText = 'Inactive'; statusClass = 'inactive'; } else if
+                  (now < start) { statusText = 'Upcoming'; statusClass = 'upcoming'; } else if (now
+                  > end) { statusText = 'Expired'; statusClass = 'expired'; } else { statusText =
+                  'Active'; statusClass = 'active'; } const targetName = offer.offerType ===
+                  'product' ? (offer.productId && offer.productId.name ? offer.productId.name :
+                  'Product unavailable') : (offer.categoryId && offer.categoryId.name ?
+                  offer.categoryId.name : 'Category unavailable'); %>
 
-                            <tbody>
-                                <% if (offers && offers.length > 0) { %>
-                                    <% offers.forEach(offer => { %>
-                                        <%
-                                            const now = new Date();
-                                            const start = new Date(offer.startDate);
-                                            const end = new Date(offer.endDate);
+                  <tr>
+                    <td>
+                      <span class="offer-type-badge <%= offer.offerType %>">
+                        <%= offer.offerType === 'product' ? 'Product Offer' : 'Category Offer' %>
+                      </span>
+                    </td>
 
-                                            let statusText = 'Inactive';
-                                            let statusClass = 'inactive';
+                    <td class="offer-target"><%= targetName %></td>
 
-                                            if (!offer.isActive) {
-                                                statusText = 'Inactive';
-                                                statusClass = 'inactive';
-                                            } else if (now < start) {
-                                                statusText = 'Upcoming';
-                                                statusClass = 'upcoming';
-                                            } else if (now > end) {
-                                                statusText = 'Expired';
-                                                statusClass = 'expired';
-                                            } else {
-                                                statusText = 'Active';
-                                                statusClass = 'active';
-                                            }
+                    <td>
+                      <span class="offer-discount"> <%= offer.discountPercentage %>% </span>
+                    </td>
 
-                                            const targetName =
-                                                offer.offerType === 'product'
-                                                    ? (offer.productId && offer.productId.name
-                                                        ? offer.productId.name
-                                                        : 'Product unavailable')
-                                                    : (offer.categoryId && offer.categoryId.name
-                                                        ? offer.categoryId.name
-                                                        : 'Category unavailable');
-                                        %>
+                    <td>
+                      <%= start.toLocaleDateString('en-IN') %>
+                    </td>
 
-                                        <tr>
-                                            <td>
-                                                <span class="offer-type-badge <%= offer.offerType %>">
-                                                    <%= offer.offerType === 'product'
-                                                        ? 'Product Offer'
-                                                        : 'Category Offer' %>
-                                                </span>
-                                            </td>
+                    <td>
+                      <%= end.toLocaleDateString('en-IN') %>
+                    </td>
 
-                                            <td class="offer-target">
-                                                <%= targetName %>
-                                            </td>
+                    <td>
+                      <span class="offer-status <%= statusClass %>"> <%= statusText %> </span>
+                    </td>
 
-                                            <td>
-                                                <span class="offer-discount">
-                                                    <%= offer.discountPercentage %>%
-                                                </span>
-                                            </td>
+                    <td>
+                      <div class="offer-actions">
+                        <button
+                          type="button"
+                          class="offer-icon-btn edit"
+                          title="Edit offer"
+                          data-id="<%= offer._id %>"
+                          data-type="<%= offer.offerType %>"
+                          data-discount="<%= offer.discountPercentage %>"
+                          data-product="<%= offer.productId ? offer.productId._id : '' %>"
+                          data-category="<%= offer.categoryId ? offer.categoryId._id : '' %>"
+                          data-start="<%= offer.startDate.toISOString() %>"
+                          data-end="<%= offer.endDate.toISOString() %>"
+                          onclick="openEditOfferModal(this)"
+                        >
+                          <i class="fas fa-pen"></i>
+                        </button>
 
-                                            <td>
-                                                <%= start.toLocaleDateString('en-IN') %>
-                                            </td>
+                        <label class="offer-switch" title="Enable or disable offer">
+                          <% if (offer.isActive) { %>
+                          <input
+                            type="checkbox"
+                            checked
+                            onchange="toggleOfferStatus('<%= offer._id %>', this.checked)"
+                          />
+                          <% } else { %>
+                          <input
+                            type="checkbox"
+                            onchange="toggleOfferStatus('<%= offer._id %>', this.checked)"
+                          />
+                          <% } %>
+                          <span class="offer-switch-slider"></span>
+                        </label>
 
-                                            <td>
-                                                <%= end.toLocaleDateString('en-IN') %>
-                                            </td>
-
-                                            <td>
-                                                <span class="offer-status <%= statusClass %>">
-                                                    <%= statusText %>
-                                                </span>
-                                            </td>
-
-                                            <td>
-                                                <div class="offer-actions">
-                                                    <button 
-                                                            type="button"
-                                                            class="offer-icon-btn edit"
-                                                            title="Edit offer"
-                                                            data-id="<%= offer._id %>"
-                                                            data-type="<%= offer.offerType %>"
-                                                            data-discount="<%= offer.discountPercentage %>"
-                                                            data-product="<%= offer.productId ? offer.productId._id : '' %>"
-                                                            data-category="<%= offer.categoryId ? offer.categoryId._id : '' %>"
-                                                            data-start="<%= offer.startDate.toISOString() %>"
-                                                            data-end="<%= offer.endDate.toISOString() %>"
-                                                            onclick="openEditOfferModal(this)">
-                                                        <i class="fas fa-pen"></i>
-                                                    </button>
-
-                                                    <label class="offer-switch"
-                                                           title="Enable or disable offer">
-                                                        <input type="checkbox"
-                                                               <%= offer.isActive ? 'checked' : '' %>
-                                                               onchange="toggleOfferStatus('<%= offer._id %>', this.checked)">
-                                                        <span class="offer-switch-slider"></span>
-                                                    </label>
-
-                                                    <button type="button"
-                                                            class="offer-icon-btn delete"
-                                                            title="Delete offer"
-                                                            onclick="openDeleteOfferModal('<%= offer._id %>')">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    <% }) %>
-                                <% } else { %>
-                                    <tr>
-                                        <td colspan="7" class="offer-empty">
-                                            <i class="fas fa-tags"></i>
-                                            <p>No offers found</p>
-                                            <span>Create your first product or category offer.</span>
-                                        </td>
-                                    </tr>
-                                <% } %>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-        </main>
+                        <button
+                          type="button"
+                          class="offer-icon-btn delete"
+                          title="Delete offer"
+                          onclick="openDeleteOfferModal('<%= offer._id %>')"
+                        >
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <% }) %>
+                  <% } else { %>
+                  <tr>
+                    <td colspan="7" class="offer-empty">
+                      <i class="fas fa-tags"></i>
+                      <p>No offers found</p>
+                      <span>Create your first product or category offer.</span>
+                    </td>
+                  </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
     </div>
 
-    <!-- Add/Edit Offer Modal -->
     <div class="offer-modal-overlay" id="offerModal">
-        <div class="offer-modal" role="dialog"
-             aria-modal="true" aria-labelledby="offerModalTitle">
+      <div class="offer-modal" role="dialog" aria-modal="true" aria-labelledby="offerModalTitle">
+        <div class="offer-modal-header">
+          <div>
+            <h2 id="offerModalTitle">Add Offer</h2>
+            <p>Configure the discount and offer validity</p>
+          </div>
 
-            <div class="offer-modal-header">
-                <div>
-                    <h2 id="offerModalTitle">Add Offer</h2>
-                    <p>Configure the discount and offer validity</p>
+          <button
+            type="button"
+            class="offer-modal-close"
+            onclick="closeOfferModal()"
+            aria-label="Close modal"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <form id="offerForm">
+          <div class="offer-modal-body">
+            <input type="hidden" id="offerId" name="offerId" />
+
+            <div class="offer-form-grid">
+              <div class="offer-form-group">
+                <label for="offerType">Offer Type <span>*</span></label>
+                <select id="offerType" name="offerType" required>
+                  <option value="">Select offer type</option>
+                  <option value="product">Product Offer</option>
+                  <option value="category">Category Offer</option>
+                </select>
+              </div>
+
+              <div class="offer-form-group">
+                <label for="discountPercentage"> Discount Percentage <span>*</span> </label>
+                <div class="offer-percentage-input">
+                  <input
+                    type="number"
+                    id="discountPercentage"
+                    name="discountPercentage"
+                    min="0.01"
+                    max="100"
+                    step="0.01"
+                    placeholder="e.g. 15"
+                    required
+                  />
+                  <span>%</span>
                 </div>
+                <small>Enter a value greater than 0 and up to 100.</small>
+              </div>
 
-                <button type="button"
-                        class="offer-modal-close"
-                        onclick="closeOfferModal()"
-                        aria-label="Close modal">
-                    <i class="fas fa-times"></i>
-                </button>
+              <div class="offer-form-group offer-target-group" id="productTargetGroup">
+                <label for="productId">Product <span>*</span></label>
+                <select id="productId" name="productId">
+                  <option value="">Select product</option>
+                  <% if (products && products.length > 0) { %> <% products.forEach(product => { %>
+                  <option value="<%= product._id %>"><%= product.name %></option>
+                  <% }) %>
+                  <% } %>
+                </select>
+              </div>
+
+              <div class="offer-form-group offer-target-group" id="categoryTargetGroup">
+                <label for="categoryId">Category <span>*</span></label>
+                <select id="categoryId" name="categoryId">
+                  <option value="">Select category</option>
+                  <% if (categories && categories.length > 0) { %> <% categories.forEach(category =>
+                  { %>
+                  <option value="<%= category._id %>"><%= category.name %></option>
+                  <% }) %>
+                  <% } %>
+                </select>
+              </div>
+
+              <div class="offer-form-group">
+                <label for="startDate">Start Date <span>*</span></label>
+                <input type="datetime-local" id="startDate" name="startDate" required />
+              </div>
+
+              <div class="offer-form-group">
+                <label for="endDate">End Date <span>*</span></label>
+                <input type="datetime-local" id="endDate" name="endDate" required />
+              </div>
             </div>
 
-            <form id="offerForm">
-                <div class="offer-modal-body">
-                    <input type="hidden" id="offerId" name="offerId">
+            <div class="offer-form-error" id="offerFormError" role="alert" hidden></div>
+          </div>
 
-                    <div class="offer-form-grid">
-                        <div class="offer-form-group">
-                            <label for="offerType">Offer Type <span>*</span></label>
-                            <select id="offerType" name="offerType" required>
-                                <option value="">Select offer type</option>
-                                <option value="product">Product Offer</option>
-                                <option value="category">Category Offer</option>
-                            </select>
-                        </div>
+          <div class="offer-modal-footer">
+            <button
+              type="button"
+              class="offer-secondary-btn"
+              id="cancelOfferBtn"
+              onclick="closeOfferModal()"
+            >
+              Cancel
+            </button>
 
-                        <div class="offer-form-group">
-                            <label for="discountPercentage">
-                                Discount Percentage <span>*</span>
-                            </label>
-                            <div class="offer-percentage-input">
-                                <input type="number"
-                                       id="discountPercentage"
-                                       name="discountPercentage"
-                                       min="0.01"
-                                       max="100"
-                                       step="0.01"
-                                       placeholder="e.g. 15"
-                                       required>
-                                <span>%</span>
-                            </div>
-                            <small>Enter a value greater than 0 and up to 100.</small>
-                        </div>
-
-                        <div class="offer-form-group offer-target-group"
-                             id="productTargetGroup">
-                            <label for="productId">Product <span>*</span></label>
-                            <select id="productId" name="productId">
-                                <option value="">Select product</option>
-                                <% if (products && products.length > 0) { %>
-                                    <% products.forEach(product => { %>
-                                        <option value="<%= product._id %>">
-                                            <%= product.name %>
-                                        </option>
-                                    <% }) %>
-                                <% } %>
-                            </select>
-                        </div>
-
-                        <div class="offer-form-group offer-target-group"
-                             id="categoryTargetGroup">
-                            <label for="categoryId">Category <span>*</span></label>
-                            <select id="categoryId" name="categoryId">
-                                <option value="">Select category</option>
-                                <% if (categories && categories.length > 0) { %>
-                                    <% categories.forEach(category => { %>
-                                        <option value="<%= category._id %>">
-                                            <%= category.name %>
-                                        </option>
-                                    <% }) %>
-                                <% } %>
-                            </select>
-                        </div>
-
-                        <div class="offer-form-group">
-                            <label for="startDate">Start Date <span>*</span></label>
-                            <input type="datetime-local"
-                                   id="startDate"
-                                   name="startDate"
-                                   required>
-                        </div>
-
-                        <div class="offer-form-group">
-                            <label for="endDate">End Date <span>*</span></label>
-                            <input type="datetime-local"
-                                   id="endDate"
-                                   name="endDate"
-                                   required>
-                        </div>
-                    </div>
-
-                    <div class="offer-form-error" id="offerFormError"
-                         role="alert" hidden></div>
-                </div>
-
-                <div class="offer-modal-footer">
-                    <button type="button"
-                            class="offer-secondary-btn"
-                            id="cancelOfferBtn"
-                            onclick="closeOfferModal()">
-                        Cancel
-                    </button>
-
-                    <button type="submit"
-                            class="offer-primary-btn"
-                            id="saveOfferBtn">
-                        Save Offer
-                    </button>
-                </div>
-            </form>
-        </div>
+            <button type="submit" class="offer-primary-btn" id="saveOfferBtn">Save Offer</button>
+          </div>
+        </form>
+      </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
     <div class="offer-modal-overlay" id="deleteOfferModal">
-        <div class="offer-delete-modal" role="dialog"
-             aria-modal="true" aria-labelledby="deleteOfferTitle">
-
-            <div class="offer-delete-icon">
-                <i class="fas fa-trash-alt"></i>
-            </div>
-
-            <h2 id="deleteOfferTitle">Delete Offer?</h2>
-            <p>Are you sure you want to delete this offer? This action cannot be undone.</p>
-
-            <div class="offer-delete-footer">
-                <button type="button"
-                        class="offer-secondary-btn"
-                        onclick="closeDeleteOfferModal()">
-                    Cancel
-                </button>
-
-                <button type="button"
-                        class="offer-danger-btn"
-                        id="confirmDeleteOfferBtn"
-                        onclick="confirmDeleteOffer()">
-                    Delete Offer
-                </button>
-            </div>
+      <div
+        class="offer-delete-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="deleteOfferTitle"
+      >
+        <div class="offer-delete-icon">
+          <i class="fas fa-trash-alt"></i>
         </div>
+
+        <h2 id="deleteOfferTitle">Delete Offer?</h2>
+        <p>Are you sure you want to delete this offer? This action cannot be undone.</p>
+
+        <div class="offer-delete-footer">
+          <button type="button" class="offer-secondary-btn" onclick="closeDeleteOfferModal()">
+            Cancel
+          </button>
+
+          <button
+            type="button"
+            class="offer-danger-btn"
+            id="confirmDeleteOfferBtn"
+            onclick="confirmDeleteOffer()"
+          >
+            Delete Offer
+          </button>
+        </div>
+      </div>
     </div>
 
-    <script >
-        
-document.addEventListener('DOMContentLoaded', () => {
-    const offerModal = document.getElementById('offerModal');
-    const deleteOfferModal = document.getElementById('deleteOfferModal');
-    const offerForm = document.getElementById('offerForm');
-
-    const offerIdInput = document.getElementById('offerId');
-    const offerTypeInput = document.getElementById('offerType');
-    const productIdInput = document.getElementById('productId');
-    const categoryIdInput = document.getElementById('categoryId');
-    const discountInput = document.getElementById('discountPercentage');
-    const startDateInput = document.getElementById('startDate');
-    const endDateInput = document.getElementById('endDate');
-
-    const productTargetGroup = document.getElementById('productTargetGroup');
-    const categoryTargetGroup = document.getElementById('categoryTargetGroup');
-
-    const offerModalTitle = document.getElementById('offerModalTitle');
-    const saveOfferBtn = document.getElementById('saveOfferBtn');
-    const cancelOfferBtn = document.getElementById('cancelOfferBtn');
-    const offerFormError = document.getElementById('offerFormError');
-    const confirmDeleteOfferBtn = document.getElementById('confirmDeleteOfferBtn');
-
-    let selectedDeleteOfferId = null;
-    let isSaving = false;
-    let isDeleting = false;
-
-    // Convert a date into the format required by datetime-local.
-    function formatDateTimeLocal(dateValue) {
-        if (!dateValue) return '';
-
-        const date = new Date(dateValue);
-
-        if (Number.isNaN(date.getTime())) return '';
-
-        const offset = date.getTimezoneOffset() * 60000;
-
-        return new Date(date.getTime() - offset)
-            .toISOString()
-            .slice(0, 16);
-    }
-
-    // Show form errors inside the modal.
-    function showFormError(message) {
-        offerFormError.textContent = message;
-        offerFormError.hidden = false;
-    }
-
-    function clearFormError() {
-        offerFormError.textContent = '';
-        offerFormError.hidden = true;
-    }
-
-    // Display the correct target dropdown.
-    function updateOfferTarget() {
-        const type = offerTypeInput.value;
-
-        const isProductOffer = type === 'product';
-        const isCategoryOffer = type === 'category';
-
-        productTargetGroup.classList.toggle('visible', isProductOffer);
-        categoryTargetGroup.classList.toggle('visible', isCategoryOffer);
-
-        productIdInput.required = isProductOffer;
-        categoryIdInput.required = isCategoryOffer;
-
-        if (!isProductOffer) {
-            productIdInput.value = '';
-        }
-
-        if (!isCategoryOffer) {
-            categoryIdInput.value = '';
-        }
-    }
-
-    // Open the add offer modal.
-    window.openAddOfferModal = function () {
-        offerForm.reset();
-
-        offerIdInput.value = '';
-        offerModalTitle.textContent = 'Add Offer';
-        saveOfferBtn.textContent = 'Save Offer';
-
-        clearFormError();
-        updateOfferTarget();
-
-        offerModal.classList.add('show');
-        document.body.style.overflow = 'hidden';
-    };
-
-    // Close the add/edit modal.
-    window.closeOfferModal = function () {
-        if (isSaving) return;
-
-        offerModal.classList.remove('show');
-        document.body.style.overflow = '';
-        clearFormError();
-    };
-
-    // Open the edit modal and load the selected offer.
-    window.openEditOfferModal = function (button) {
-    clearFormError();
-
-    offerForm.reset();
-
-    const offer = button.dataset;
-
-    offerIdInput.value = offer.id;
-    offerTypeInput.value = offer.type;
-    discountInput.value = offer.discount;
-
-    productIdInput.value = offer.product;
-    categoryIdInput.value = offer.category;
-
-    startDateInput.value = formatDateTimeLocal(offer.start);
-    endDateInput.value = formatDateTimeLocal(offer.end);
-
-    offerModalTitle.textContent = 'Edit Offer';
-    saveOfferBtn.textContent = 'Save Changes';
-
-    updateOfferTarget();
-
-    offerModal.classList.add('show');
-    document.body.style.overflow = 'hidden';
-};
-    function validateOfferForm() {
-        const offerType = offerTypeInput.value;
-        const discount = Number(discountInput.value);
-        const startDate = new Date(startDateInput.value);
-        const endDate = new Date(endDateInput.value);
-
-        if (!['product', 'category'].includes(offerType)) {
-            return 'Please select a valid offer type.';
-        }
-
-        if (!Number.isFinite(discount) || discount <= 0 || discount > 100) {
-            return 'Discount percentage must be greater than 0 and at most 100.';
-        }
-
-        if (offerType === 'product' && !productIdInput.value) {
-            return 'Please select a product.';
-        }
-
-        if (offerType === 'category' && !categoryIdInput.value) {
-            return 'Please select a category.';
-        }
-
-        if (!startDateInput.value || !endDateInput.value) {
-            return 'Please select both start and end dates.';
-        }
-
-        if (
-            Number.isNaN(startDate.getTime()) ||
-            Number.isNaN(endDate.getTime())
-        ) {
-            return 'Please provide valid dates.';
-        }
-
-        if (endDate <= startDate) {
-            return 'The end date must be later than the start date.';
-        }
-
-        return null;
-    }
-
-    // Create or update an offer.
-    offerForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-
-        if (isSaving) return;
-
-        clearFormError();
-
-        const validationError = validateOfferForm();
-
-        if (validationError) {
-            showFormError(validationError);
-            return;
-        }
-
-        const offerId = offerIdInput.value.trim();
-        const isEditing = Boolean(offerId);
-
-        const payload = {
-            offerType: offerTypeInput.value,
-            discountPercentage: Number(discountInput.value),
-            startDate: new Date(startDateInput.value).toISOString(),
-            endDate: new Date(endDateInput.value).toISOString(),
-            productId: offerTypeInput.value === 'product'
-                ? productIdInput.value
-                : null,
-            categoryId: offerTypeInput.value === 'category'
-                ? categoryIdInput.value
-                : null
-        };
-
-        isSaving = true;
-        saveOfferBtn.disabled = true;
-        cancelOfferBtn.disabled = true;
-        saveOfferBtn.textContent = isEditing ? 'Saving...' : 'Creating...';
-
-        try {
-            const response = await fetch(
-                isEditing
-                    ? `/admin/offers/${encodeURIComponent(offerId)}`
-                    : '/admin/offers',
-                {
-                    method: isEditing ? 'PUT' : 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Accept: 'application/json'
-                    },
-                    credentials: 'same-origin',
-                    body: JSON.stringify(payload)
-                }
-            );
-
-            const result = await response.json();
-
-            if (!response.ok || result.success === false) {
-                throw new Error(result.message || 'Failed to save offer.');
-            }
-            showToastMessage(result.message,'success')
-            setTimeout(() => {
-                window.location.reload();
-            }, 1400);
-        } catch (error) {
-            console.log('add offer error',error);
-            showToastMessage(error.message,'error');
-        } finally {
-            isSaving = false;
-            saveOfferBtn.disabled = false;
-            cancelOfferBtn.disabled = false;
-            saveOfferBtn.textContent = isEditing ? 'Save Changes' : 'Save Offer';
-        }
-    });
-
-    // Enable or disable an offer.
-    window.toggleOfferStatus = async function (offerId, isActive) {
-        const checkbox = document.querySelector(
-            `.offer-switch input[onchange*="${offerId}"]`
-        );
-
-        if (checkbox) checkbox.disabled = true;
-
-        try {
-            const response = await fetch(
-                `/admin/offers/${encodeURIComponent(offerId)}/status`,
-                {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Accept: 'application/json'
-                    },
-                    credentials: 'same-origin',
-                    body: JSON.stringify({ isActive })
-                }
-            );
-
-            const result = await response.json();
-
-            if (!response.ok || result.success === false) {
-                throw new Error(result.message || 'Failed to update offer status.');
-            }
-            showToastMessage(result.message,'success')
-            setTimeout(() => {
-                window.location.reload();
-            }, 1400);
-        } catch (error) {
-            if (checkbox) checkbox.checked = !isActive;
-            showToastMessage(error.message,'error')
-        } finally {
-            if (checkbox) checkbox.disabled = false;
-        }
-    };
-
-    // Open the delete confirmation modal.
-    window.openDeleteOfferModal = function (offerId) {
-        selectedDeleteOfferId = offerId;
-
-        deleteOfferModal.classList.add('show');
-        document.body.style.overflow = 'hidden';
-    };
-
-    // Close the delete confirmation modal.
-    window.closeDeleteOfferModal = function () {
-        if (isDeleting) return;
-
-        deleteOfferModal.classList.remove('show');
-        selectedDeleteOfferId = null;
-        document.body.style.overflow = '';
-    };
-
-    // Delete the selected offer.
-    window.confirmDeleteOffer = async function () {
-        if (!selectedDeleteOfferId || isDeleting) return;
-
-        isDeleting = true;
-        confirmDeleteOfferBtn.disabled = true;
-        confirmDeleteOfferBtn.textContent = 'Deleting...';
-
-        try {
-            const response = await fetch(
-                `/admin/offers/${encodeURIComponent(selectedDeleteOfferId)}`,
-                {
-                    method: 'DELETE',
-                    headers: {
-                        Accept: 'application/json'
-                    },
-                    credentials: 'same-origin'
-                }
-            );
-
-            const result = await response.json();
-
-            if (!response.ok || result.success === false) {
-                throw new Error(result.message || 'Failed to delete offer.');
-            }
-            showToastMessage(result.message,'success')
-            setTimeout(() => {
-                window.location.reload();
-            }, 1400);
-        } catch (error) {
-            showToastMessage(error.message,'error');
-        } finally {
-            isDeleting = false;
-            confirmDeleteOfferBtn.disabled = false;
-            confirmDeleteOfferBtn.textContent = 'Delete Offer';
-        }
-    };
-
-    // Update target dropdowns when offer type changes.
-    offerTypeInput.addEventListener('change', updateOfferTarget);
-
-    // Close modals when clicking their backdrop.
-    offerModal.addEventListener('click', (event) => {
-        if (event.target === offerModal) {
-            window.closeOfferModal();
-        }
-    });
-
-    deleteOfferModal.addEventListener('click', (event) => {
-        if (event.target === deleteOfferModal) {
-            window.closeDeleteOfferModal();
-        }
-    });
-
-    // Close modals with Escape.
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') {
-            window.closeOfferModal();
-            window.closeDeleteOfferModal();
-        }
-    });
-
-    // Initialize target dropdown visibility.
-    updateOfferTarget();
-});
-
-    </script>
-</body>
+    <script src="/admin/js/offers.js"></script>
+  </body>
 </html>

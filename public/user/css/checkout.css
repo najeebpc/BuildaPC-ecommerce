@@ -1,1467 +1,1324 @@
-/* =========================================
-   CHECKOUT PAGE
-========================================= */
-
 .checkout-page {
-    min-height: calc(100vh - 68px);
-    background: #f3f4f6;
-    padding: 30px 20px 60px;
+  min-height: calc(100vh - 68px);
+  background: #f3f4f6;
+  padding: 30px 20px 60px;
 }
 
-
-/* =========================================
-   CHECKOUT PROGRESS
-========================================= */
-
 .checkout-progress {
-    max-width: 600px;
-    margin: 0 auto 35px;
+  max-width: 600px;
+  margin: 0 auto 35px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .progress-step {
-    display: flex;
-    align-items: center;
-    gap: 9px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
 
-    white-space: nowrap;
+  white-space: nowrap;
 
-    font-size: 14px;
-    color: #111827;
+  font-size: 14px;
+  color: #111827;
 }
 
 .progress-circle {
-    width: 32px;
-    height: 32px;
+  width: 32px;
+  height: 32px;
 
-    border-radius: 50%;
+  border-radius: 50%;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    background: #e5e7eb;
-    color: #6b7280;
+  background: #e5e7eb;
+  color: #6b7280;
 
-    font-size: 14px;
+  font-size: 14px;
 }
 
 .progress-step.active .progress-circle {
-    background: #2f73e9;
-    color: #ffffff;
+  background: #2f73e9;
+  color: #ffffff;
 }
 
 .progress-step.completed .progress-circle {
-    background: #2f73e9;
-    color: #ffffff;
+  background: #2f73e9;
+  color: #ffffff;
 }
 
 .progress-line {
-    width: 96px;
-    height: 4px;
+  width: 96px;
+  height: 4px;
 
-    margin: 0 8px;
+  margin: 0 8px;
 
-    background: #e5e7eb;
+  background: #e5e7eb;
 }
 
 .progress-line.active {
-    background: #2f73e9;
+  background: #2f73e9;
 }
 
-
-/* =========================================
-   MAIN CHECKOUT CONTENT
-========================================= */
-
 .checkout-content {
-    max-width: 900px;
-    margin: 0 auto;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 .checkout-title {
-    margin: 0 0 28px;
+  margin: 0 0 28px;
 
-    font-size: 22px;
-    font-weight: 600;
+  font-size: 22px;
+  font-weight: 600;
 
-    color: #111111;
+  color: #111111;
 }
-
-
-/* =========================================
-   TWO COLUMN LAYOUT
-========================================= */
 
 .checkout-container {
-    display: grid;
-    grid-template-columns: minmax(0, 590px) 282px;
+  display: grid;
+  grid-template-columns: minmax(0, 590px) 282px;
 
-    gap: 24px;
+  gap: 24px;
 
-    align-items: start;
+  align-items: start;
 }
-
-
-/* =========================================
-   COMMON CARD
-========================================= */
 
 .checkout-section {
-    background: #ffffff;
+  background: #ffffff;
 
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
 
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
 
-    padding: 24px;
+  padding: 24px;
 
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
-
-/* =========================================
-   DELIVERY ADDRESS
-========================================= */
-
 .delivery-address {
-    min-height: 176px;
+  min-height: 176px;
 }
 
 .address-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-    margin-bottom: 14px;
+  margin-bottom: 14px;
 }
 
 .address-title {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 
-    margin: 0;
+  margin: 0;
 
-    font-size: 16px;
-    font-weight: 600;
+  font-size: 16px;
+  font-weight: 600;
 
-    color: #111111;
+  color: #111111;
 }
 
 .address-icon {
-    width: 17px;
-    height: 17px;
+  width: 17px;
+  height: 17px;
 
-    color: #6b7280;
+  color: #6b7280;
 }
 
 .change-address-btn {
-    border: none;
-    background: none;
+  border: none;
+  background: none;
 
-    padding: 0;
+  padding: 0;
 
-    color: #1769e0;
+  color: #1769e0;
 
-    font-size: 13px;
-    font-weight: 500;
+  font-size: 13px;
+  font-weight: 500;
 
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .change-address-btn:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .selected-address {
-    padding-left: 26px;
+  padding-left: 26px;
 }
 
 .address-name {
-    margin: 0 0 7px;
+  margin: 0 0 7px;
 
-    font-size: 14px;
-    font-weight: 600;
+  font-size: 14px;
+  font-weight: 600;
 
-    color: #111111;
+  color: #111111;
 }
 
 .address-details {
-    margin: 0;
+  margin: 0;
 
-    font-size: 14px;
-    line-height: 1.7;
+  font-size: 14px;
+  line-height: 1.7;
 
-    color: #5b6472;
+  color: #5b6472;
 }
 
 .address-phone {
-    margin: 4px 0 0;
+  margin: 4px 0 0;
 
-    font-size: 14px;
+  font-size: 14px;
 
-    color: #5b6472;
+  color: #5b6472;
 }
 
-
-/* =========================================
-   NO ADDRESS
-========================================= */
-
 .no-address {
-    padding: 15px 0 5px;
+  padding: 15px 0 5px;
 
-    text-align: center;
+  text-align: center;
 
-    color: #6b7280;
+  color: #6b7280;
 
-    font-size: 14px;
+  font-size: 14px;
 }
 
 .add-address-btn {
-    display: inline-block;
+  display: inline-block;
 
-    margin-top: 12px;
-    padding: 9px 16px;
+  margin-top: 12px;
+  padding: 9px 16px;
 
-    border-radius: 5px;
+  border-radius: 5px;
 
-    background: #2f73e9;
-    color: #ffffff;
+  background: #2f73e9;
+  color: #ffffff;
 
-    text-decoration: none;
+  text-decoration: none;
 
-    font-size: 13px;
+  font-size: 13px;
 }
 
 .add-address-btn:hover {
-    background: #2463cf;
+  background: #2463cf;
 }
 
-
-/* =========================================
-   ORDER ITEMS
-========================================= */
-
 .order-items-section {
-    padding-bottom: 10px;
+  padding-bottom: 10px;
 }
 
 .order-items-title {
-    margin: 0 0 18px;
+  margin: 0 0 18px;
 
-    font-size: 16px;
-    font-weight: 600;
+  font-size: 16px;
+  font-weight: 600;
 
-    color: #111111;
+  color: #111111;
 }
 
 .checkout-item {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 
-    gap: 16px;
+  gap: 16px;
 
-    padding: 0 0 10px;
-    margin-bottom: 20px;
+  padding: 0 0 10px;
+  margin-bottom: 20px;
 
-    border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .checkout-item:last-child {
-    border-bottom: none;
+  border-bottom: none;
 
-    margin-bottom: 0;
-    padding-bottom: 10px;
+  margin-bottom: 0;
+  padding-bottom: 10px;
 }
 
 .checkout-item-image {
-    width: 80px;
-    height: 80px;
+  width: 80px;
+  height: 80px;
 
-    flex-shrink: 0;
+  flex-shrink: 0;
 
-    object-fit: contain;
+  object-fit: contain;
 
-    background: #ffffff;
+  background: #ffffff;
 }
 
 .checkout-item-details {
-    flex: 1;
-    min-width: 0;
+  flex: 1;
+  min-width: 0;
 }
 
 .checkout-item-name {
-    margin: 0 0 7px;
+  margin: 0 0 7px;
 
-    font-size: 14px;
-    font-weight: 500;
+  font-size: 14px;
+  font-weight: 500;
 
-    color: #111111;
+  color: #111111;
 }
 
 .checkout-item-quantity {
-    margin: 0 0 7px;
+  margin: 0 0 7px;
 
-    font-size: 13px;
+  font-size: 13px;
 
-    color: #596273;
+  color: #596273;
 }
 
 .checkout-item-price {
-    margin: 0;
+  margin: 0;
 
-    font-size: 14px;
-    font-weight: 600;
+  font-size: 14px;
+  font-weight: 600;
 
-    color: #111111;
+  color: #111111;
 }
-
-
-/* =========================================
-   VARIANT DETAILS
-========================================= */
 
 .checkout-item-variant {
-    margin: 3px 0;
+  margin: 3px 0;
 
-    font-size: 12px;
+  font-size: 12px;
 
-    color: #6b7280;
+  color: #6b7280;
 }
 
-
-/* =========================================
-   ORDER SUMMARY CARD
-========================================= */
-
 .order-summary {
-    background: #ffffff;
+  background: #ffffff;
 
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
 
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
 
-    padding: 24px;
+  padding: 24px;
 
-    position: sticky;
-    top: 20px;
+  position: sticky;
+  top: 20px;
 }
 
 .order-summary-title {
-    margin: 0 0 26px;
+  margin: 0 0 26px;
 
-    font-size: 16px;
-    font-weight: 600;
+  font-size: 16px;
+  font-weight: 600;
 
-    color: #111111;
+  color: #111111;
 }
 
-
-/* =========================================
-   SUMMARY ROWS
-========================================= */
-
 .summary-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-    margin-bottom: 17px;
+  margin-bottom: 17px;
 
-    font-size: 14px;
+  font-size: 14px;
 
-    color: #596273;
+  color: #596273;
 }
 
 .summary-row strong {
-    font-weight: 500;
+  font-weight: 500;
 
-    color: #111111;
+  color: #111111;
 }
 
 .summary-price {
-    color: #111111;
-    font-weight: 500;
+  color: #111111;
+  font-weight: 500;
 }
 
 .shipping-free {
-    color: #16a34a;
-    font-weight: 500;
+  color: #16a34a;
+  font-weight: 500;
 }
 
-/* ==============================
-   Checkout Coupon Section
-============================== */
-
 .coupon-section {
-    margin: 18px 0;
+  margin: 18px 0;
 }
 
 .coupon-title {
-    display: block;
-    margin-bottom: 10px;
-    color: #1e293b;
-    font-size: 14px;
-    font-weight: 600;
+  display: block;
+  margin-bottom: 10px;
+  color: #1e293b;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .coupon-form {
-    display: flex;
-    align-items: stretch;
-    gap: 8px;
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
 }
 
 .coupon-input {
-    flex: 1;
-    width: 100%;
-    min-width: 0;
-    padding: 11px 12px;
-    border: 1px solid #cbd5e1;
-    border-radius: 7px;
-    outline: none;
-    background: #ffffff;
-    color: #1e293b;
-    font-family: inherit;
-    font-size: 13px;
-    text-transform: uppercase;
-    transition: border-color 0.2s, box-shadow 0.2s;
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  padding: 11px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  outline: none;
+  background: #ffffff;
+  color: #1e293b;
+  font-family: inherit;
+  font-size: 13px;
+  text-transform: uppercase;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .coupon-input:focus {
-    border-color: #6366f1;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
 }
 
 .coupon-input::placeholder {
-    color: #94a3b8;
-    text-transform: none;
+  color: #94a3b8;
+  text-transform: none;
 }
 
 .coupon-btn {
-    flex-shrink: 0;
-    padding: 10px 17px;
-    border: none;
-    border-radius: 7px;
-    background: linear-gradient(110deg, #2563eb, #7c3aed);
-    color: #ffffff;
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s, transform 0.2s;
+  flex-shrink: 0;
+  padding: 10px 17px;
+  border: none;
+  border-radius: 7px;
+  background: linear-gradient(110deg, #2563eb, #7c3aed);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
 }
 
 .coupon-btn:hover {
-    transform: translateY(-1px);
-    opacity: 0.92;
+  transform: translateY(-1px);
+  opacity: 0.92;
 }
 
 .coupon-btn:disabled {
-    cursor: not-allowed;
-    opacity: 0.6;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
-/* Coupon success/error message */
-
 .coupon-message {
-    margin: 8px 0 0;
-    font-size: 12px;
-    line-height: 1.5;
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .coupon-message.success {
-    color: #15803d;
+  color: #15803d;
 }
 
 .coupon-message.error {
-    color: #dc2626;
+  color: #dc2626;
 }
-
-/* Applied coupon */
 
 .applied-coupon {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-top: 8px;
-    padding: 2px 8px;
-    border: 1px solid #bbf7d0;
-    border-radius: 8px;
-    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
-    min-height: 34px;
-    box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+  padding: 2px 8px;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+  min-height: 34px;
+  box-sizing: border-box;
 }
 .applied-coupon strong {
-    color: #166534;
-    font-size: 13px;
-    letter-spacing: 0.5px;
+  color: #166534;
+  font-size: 13px;
+  letter-spacing: 0.5px;
 }
 
 .applied-coupon p {
-    margin: 4px 0 0;
-    color: #15803d;
-    font-size: 11px;
+  margin: 4px 0 0;
+  color: #15803d;
+  font-size: 11px;
 }
 
 .applied-coupon button {
-    flex-shrink: 0;
-    padding: 6px 9px;
-    border: 1px solid #fecaca;
-    border-radius: 5px;
-    background: #fff1f2;
-    color: #dc2626;
-    font-family: inherit;
-    font-size: 11px;
-    font-weight: 600;
-    cursor: pointer;
+  flex-shrink: 0;
+  padding: 6px 9px;
+  border: 1px solid #fecaca;
+  border-radius: 5px;
+  background: #fff1f2;
+  color: #dc2626;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .applied-coupon button:hover {
-    background: #ffe4e6;
+  background: #ffe4e6;
 }
 
-/* Coupon discount row */
-
 #couponDiscountRow {
-    padding: 9px 0;
-    color: #15803d;
-    font-size: 13px;
+  padding: 9px 0;
+  color: #15803d;
+  font-size: 13px;
 }
 
 #couponDiscountAmount {
-    color: #15803d;
-    font-weight: 600;
+  color: #15803d;
+  font-weight: 600;
 }
 
-/* Updated checkout total */
-
 .summary-total-price {
-    color: #1e293b;
-    font-weight: 700;
+  color: #1e293b;
+  font-weight: 700;
 }
 
 .checkout-item-price {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
 }
 
 .checkout-original-price {
-    color: #888;
-    font-size: 13px;
-    text-decoration: line-through;
+  color: #888;
+  font-size: 13px;
+  text-decoration: line-through;
 }
 
 .checkout-discounted-price {
-    color: #111111;
-    font-size: 17px;
-    font-weight: 700;
+  color: #111111;
+  font-size: 17px;
+  font-weight: 700;
 }
 
 .checkout-regular-price {
-    font-size: 16px;
-    font-weight: 600;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .checkout-offer-badge {
-    display: inline-block;
-    padding: 3px 7px;
-    border-radius: 4px;
-    background: #dcfce7;
-    color: #15803d;
-    font-size: 11px;
-    font-weight: 700;
+  display: inline-block;
+  padding: 3px 7px;
+  border-radius: 4px;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 11px;
+  font-weight: 700;
 }
 
 .checkout-item-line-total {
-    margin-top: 3px;
-    color: #555;
-    font-size: 12px;
+  margin-top: 3px;
+  color: #555;
+  font-size: 12px;
 }
 
 .offer-savings-price {
-    color: #15803d;
-    font-weight: 600;
+  color: #15803d;
+  font-weight: 600;
 }
 
 /* Mobile */
 
 @media (max-width: 480px) {
-    .coupon-form {
-        gap: 6px;
-    }
+  .coupon-form {
+    gap: 6px;
+  }
 
-    .coupon-input {
-        padding: 10px;
-        font-size: 12px;
-    }
+  .coupon-input {
+    padding: 10px;
+    font-size: 12px;
+  }
 
-    .coupon-btn {
-        padding: 10px 12px;
-        font-size: 12px;
-    }
+  .coupon-btn {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
 
-    .applied-coupon {
-        padding: 10px;
-    }
+  .applied-coupon {
+    padding: 10px;
+  }
 }
-
-/* =========================================
-   SUMMARY DIVIDER
-========================================= */
 
 .summary-divider {
-    height: 1px;
+  height: 1px;
 
-    margin: 18px 5px 18px;
+  margin: 18px 5px 18px;
 
-    background: #b8b8b8;
+  background: #b8b8b8;
 }
 
-
-/* =========================================
-   TOTAL
-========================================= */
-
 .summary-total {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-    margin: 0;
+  margin: 0;
 
-    font-size: 16px;
-    font-weight: 600;
+  font-size: 16px;
+  font-weight: 600;
 
-    color: #111111;
+  color: #111111;
 }
 
 .summary-total-price {
-    font-size: 16px;
-    font-weight: 600;
+  font-size: 16px;
+  font-weight: 600;
 
-    color: #111111;
+  color: #111111;
 }
-
-
-/* =========================================
-   SAVINGS MESSAGE
-========================================= */
 
 .savings-message {
-    margin: 11px 0 18px;
+  margin: 11px 0 18px;
 
-    font-size: 12px;
+  font-size: 12px;
 
-    color: #16a34a;
+  color: #16a34a;
 }
 
-
-/* =========================================
-   CONTINUE TO PAYMENT
-========================================= */
-
 .continue-payment-btn {
-    width: 100%;
-    height: 40px;
+  width: 100%;
+  height: 40px;
 
-    border: none;
-    border-radius: 5px;
+  border: none;
+  border-radius: 5px;
 
-    background: #2f73e9;
-    color: #ffffff;
+  background: #2f73e9;
+  color: #ffffff;
 
-    font-size: 14px;
-    font-weight: 500;
+  font-size: 14px;
+  font-weight: 500;
 
-    cursor: pointer;
+  cursor: pointer;
 
-    transition: background 0.2s ease;
+  transition: background 0.2s ease;
 }
 
 .continue-payment-btn:hover {
-    background: #2463cf;
+  background: #2463cf;
 }
 
 .continue-payment-btn:disabled {
-    background: #9ca3af;
-    cursor: not-allowed;
+  background: #9ca3af;
+  cursor: not-allowed;
 }
 
-
-/* =========================================
-   BACK BUTTON
-========================================= */
-
 .back-address-btn {
-    width: 100%;
-    height: 40px;
+  width: 100%;
+  height: 40px;
 
-    margin-top: 15px;
+  margin-top: 15px;
 
-    border: 1px solid #1769e0;
-    border-radius: 5px;
+  border: 1px solid #1769e0;
+  border-radius: 5px;
 
-    background: #ffffff;
-    color: #1769e0;
+  background: #ffffff;
+  color: #1769e0;
 
-    font-size: 14px;
-    font-weight: 500;
+  font-size: 14px;
+  font-weight: 500;
 
-    cursor: pointer;
+  cursor: pointer;
 
-    transition: all 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .back-address-btn:hover {
-    background: #f0f6ff;
+  background: #f0f6ff;
 }
 
-
-/* =========================================
-   ADDRESS SELECTION MODAL
-   (For Change Address)
-========================================= */
-
 .address-modal-overlay {
-    position: fixed;
+  position: fixed;
 
-    inset: 0;
+  inset: 0;
 
-    z-index: 1000;
+  z-index: 1000;
 
-    display: none;
-    align-items: center;
-    justify-content: center;
+  display: none;
+  align-items: center;
+  justify-content: center;
 
-    padding: 20px;
+  padding: 20px;
 
-    background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.45);
 }
 
 .address-modal-overlay.show {
-    display: flex;
+  display: flex;
 }
 
 .address-modal {
-    width: 100%;
-    max-width: 550px;
+  width: 100%;
+  max-width: 550px;
 
-    max-height: 90vh;
+  max-height: 90vh;
 
-    overflow-y: auto;
+  overflow-y: auto;
 
-    background: #ffffff;
+  background: #ffffff;
 
-    border-radius: 8px;
+  border-radius: 8px;
 
-    padding: 24px;
+  padding: 24px;
 
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 .address-modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .address-modal-title {
-    margin: 0;
+  margin: 0;
 
-    font-size: 18px;
-    font-weight: 600;
+  font-size: 18px;
+  font-weight: 600;
 
-    color: #111111;
+  color: #111111;
 }
 
 .close-address-modal {
-    width: 30px;
-    height: 30px;
+  width: 30px;
+  height: 30px;
 
-    border: none;
-    border-radius: 50%;
+  border: none;
+  border-radius: 50%;
 
-    background: #f3f4f6;
+  background: #f3f4f6;
 
-    color: #374151;
+  color: #374151;
 
-    font-size: 18px;
+  font-size: 18px;
 
-    cursor: pointer;
+  cursor: pointer;
 }
 
-
-/* =========================================
-   ADDRESS OPTION
-========================================= */
-
 .address-option {
-    display: flex;
-    gap: 12px;
+  display: flex;
+  gap: 12px;
 
-    padding: 15px;
+  padding: 15px;
 
-    margin-bottom: 12px;
+  margin-bottom: 12px;
 
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
 
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .address-option:hover {
-    border-color: #2f73e9;
+  border-color: #2f73e9;
 }
 
 .address-option.selected {
-    border-color: #2f73e9;
-    background: #f5f9ff;
+  border-color: #2f73e9;
+  background: #f5f9ff;
 }
 
 .address-option input {
-    margin-top: 3px;
+  margin-top: 3px;
 
-    accent-color: #2f73e9;
+  accent-color: #2f73e9;
 }
 
 .address-option-content {
-    flex: 1;
+  flex: 1;
 }
 
 .address-option-name {
-    margin: 0 0 5px;
+  margin: 0 0 5px;
 
-    font-size: 14px;
-    font-weight: 600;
+  font-size: 14px;
+  font-weight: 600;
 
-    color: #111111;
+  color: #111111;
 }
 
 .address-option-details {
-    margin: 0;
+  margin: 0;
 
-    font-size: 13px;
-    line-height: 1.6;
+  font-size: 13px;
+  line-height: 1.6;
 
-    color: #5b6472;
+  color: #5b6472;
 }
 
-
-/* =========================================
-   ADDRESS OPTION ACTIONS
-========================================= */
-
 .address-option-actions {
-    display: flex;
+  display: flex;
 
-    gap: 10px;
+  gap: 10px;
 
-    margin-top: 8px;
+  margin-top: 8px;
 }
 
 .address-edit-btn {
-    border: none;
-    background: none;
+  border: none;
+  background: none;
 
-    padding: 0;
+  padding: 0;
 
-    color: #1769e0;
+  color: #1769e0;
 
-    font-size: 12px;
+  font-size: 12px;
 
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .address-edit-btn:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
-
-/* =========================================
-   ADD NEW ADDRESS
-========================================= */
-
 .add-new-address {
-    width: 100%;
+  width: 100%;
 
-    padding: 11px;
+  padding: 11px;
 
-    margin-top: 5px;
+  margin-top: 5px;
 
-    border: 1px dashed #1769e0;
-    border-radius: 5px;
+  border: 1px dashed #1769e0;
+  border-radius: 5px;
 
-    background: #ffffff;
-    color: #1769e0;
+  background: #ffffff;
+  color: #1769e0;
 
-    font-size: 13px;
-    font-weight: 500;
+  font-size: 13px;
+  font-weight: 500;
 
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .add-new-address:hover {
-    background: #f5f9ff;
+  background: #f5f9ff;
 }
-/* =========================================
-   CHECKOUT ADDRESS LIST
-========================================= */
 
 .checkout-address-list {
-    display: none;
+  display: none;
 
-    margin-top: 20px;
-    padding-top: 20px;
+  margin-top: 20px;
+  padding-top: 20px;
 
-    border-top: 1px solid #e5e7eb;
+  border-top: 1px solid #e5e7eb;
 }
 
 .checkout-address-list.show {
-    display: block;
+  display: block;
 }
 
 .checkout-address-list-header {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 
 .checkout-address-list-header h3 {
-    margin: 0;
+  margin: 0;
 
-    font-size: 15px;
-    font-weight: 600;
+  font-size: 15px;
+  font-weight: 600;
 
-    color: #111111;
+  color: #111111;
 }
-
 
 /* Address option */
 
 .checkout-address-option {
-    display: flex;
-    justify-content: space-between;
-    gap: 15px;
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
 
-    padding: 15px;
+  padding: 15px;
 
-    margin-bottom: 12px;
+  margin-bottom: 12px;
 
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
 
-    background: #ffffff;
+  background: #ffffff;
 }
 
 .checkout-address-option.selected {
-    border-color: #2f73e9;
-    background: #f7faff;
+  border-color: #2f73e9;
+  background: #f7faff;
 }
 
 .checkout-address-content {
-    flex: 1;
+  flex: 1;
 }
 
 .checkout-address-top {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 
-    margin-bottom: 6px;
+  margin-bottom: 6px;
 }
 
 .checkout-address-top h4 {
-    margin: 0;
+  margin: 0;
 
-    font-size: 14px;
-    font-weight: 600;
+  font-size: 14px;
+  font-weight: 600;
 
-    color: #111111;
+  color: #111111;
 }
 
 .default-address-label {
-    padding: 3px 7px;
+  padding: 3px 7px;
 
-    border-radius: 3px;
+  border-radius: 3px;
 
-    background: #e8f1ff;
-    color: #1769e0;
+  background: #e8f1ff;
+  color: #1769e0;
 
-    font-size: 10px;
-    font-weight: 500;
+  font-size: 10px;
+  font-weight: 500;
 }
 
 .checkout-address-content p {
-    margin: 0 0 6px;
+  margin: 0 0 6px;
 
-    font-size: 13px;
-    line-height: 1.6;
+  font-size: 13px;
+  line-height: 1.6;
 
-    color: #5b6472;
+  color: #5b6472;
 }
 
 .checkout-address-phone {
-    font-size: 13px;
-    color: #5b6472;
+  font-size: 13px;
+  color: #5b6472;
 }
-
 
 /* Address actions */
 
 .checkout-address-actions {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 
-    align-items: flex-end;
-    justify-content: space-between;
+  align-items: flex-end;
+  justify-content: space-between;
 
-    gap: 10px;
+  gap: 10px;
 }
 
 .checkout-edit-address {
-    color: #1769e0;
+  color: #1769e0;
 
-    font-size: 12px;
+  font-size: 12px;
 
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .checkout-edit-address:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .select-address-btn {
-    padding: 7px 14px;
+  padding: 7px 14px;
 
-    border: 1px solid #1769e0;
-    border-radius: 4px;
+  border: 1px solid #1769e0;
+  border-radius: 4px;
 
-    background: #ffffff;
-    color: #1769e0;
+  background: #ffffff;
+  color: #1769e0;
 
-    font-size: 12px;
+  font-size: 12px;
 
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .select-address-btn:hover {
-    background: #f0f6ff;
+  background: #f0f6ff;
 }
-
 
 /* Add address */
 
 .checkout-add-address {
-    display: block;
+  display: block;
 
-    padding: 11px;
+  padding: 11px;
 
-    border: 1px dashed #1769e0;
-    border-radius: 5px;
+  border: 1px dashed #1769e0;
+  border-radius: 5px;
 
-    color: #1769e0;
+  color: #1769e0;
 
-    text-align: center;
-    text-decoration: none;
+  text-align: center;
+  text-decoration: none;
 
-    font-size: 13px;
-    font-weight: 500;
+  font-size: 13px;
+  font-weight: 500;
 }
 
 .checkout-add-address:hover {
-    background: #f5f9ff;
+  background: #f5f9ff;
 }
-/* =========================================
-   CHECKOUT ADD ADDRESS MODAL
-========================================= */
 
 .checkout-address-modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
 }
 
 .checkout-address-modal.show {
-    display: flex;
+  display: flex;
 }
-
 
 /* Background overlay */
 
 .checkout-address-modal-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.45);
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
 }
-
 
 /* Modal box */
 
 .checkout-address-modal-box {
-    position: relative;
-    z-index: 2;
+  position: relative;
+  z-index: 2;
 
-    width: 100%;
-    max-width: 620px;
-    max-height: 90vh;
+  width: 100%;
+  max-width: 620px;
+  max-height: 90vh;
 
-    overflow-y: auto;
+  overflow-y: auto;
 
-    background: #FFFFFF;
-    border-radius: 10px;
+  background: #ffffff;
+  border-radius: 10px;
 
-    padding: 24px;
+  padding: 24px;
 
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
-
 
 /* Header */
 
 .checkout-address-modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-    margin-bottom: 22px;
+  margin-bottom: 22px;
 }
 
 .checkout-address-modal-header h3 {
-    margin: 0;
+  margin: 0;
 
-    font-size: 20px;
-    font-weight: 600;
-    color: #1F2937;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
 }
-
 
 /* Close button */
 
 .checkout-address-modal-close {
-    width: 34px;
-    height: 34px;
+  width: 34px;
+  height: 34px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    padding: 0;
+  padding: 0;
 
-    border: none;
-    border-radius: 5px;
+  border: none;
+  border-radius: 5px;
 
-    background: transparent;
-    color: #64748B;
+  background: transparent;
+  color: #64748b;
 
-    font-size: 24px;
-    line-height: 1;
+  font-size: 24px;
+  line-height: 1;
 
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .checkout-address-modal-close:hover {
-    background: #F1F5F9;
-    color: #1F2937;
+  background: #f1f5f9;
+  color: #1f2937;
 }
-
 
 /* Form */
 
 #checkoutAddressForm {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
-
 
 /* Two column row */
 
 #checkoutAddressForm .row-2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
 }
-
 
 /* Form group */
 
 #checkoutAddressForm .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
-
 
 /* Labels */
 
 #checkoutAddressForm label {
-    font-size: 14px;
-    font-weight: 500;
-    color: #374151;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
 }
-
 
 /* Inputs and select */
 
 #checkoutAddressForm input,
 #checkoutAddressForm select {
-    width: 100%;
-    height: 42px;
+  width: 100%;
+  height: 42px;
 
-    box-sizing: border-box;
+  box-sizing: border-box;
 
-    padding: 0 12px;
+  padding: 0 12px;
 
-    border: 1px solid #D1D5DB;
-    border-radius: 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
 
-    background: #FFFFFF;
+  background: #ffffff;
 
-    color: #1F2937;
+  color: #1f2937;
 
-    font-size: 14px;
+  font-size: 14px;
 
-    outline: none;
+  outline: none;
 
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 #checkoutAddressForm input:focus,
 #checkoutAddressForm select:focus {
-    border-color: #2563EB;
+  border-color: #2563eb;
 
-    box-shadow:
-        0 0 0 3px rgba(37, 99, 235, 0.1);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
-
 
 /* Validation errors */
 
 #checkoutAddressForm .error-text {
-    min-height: 16px;
+  min-height: 16px;
 
-    margin: 0;
+  margin: 0;
 
-    font-size: 12px;
-    color: #DC2626;
+  font-size: 12px;
+  color: #dc2626;
 }
-
 
 /* Modal buttons */
 
 .checkout-address-modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
 
-    margin-top: 8px;
+  margin-top: 8px;
 }
-
 
 /* Cancel */
 
 .address-cancel-btn {
-    height: 42px;
+  height: 42px;
 
-    padding: 0 18px;
+  padding: 0 18px;
 
-    border: 1px solid #D1D5DB;
-    border-radius: 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
 
-    background: #FFFFFF;
-    color: #374151;
+  background: #ffffff;
+  color: #374151;
 
-    font-size: 14px;
-    font-weight: 500;
+  font-size: 14px;
+  font-weight: 500;
 
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .address-cancel-btn:hover {
-    background: #F9FAFB;
-    border-color: #9CA3AF;
+  background: #f9fafb;
+  border-color: #9ca3af;
 }
-
 
 /* Save */
 
 .address-confirm-btn {
-    height: 42px;
+  height: 42px;
 
-    padding: 0 20px;
+  padding: 0 20px;
 
-    border: 1px solid #2563EB;
-    border-radius: 6px;
+  border: 1px solid #2563eb;
+  border-radius: 6px;
 
-    background: #2563EB;
-    color: #FFFFFF;
+  background: #2563eb;
+  color: #ffffff;
 
-    font-size: 14px;
-    font-weight: 500;
+  font-size: 14px;
+  font-weight: 500;
 
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .address-confirm-btn:hover {
-    background: #1D4ED8;
-    border-color: #1D4ED8;
+  background: #1d4ed8;
+  border-color: #1d4ed8;
 }
-
 
 /* Mobile */
 
 @media (max-width: 600px) {
+  .checkout-address-modal-box {
+    width: calc(100% - 30px);
+    max-height: 90vh;
 
-    .checkout-address-modal-box {
-        width: calc(100% - 30px);
-        max-height: 90vh;
+    padding: 20px;
+  }
 
-        padding: 20px;
-    }
+  #checkoutAddressForm .row-2 {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
 
-    #checkoutAddressForm .row-2 {
-        grid-template-columns: 1fr;
-        gap: 16px;
-    }
+  .checkout-address-modal-actions {
+    flex-direction: column-reverse;
+  }
 
-    .checkout-address-modal-actions {
-        flex-direction: column-reverse;
-    }
-
-    .address-cancel-btn,
-    .address-confirm-btn {
-        width: 100%;
-    }
-
+  .address-cancel-btn,
+  .address-confirm-btn {
+    width: 100%;
+  }
 }
 
 @media (max-width: 600px) {
+  .checkout-address-option {
+    flex-direction: column;
+  }
 
-    .checkout-address-option {
-        flex-direction: column;
-    }
-
-    .checkout-address-actions {
-        flex-direction: row;
-        align-items: center;
-        justify-content: flex-end;
-    }
+  .checkout-address-actions {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+  }
 }
-
-/* =========================================
-   RESPONSIVE
-========================================= */
 
 @media (max-width: 900px) {
+  .checkout-content {
+    max-width: 700px;
+  }
 
-    .checkout-content {
-        max-width: 700px;
-    }
+  .checkout-container {
+    grid-template-columns: 1fr;
+  }
 
-    .checkout-container {
-        grid-template-columns: 1fr;
-    }
+  .order-summary {
+    position: static;
+  }
 
-    .order-summary {
-        position: static;
-    }
-
-    .checkout-progress {
-        max-width: 550px;
-    }
+  .checkout-progress {
+    max-width: 550px;
+  }
 }
-
 
 @media (max-width: 600px) {
+  .checkout-page {
+    padding: 20px 15px 40px;
+  }
 
-    .checkout-page {
-        padding: 20px 15px 40px;
-    }
+  .checkout-progress {
+    width: 100%;
+    margin-bottom: 25px;
+  }
 
-    .checkout-progress {
-        width: 100%;
-        margin-bottom: 25px;
-    }
+  .progress-line {
+    width: 35px;
+    margin: 0 5px;
+  }
 
-    .progress-line {
-        width: 35px;
-        margin: 0 5px;
-    }
+  .progress-step {
+    gap: 5px;
+    font-size: 11px;
+  }
 
-    .progress-step {
-        gap: 5px;
-        font-size: 11px;
-    }
+  .progress-circle {
+    width: 28px;
+    height: 28px;
 
-    .progress-circle {
-        width: 28px;
-        height: 28px;
+    font-size: 12px;
+  }
 
-        font-size: 12px;
-    }
+  .checkout-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
 
-    .checkout-title {
-        font-size: 20px;
-        margin-bottom: 20px;
-    }
+  .checkout-section,
+  .order-summary {
+    padding: 18px;
+  }
 
-    .checkout-section,
-    .order-summary {
-        padding: 18px;
-    }
+  .checkout-item-image {
+    width: 65px;
+    height: 65px;
+  }
 
-    .checkout-item-image {
-        width: 65px;
-        height: 65px;
-    }
+  .checkout-item {
+    gap: 12px;
+  }
 
-    .checkout-item {
-        gap: 12px;
-    }
+  .checkout-item-name {
+    font-size: 13px;
+  }
 
-    .checkout-item-name {
-        font-size: 13px;
-    }
-
-    .checkout-item-price {
-        font-size: 13px;
-    }
+  .checkout-item-price {
+    font-size: 13px;
+  }
 }
 
-
 @media (max-width: 400px) {
+  .progress-line {
+    width: 20px;
+  }
 
-    .progress-line {
-        width: 20px;
-    }
+  .progress-step {
+    font-size: 10px;
+  }
 
-    .progress-step {
-        font-size: 10px;
-    }
-
-    .checkout-item-image {
-        width: 55px;
-        height: 55px;
-    }
+  .checkout-item-image {
+    width: 55px;
+    height: 55px;
+  }
 }
 .applied-coupon[hidden],
 #couponDiscountRow[hidden],
 .coupon-form[hidden],
 .coupon-message[hidden] {
-    display: none !important;
+  display: none !important;
 }

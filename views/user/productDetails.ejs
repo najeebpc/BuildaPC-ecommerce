@@ -1,761 +1,366 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
 
-<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <meta charset="UTF-8">
+    <title><%= product.name %> | BuildaPC</title>
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>
-        
-        <%= product.name %> | BuildaPC
-    </title>
-
-    <!-- Your existing user CSS -->
-     <link rel="stylesheet" href="/user/css/home.css">
-    <link rel="stylesheet" href="/user/css/productDetails.css">
-</head>
-<body>
+    <link rel="stylesheet" href="/user/css/home.css" />
+    <link rel="stylesheet" href="/user/css/productDetails.css" />
+  </head>
+  <body>
     <%-include("../../views/partials/user/header.ejs")%>
-    <!-- =====================================================
-         PRODUCT DETAILS PAGE
-    ====================================================== -->
+
     <main class="product-details-page">
-        <div class="product-details-container">
-            <!-- =================================================
-                 BREADCRUMB
-            ================================================== -->
-            <div class="breadcrumb">
-                <a href="/">Home</a>
-                <span>/</span>
-                <% if(product.productType ==='component'){ %>
-                    <a href="/products">PC Compontents</a>
-                 <% } else{%>
-                    <a href="/products/preBuilt">Pre-built PCs</a>
-                    <%}%>
-                <span>/</span>
-                <span class="breadcrumb-current">
-                    <%= product.name %>
-                </span>
+      <div class="product-details-container">
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span>/</span>
+          <% if(product.productType ==='component'){ %>
+          <a href="/products">PC Compontents</a>
+          <% } else{%>
+          <a href="/products/preBuilt">Pre-built PCs</a>
+          <%}%>
+          <span>/</span>
+          <span class="breadcrumb-current"> <%= product.name %> </span>
+        </div>
+        <section class="product-main-card">
+          <div class="product-gallery">
+            <!-- MAIN IMAGE -->
+            <div class="main-product-image" id="mainProductImageContainer">
+              <img
+                id="mainProductImage"
+                src="<%= product.primaryImage %>"
+                alt="<%= product.name %>"
+              />
             </div>
-            <section class="product-main-card">
-                <div class="product-gallery">
-                    <!-- MAIN IMAGE -->
-                    <div class="main-product-image" id="mainProductImageContainer">
-                        <img
-                            id="mainProductImage"
-                            src="<%= product.primaryImage %>"
-                            alt="<%= product.name %>"
-                        >
-                    </div>
-                    <!-- THUMBNAILS -->
-                    <div class="product-thumbnails">
-                        <!-- PRIMARY IMAGE -->
-                        <button
-                            type="button"
-                            class="thumbnail active"
-                            onclick="changeProductImage('<%= product.primaryImage %>', this)"
-                        >
-                            <img
-                                src="<%= product.primaryImage %>"
-                                alt="<%= product.name %>"
-                            >
-                        </button>
-                        <!-- SECONDARY IMAGES -->
-                        <% if (product.secondaryImages && product.secondaryImages.length > 0) { %>
-                            <% product.secondaryImages.forEach(image => { %>
-                                <button
-                                    type="button"
-                                    class="thumbnail"
-                                    onclick="changeProductImage('<%= image %>', this)"
-                                >
-                                    <img
-                                        src="<%= image %>"
-                                        alt="<%= product.name %>" >
-                                </button>
-                            <% }) %>
-                        <% } %>
-                    </div>
-                </div>
-                <!-- =============================================
+            <!-- THUMBNAILS -->
+            <div class="product-thumbnails">
+              <!-- PRIMARY IMAGE -->
+              <button
+                type="button"
+                class="thumbnail active"
+                onclick="changeProductImage('<%= product.primaryImage %>', this)"
+              >
+                <img src="<%= product.primaryImage %>" alt="<%= product.name %>" />
+              </button>
+              <!-- SECONDARY IMAGES -->
+              <% if (product.secondaryImages && product.secondaryImages.length > 0) { %> <%
+              product.secondaryImages.forEach(image => { %>
+              <button
+                type="button"
+                class="thumbnail"
+                onclick="changeProductImage('<%= image %>', this)"
+              >
+                <img src="<%= image %>" alt="<%= product.name %>" />
+              </button>
+              <% }) %>
+              <% } %>
+            </div>
+          </div>
+          <!-- =============================================
                      RIGHT SIDE - PRODUCT INFORMATION
                 ============================================== -->
-                <div class="product-information">
-                    <!-- PRODUCT NAME -->
-                    <h1 class="product-title">
-                        <%= product.name %>
-                    </h1>
-                    <!-- PRICE -->
-                   
-<!-- PRICE -->
-<%
-    const hasVariants = product.variants && product.variants.length > 0;
-    const initialVariant = hasVariants ? product.variants[0] : null;
+          <div class="product-information">
+            <!-- PRODUCT NAME -->
+            <h1 class="product-title"><%= product.name %></h1>
 
-    const initialOriginalPrice = Number(
-        initialVariant
-            ? initialVariant.originalPrice
-            : product.originalPrice
-    );
+            <!-- PRICE -->
+            <% const hasVariants = product.variants && product.variants.length > 0; const
+            initialVariant = hasVariants ? product.variants[0] : null; const initialOriginalPrice =
+            Number( initialVariant ? initialVariant.originalPrice : product.originalPrice ); const
+            initialFinalPrice = Number( initialVariant ? initialVariant.finalPrice :
+            product.finalPrice ); const initialDiscountAmount = Number( initialVariant ?
+            initialVariant.discountAmount : product.discountAmount ); const
+            initialDiscountPercentage = Number( initialVariant ? initialVariant.discountPercentage :
+            product.discountPercentage ); %>
 
-    const initialFinalPrice = Number(
-        initialVariant
-            ? initialVariant.finalPrice
-            : product.finalPrice
-    );
+            <div class="price-section" id="priceSection">
+              <% if (initialDiscountAmount > 0) { %>
+              <div class="product-offer-pricing">
+                <span class="product-original-price" id="originalPrice">
+                  ₹<%= initialOriginalPrice.toLocaleString('en-IN') %>
+                </span>
 
-    const initialDiscountAmount = Number(
-        initialVariant
-            ? initialVariant.discountAmount
-            : product.discountAmount
-    );
+                <span class="product-price discounted" id="productPrice">
+                  ₹<%= initialFinalPrice.toLocaleString('en-IN') %>
+                </span>
 
-    const initialDiscountPercentage = Number(
-        initialVariant
-            ? initialVariant.discountPercentage
-            : product.discountPercentage
-    );
-%>
+                <span class="product-offer-badge" id="productOfferBadge">
+                  <%= initialDiscountPercentage %>% OFF
+                </span>
+              </div>
+              <% } else { %>
+              <div class="product-offer-pricing">
+                <span class="product-original-price" id="originalPrice" hidden></span>
 
-<div class="price-section" id="priceSection">
-    <% if (initialDiscountAmount > 0) { %>
-        <div class="product-offer-pricing">
-            <span class="product-original-price" id="originalPrice">
-                ₹<%= initialOriginalPrice.toLocaleString('en-IN') %>
-            </span>
+                <span class="product-price" id="productPrice">
+                  ₹<%= Number(initialVariant ? initialVariant.price : product.basePrice
+                  ).toLocaleString('en-IN') %>
+                </span>
 
-            <span class="product-price discounted" id="productPrice">
-                ₹<%= initialFinalPrice.toLocaleString('en-IN') %>
-            </span>
+                <span class="product-offer-badge" id="productOfferBadge" hidden></span>
+              </div>
+              <% } %>
 
-            <span class="product-offer-badge" id="productOfferBadge">
-                <%= initialDiscountPercentage %>% OFF
-            </span>
-        </div>
-    <% } else { %>
-        <div class="product-offer-pricing">
-            <span class="product-original-price" id="originalPrice" hidden></span>
+              <span class="tax-text">Inclusive of all taxes</span>
+            </div>
 
-            <span class="product-price" id="productPrice">
-                ₹<%= Number(initialVariant
-                    ? initialVariant.price
-                    : product.basePrice
-                ).toLocaleString('en-IN') %>
-            </span>
-
-            <span class="product-offer-badge" id="productOfferBadge" hidden></span>
-        </div>
-    <% } %>
-
-    <span class="tax-text">Inclusive of all taxes</span>
-</div>
-
-                    <!-- DESCRIPTION -->
-                    <% if (product.description) { %>
-                        <div class="product-description">
-                            <p>
-                                <%= product.description %>
-                            </p>
-                        </div>
-                    <% } %>
-                    <!-- FEATURES -->
-                    <% if (product.features) { %>
-                        <div class="product-features">
-                            <%- product.features %>
-                        </div>
-                    <% } %>
-                    <!-- VARIANTS -->
-                    <% if (product.variants && product.variants.length > 0) { %>
-                        <div class="product-variants-section">
-                        <span class="variant-selection-label">
-                        Available Options
-                        </span>
-                        <div class="product-variant-options">
-                    <% product.variants.forEach(variant => { %>
-                        <button
-                            type="button"
-                            class="product-variant-option <%=variant._id.toString()===product.variants[0]._id.toString()?'selected':''%>"
-                            data-variant-id="<%= variant._id %>"
-                            data-price="<%= variant.price %>"
-                            data-stock="<%= variant.stock %>"
-                            data-wishlist="<%= variant.isInWishlist %>"
-                            data-original-price="<%= variant.originalPrice %>"
-                            data-final-price="<%= variant.finalPrice %>"
-                            data-discount-amount="<%= variant.discountAmount %>"
-                            data-discount-percentage="<%= variant.discountPercentage %>">
-                        <div class="variant-option-details">
+            <!-- DESCRIPTION -->
+            <% if (product.description) { %>
+            <div class="product-description">
+              <p>
+                <%= product.description %>
+              </p>
+            </div>
+            <% } %>
+            <!-- FEATURES -->
+            <% if (product.features) { %>
+            <div class="product-features"><%- product.features %></div>
+            <% } %>
+            <!-- VARIANTS -->
+            <% if (product.variants && product.variants.length > 0) { %>
+            <div class="product-variants-section">
+              <span class="variant-selection-label"> Available Options </span>
+              <div class="product-variant-options">
+                <% product.variants.forEach(variant => { %>
+                <button
+                  type="button"
+                  class="product-variant-option <%=variant._id.toString()===product.variants[0]._id.toString()?'selected':''%>"
+                  data-variant-id="<%= variant._id %>"
+                  data-price="<%= variant.price %>"
+                  data-stock="<%= variant.stock %>"
+                  data-wishlist="<%= variant.isInWishlist %>"
+                  data-original-price="<%= variant.originalPrice %>"
+                  data-final-price="<%= variant.finalPrice %>"
+                  data-discount-amount="<%= variant.discountAmount %>"
+                  data-discount-percentage="<%= variant.discountPercentage %>"
+                >
+                  <div class="variant-option-details">
                     <% variant.attributes.forEach(attribute => { %>
-                            <span class="variant-attribute">
-                                <%= attribute.name %>:
-                                <%= attribute.value %>
-                            </span>
+                    <span class="variant-attribute">
+                      <%= attribute.name %>: <%= attribute.value %>
+                    </span>
                     <% }) %>
-                        </div>
-                        <span class="variant-option-price">
-                        ₹<%= Number(variant.discountAmount>0
-                            ?variant.finalPrice:variant.price    
-                        ).toLocaleString('en-IN') %>
-                        </span>
-                    </button>
-                    <% }) %>
-                            </div>
-                            </div>
-                    <% } %>
-                    <!-- STOCK -->
-                    <%
+                  </div>
+                  <span class="variant-option-price">
+                    ₹<%= Number(variant.discountAmount>0 ?variant.finalPrice:variant.price
+                    ).toLocaleString('en-IN') %>
+                  </span>
+                </button>
+                <% }) %>
+              </div>
+            </div>
+            <% } %>
+            <!-- STOCK -->
+            <%
                         const initialStock = hasVariants
                             ? product.variants[0].stock
                             : product.stockLevel;
                     %>
-                    <div class="stock-section">
-                        <% if (initialStock > 0) { %>
-                            <span class="stock-dot available"></span>
-                            <span class="stock-text" id="availableStockText" 
-                            data-stock="<%=initialStock %>">
-                                <%= initialStock %> available
-                            </span>
-                        <% } else { %>
-                            <span class="stock-dot unavailable"></span>
-                            <span class="stock-text out-of-stock">
-                                Out of stock
-                            </span>
-                        <% } %>
-                    </div>
-                    <!-- QUANTITY -->
-                    <% if (initialStock>0) { %>
-                        <div class="quantity-section"
-                             id="quantitySection"
-                             data-product-stock="<%=initialStock%>">
-                            <span class="quantity-label">
-                                Quantity
-                            </span>
-                            <div class="quantity-control">
-                                <button
-                                    type="button"
-                                    id="decreaseQuantity"
-                                >
-                                    −
-                                </button>
-                                <span id="quantity">
-                                    1
-                                </span>
-                                <button
-                                    type="button"
-                                    id="increaseQuantity"
-                                >
-                                    +
-                                </button>
-                            </div>
-                            <!-- <span class="available-text">
-                                <%= initialStock %> available
-                            </span> -->
-                        </div>
-                    <% } %>
-                    <!-- ACTION BUTTONS -->
-                    <div class="product-actions">
-                    <% if (hasVariants) { %>
-                    <button
-                        type="button"
-                        id="add-cart-button"
-                        class="add-cart-button <%= initialStock <= 0 ? 'disabled' : '' %>"
-                        data-product-id="<%= product._id %>"
-                        <%= initialStock <= 0 ? 'disabled' : '' %>
-                    >
-                        <%= initialStock > 0 ? 'Add to Cart' : 'Out of Stock' %>
-                    </button>
-                    <% } else if (product.stockLevel > 0) { %>
-                    <button
-                        type="button"
-                        id="add-cart-button"
-                        class="add-cart-button"
-                        data-product-id="<%= product._id %>"
-                    >
-                    Add to Cart
-                </button>
-                <% } else { %>
-                <button
-                    type="button"
-                    class="add-cart-button disabled"
-                    disabled
-                    >
-                    Out of Stock
-                </button>
-                <% } %>
-                <%
-                let initialWishlist = false;
-                if (product.variants && product.variants.length > 0) {
-                initialWishlist = product.variants[0].isInWishlist;
-                } else {
-                initialWishlist = product.isInWishlist;
-                }
-                %>
-                
-                <button
-                    type="button"
-                    class="wishlist-button<% if (initialWishlist) { %> checked<% } %>"
-                    id="wishlist-button"
-                    data-product-id="<%= product._id %>"
-                    aria-label="Add to wishlist"
-                >
-                   <span class="wishlist-icon">
-                    <% if (initialWishlist) { %>
-                        ♥
-                    <% } else { %>
-                        ♡
-                    <% } %>
-                    </span>
-                </button>
-                </div>
-                </div>
-            </section>
-            <!-- =================================================
-                 SPECIFICATIONS
-            ================================================== -->
-            <% if (product.specifications && product.specifications.length > 0) { %>
-                <section class="specifications-section">
-                    <h2>
-                        Specifications
-                    </h2>
-                    <div class="specifications-grid">
-                        <% product.specifications.forEach(specification => { %>
-                            <div class="specification-item">
-                                <span class="specification-name">
-                                    <%= specification.name %>
-                                </span>
-                                <span class="specification-value">
-                                    <%= specification.value %>
-                                </span>
-                            </div>
-                        <% }) %>
-                    </div>
-                </section>
+            <div class="stock-section">
+              <% if (initialStock > 0) { %>
+              <span class="stock-dot available"></span>
+              <span class="stock-text" id="availableStockText" data-stock="<%=initialStock %>">
+                <%= initialStock %> available
+              </span>
+              <% } else { %>
+              <span class="stock-dot unavailable"></span>
+              <span class="stock-text out-of-stock"> Out of stock </span>
+              <% } %>
+            </div>
+            <!-- QUANTITY -->
+            <% if (initialStock>0) { %>
+            <div
+              class="quantity-section"
+              id="quantitySection"
+              data-product-stock="<%=initialStock%>"
+            >
+              <span class="quantity-label"> Quantity </span>
+              <div class="quantity-control">
+                <button type="button" id="decreaseQuantity">−</button>
+                <span id="quantity"> 1 </span>
+                <button type="button" id="increaseQuantity">+</button>
+              </div>
+            </div>
             <% } %>
-            <!-- product review secion -->
-            <div class="product-reviews-section">
-            <h2>Customer Reviews</h2>
-            <div class="rating-summary">
-            <div class="average-rating">
-            <strong>
-                <%= ratingSummary.averageRating %>
-            </strong>
-            <span>★</span>
-            <p>
-                <%= ratingSummary.totalReviews %> Reviews
-            </p>
-            </div>
-            </div>
-            <% if (reviews && reviews.length > 0) { %>
-            <div class="reviews-list">
-            <% reviews.forEach(review => { %>
-                <div class="review-item">
-                    <div class="review-header">
+            <!-- ACTION BUTTONS -->
+            <div class="product-actions">
+              <% if (hasVariants) { %> <% if (initialStock <= 0) { %>
+              <button
+                type="button"
+                id="add-cart-button"
+                class="add-cart-button disabled"
+                data-product-id="<%= product._id %>"
+                disabled
+              >
+                Out of Stock
+              </button>
+              <% } else { %>
+              <button
+                type="button"
+                id="add-cart-button"
+                class="add-cart-button"
+                data-product-id="<%= product._id %>"
+              >
+                Add to Cart
+              </button>
+              <% } %>
 
-                        <strong>
-                            <%= review.userId.name %>
-                        </strong>
-                        <span class="review-rating">
-                            <% for (let i = 1; i <= 5; i++) { %>
-                                <%= i <= review.rating ? '★' : '☆' %>
-                            <% } %>
-                        </span>
-                    </div>
-                    <p class="review-comment">
-                        <%= review.comment %>
-                    </p>
-                    <small>
-                        <%= new Date(review.createdAt).toLocaleDateString('en-IN') %>
-                    </small>
-                </div>
+              <% } else if (product.stockLevel > 0) { %>
+
+              <button
+                type="button"
+                id="add-cart-button"
+                class="add-cart-button"
+                data-product-id="<%= product._id %>"
+              >
+                Add to Cart
+              </button>
+
+              <% } else { %>
+
+              <button type="button" class="add-cart-button disabled" disabled>Out of Stock</button>
+
+              <% } %>
+              <% let initialWishlist = false; if (product.variants && product.variants.length > 0) {
+              initialWishlist = product.variants[0].isInWishlist; } else { initialWishlist =
+              product.isInWishlist; } %>
+
+              <button
+                type="button"
+                class="wishlist-button<% if (initialWishlist) { %> checked<% } %>"
+                id="wishlist-button"
+                data-product-id="<%= product._id %>"
+                aria-label="Add to wishlist"
+              >
+                <span class="wishlist-icon">
+                  <% if (initialWishlist) { %> ♥ <% } else { %> ♡ <% } %>
+                </span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <% if (product.specifications && product.specifications.length > 0) { %>
+        <section class="specifications-section">
+          <h2>Specifications</h2>
+          <div class="specifications-grid">
+            <% product.specifications.forEach(specification => { %>
+            <div class="specification-item">
+              <span class="specification-name"> <%= specification.name %> </span>
+              <span class="specification-value"> <%= specification.value %> </span>
+            </div>
             <% }) %>
+          </div>
+        </section>
+        <% } %>
+        <!-- product review secion -->
+        <div class="product-reviews-section">
+          <h2>Customer Reviews</h2>
+          <div class="rating-summary">
+            <div class="average-rating">
+              <strong>
+                <%= ratingSummary.averageRating %>
+              </strong>
+              <span>★</span>
+              <p><%= ratingSummary.totalReviews %> Reviews</p>
             </div>
-            <% } else { %>
-                <p class="no-reviews">
-            No reviews yet.
-            </p>
-            <% } %>
+          </div>
+          <% if (reviews && reviews.length > 0) { %>
+          <div class="reviews-list">
+            <% reviews.forEach(review => { %>
+            <div class="review-item">
+              <div class="review-header">
+                <strong>
+                  <%= review.userId.name %>
+                </strong>
+                <span class="review-rating">
+                  <% for (let i = 1; i <= 5; i++) { %> <%= i <= review.rating ? '★' : '☆' %> <% } %>
+                </span>
+              </div>
+              <p class="review-comment"><%= review.comment %></p>
+              <small>
+                <%= new Date(review.createdAt).toLocaleDateString('en-IN') %>
+              </small>
             </div>
-            <!-- add review section -->
-             <% if (user) { %>
-            <div class="write-review-section">
-            <h3>Write a Review</h3>
-            <div class="review-star-input">
+            <% }) %>
+          </div>
+          <% } else { %>
+          <p class="no-reviews">No reviews yet.</p>
+          <% } %>
+        </div>
+        <!-- add review section -->
+        <% if (user) { %>
+        <div class="write-review-section">
+          <h3>Write a Review</h3>
+          <div class="review-star-input">
             <button type="button" data-rating="1">★</button>
             <button type="button" data-rating="2">★</button>
             <button type="button" data-rating="3">★</button>
             <button type="button" data-rating="4">★</button>
             <button type="button" data-rating="5">★</button>
-            </div>
-            <textarea
-            id="reviewComment"
-            placeholder="Write your review..."
-            ></textarea>
+          </div>
+          <textarea id="reviewComment" placeholder="Write your review..."></textarea>
 
-            <button
-            type="button"
-            id="submitReview">
-            Submit Review
-            </button>
-            <p id="reviewMessage"></p>
-            </div>
-            <% } else{ %>
-                <div class="login-to-review">
-                    <p>Please login to review this product.</p>
-
-                </div>
-            <%}%>
-            <!-- =================================================
-                 RELATED PRODUCTS
-            ================================================== -->
-            <% if (product.relatedProducts && product.relatedProducts.length > 0) { %>
-                <section class="related-section">
-                    <div class="related-header">
-                        <h2>
-                            Related Products
-                        </h2>
-                        <div class="related-navigation">
-                            <button
-                                type="button"
-                                id="relatedPrevious">
-                                ‹
-                            </button>
-                            <button
-                                type="button"
-                                id="relatedNext">
-                                ›
-                            </button>
-                        </div>
-                    </div>
-                    <div
-                        class="related-products"
-                        id="relatedProducts"
-                    >
-                        <% product.relatedProducts.forEach(relatedProduct => { %>
-                            <% if (relatedProduct.isListed !== false && relatedProduct.isDeleted !== true) { %>
-                                <article class="related-product-card">
-                                    <!-- IMAGE -->
-                                    <a
-                                        href="/product/<%= relatedProduct._id %>"
-                                        class="related-image-link"
-                                    >
-                                        <img
-                                            src="<%= relatedProduct.primaryImage %>"
-                                            alt="<%= relatedProduct.name %>"
-                                            class="related-product-image"
-                                        >
-                                    </a>
-                                    <!-- INFORMATION -->
-                                    <div class="related-product-info">
-                                        <span class="related-category">
-                                            Component
-                                        </span>
-                                        <a
-                                            href="/product/<%= relatedProduct._id %>"
-                                            class="related-product-name">
-                                            <%= relatedProduct.name %>
-                                        </a>
-                                        <div class="related-product-price">
-                                            ₹<%= Number(relatedProduct.basePrice).toLocaleString('en-IN') %>
-                                        </div>
-                                        <button
-                                            type="button"
-                                            class="related-cart-button"
-                                            data-product-id="<%= relatedProduct._id %>"
-                                        >
-                                            Add to Cart
-                                        </button>
-                                    </div>
-                                </article>
-                            <% } %>
-                        <% }) %>
-                    </div>
-                </section>
-            <% } %>
+          <button type="button" id="submitReview">Submit Review</button>
+          <p id="reviewMessage"></p>
         </div>
+        <% } else{ %>
+        <div class="login-to-review">
+          <p>Please login to review this product.</p>
+        </div>
+        <%}%>
+
+        <% if (product.relatedProducts && product.relatedProducts.length > 0) { %>
+        <section class="related-section">
+          <div class="related-header">
+            <h2>Related Products</h2>
+            <div class="related-navigation">
+              <button type="button" id="relatedPrevious">‹</button>
+              <button type="button" id="relatedNext">›</button>
+            </div>
+          </div>
+          <div class="related-products" id="relatedProducts">
+            <% product.relatedProducts.forEach(relatedProduct => { %>
+            <% if (relatedProduct.isListed !== false && relatedProduct.isDeleted !== true) { %>
+            <article class="related-product-card">
+              <!-- IMAGE -->
+              <a href="/product/<%= relatedProduct._id %>" class="related-image-link">
+                <img
+                  src="<%= relatedProduct.primaryImage %>"
+                  alt="<%= relatedProduct.name %>"
+                  class="related-product-image"
+                />
+              </a>
+              <!-- INFORMATION -->
+              <div class="related-product-info">
+                <span class="related-category"> Component </span>
+                <a href="/product/<%= relatedProduct._id %>" class="related-product-name">
+                  <%= relatedProduct.name %>
+                </a>
+                <div class="related-product-price">
+                  ₹<%= Number(relatedProduct.basePrice).toLocaleString('en-IN') %>
+                </div>
+                <button
+                  type="button"
+                  class="related-cart-button"
+                  data-product-id="<%= relatedProduct._id %>"
+                >
+                  Add to Cart
+                </button>
+              </div>
+            </article>
+            <% } %>
+            <% }) %>
+          </div>
+        </section>
+        <% } %>
+      </div>
     </main>
     <%- include("../../views/partials/user/footer.ejs") %>
-    <script>
-        //    CHANGE PRODUCT IMAGE
-        const thumbnails = document.querySelectorAll('.thumbnail');
-        function changeProductImage(imageUrl, thumbnail) {
-            const mainImage =document.getElementById('mainProductImage');
-            mainImage.src = imageUrl;
-            thumbnails.forEach(item => {
-                item.classList.remove('active');
-            });
-            thumbnail.classList.add('active');
-        }
-        const mainProductImageContainer =document.querySelector('.main-product-image');
-        const mainProductImage =document.getElementById('mainProductImage');
-        let isImageZoomed = false;
-        mainProductImageContainer.addEventListener('click', function () {
-        isImageZoomed = !isImageZoomed;
-        this.classList.toggle('zoomed', isImageZoomed);
-        if (!isImageZoomed) {
-        mainProductImage.style.transform = 'scale(1)';
-        }
-        });
-        mainProductImageContainer.addEventListener('mousemove', function (event) {
-        if (!isImageZoomed) {
-        return;
-        }
-        const rect = this.getBoundingClientRect();
-        const mouseX = event.clientX - rect.left;
-        const mouseY = event.clientY - rect.top;
-        const xPercent = mouseX / rect.width;
-        const yPercent = mouseY / rect.height;
-        const scale = 1.7;
-        const moveX =(50 - xPercent * 100) * (scale - 1);
-        const moveY =(50 - yPercent * 100) * (scale - 1);
-        mainProductImage.style.transform =`translate(${moveX}%, ${moveY}%) scale(${scale})`;});
-         let quantity = 1;
-        let selectedVariantId = null;
-        const availableStockText = document.getElementById('availableStockText');
-        
-        let selectedVariantStock =Number(availableStockText?.dataset.stock||0);
-        const variantOptions = document.querySelectorAll('.product-variant-option');
-        variantOptions.forEach(option=>{
-            option.addEventListener('click',function(){
-                variantOptions.forEach(item=>{
-                    item.classList.remove('selected');
-                })
-                this.classList.add('selected');
-                selectedVariantId = this.dataset.variantId;
-                selectedVariantStock = Number(this.dataset.stock);
-                const selectedVariantPrice = Number(this.dataset.price);
-                quantity = 1;
-                if(quantityDisplay){
-                    quantityDisplay.textContent=quantity;
-                }
-                const productPrice = document.getElementById('productPrice');
-                const originalPrice = document.getElementById('originalPrice');
-                const offerBadge = document.getElementById('productOfferBadge');
-
-                const original = Number(this.dataset.originalPrice || this.dataset.price);
-                const final = Number(this.dataset.finalPrice || this.dataset.price);
-                const discount = Number(this.dataset.discountAmount || 0);
-                const percentage = Number(this.dataset.discountPercentage || 0);
-
-                if (productPrice) {
-                    productPrice.textContent =
-                        `₹${(discount > 0 ? final : Number(this.dataset.price))
-                            .toLocaleString('en-IN')}`;
-
-                    productPrice.classList.toggle('discounted', discount > 0);
-                }
-
-                if (originalPrice) {
-                    originalPrice.hidden = discount <= 0;
-                        originalPrice.textContent = discount > 0
-                        ? `₹${original.toLocaleString('en-IN')}`
-                        : '';
-                }
-
-                if (offerBadge) {
-                offerBadge.hidden = discount <= 0;
-                offerBadge.textContent = discount > 0
-                    ? `${percentage}% OFF`
-                : '';
-                }
-                if(availableStockText){
-                    if(selectedVariantStock>0){
-                        availableStockText.textContent=`${selectedVariantStock} available`;
-                        availableStockText.classList.remove('out-of-stock');
-                    }else{
-                        availableStockText.textContent='Out of stock';
-                        availableStockText.classList.add('out-of-stock');
-                    }
-                }
-                const variantInWishlist =this.dataset.wishlist === 'true';
-                wishlistButton.classList.toggle( 'checked', variantInWishlist);
-                wishlistIcon.textContent =variantInWishlist ? '♥' : '♡';
-                
-                console.log('selected variantId', selectedVariantId);
-                console.log('selected variant stock', selectedVariantStock);
-            })                              
-        })
-        const quantitySection = document.getElementById('quantitySection');
-        const quantityDisplay = document.getElementById('quantity');
-        const decreaseButton = document.getElementById('decreaseQuantity');
-        const increaseButton =document.getElementById('increaseQuantity');
-        
-        if(variantOptions.length>0){
-            const firstVariant = variantOptions[0];
-            selectedVariantId = firstVariant.dataset.variantId;
-            selectedVariantStock= Number(firstVariant.dataset.stock);
-        }
-        const Max_cart_Quantity = 5;
-        
-        if (decreaseButton && increaseButton) {
-            const thumbnails = document.querySelectorAll('.thumbnail');
-            decreaseButton.addEventListener('click', function () {
-                if (quantity > 1) {
-                    quantity--;
-                    quantityDisplay.textContent = quantity;
-                }
-            });
-            increaseButton.addEventListener('click', function () {
-                const maxQuantity = Math.min(selectedVariantStock,Max_cart_Quantity)
-                if(quantity>=selectedVariantStock){
-                    showToastMessage(`Only ${selectedVariantStock} quantity available`,'error');
-                    return;
-                }
-                if (quantity < maxQuantity) {
-                    quantity++;
-                 quantityDisplay.textContent = quantity;
-                }else{
-                    showToastMessage(`Maximum ${Max_cart_Quantity} quantity is allowed`,'error');
-                }
-            });
-        }
-        //reviews and rating
-        let selectedRating = 0;
-        const reviewStars = document.querySelectorAll('.review-star-input button');
-        reviewStars.forEach(star =>{
-            star.addEventListener('click',function(){
-                selectedRating= Number(this.dataset.rating);
-                reviewStars.forEach(item=>{
-                    const rating = Number(item.dataset.rating);
-                    item.classList.toggle('selected',rating<=selectedRating);
-                });
-            });
-        });
-        const submitReview = document.getElementById('submitReview');
-        if(submitReview){
-            submitReview.addEventListener('click',async function(){
-                const comment = document.getElementById('reviewComment').value.trim();
-                const message = document.getElementById('reviewMessage');
-                try{
-                    const response = await fetch(
-                    '/product/<%=product._id%>/reviews',
-                    {
-                        method:'POST',
-                        headers:{'Content-Type':'application/json'}
-                        ,body:JSON.stringify({rating:selectedRating,comment:comment})
-                    }
-                    );
-                    const result = await response.json();
-                    if(!response.ok){
-                        throw new Error(result.message);
-                    }
-                    message.textContent = result.message;
-                    message.className='success';
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 800);
-                }catch(error){
-                    console.log('review erro ', error)
-                    message.textContent= error.message;
-                    message.className = 'error'
-                }
-            })
-        }
-        const relatedProducts =document.getElementById('relatedProducts');
-        const relatedPrevious = document.getElementById('relatedPrevious');
-        const relatedNext = document.getElementById('relatedNext');
-        if (relatedProducts) {
-            relatedNext.addEventListener('click', function () {
-                relatedProducts.scrollBy({
-                    left: 500,
-                    behavior: 'smooth'
-                });
-            });
-            relatedPrevious.addEventListener('click', function () {
-                relatedProducts.scrollBy({
-                    left: -500,
-                    behavior: 'smooth'
-                });
-            });
-        }
-        const addCartBtn = document.getElementById('add-cart-button');
-        if(addCartBtn){
-            addCartBtn.addEventListener('click',async function(){
-                const productId =this.dataset.productId;
-                
-                try{
-                    const response = await fetch('/cart',{
-                        method:'POST',
-                        headers:{'Content-Type':'application/json','Accept':'application/json'},
-                        body:JSON.stringify({productId:productId, variantId:selectedVariantId,quantity:quantity})
-                    })
-                    const result = await response.json();
-                    if(!response.ok||!result.success){
-                        showToastMessage(result.message,'error');
-                        if(result.redirect){
-                            setTimeout(() => {
-                                window.location.href = result.redirect;
-                            }, 1500);
-                        }
-                        return;
-                    }
-                    showToastMessage(result.message,'success');
-                    await removeProductIfExists(productId);
-                }catch(error){
-                    console.log('error ',error)
-                    showToastMessage(error.message,'error')
-                }
-            })
-        }
-        const removeProductIfExists = async(productId)=>{
-            try{
-                await fetch(`/account/wishlist/remove-if-exists/${productId}`,{
-                    method:'DELETE',
-                    headers:{'Accept':'application/json'}
-                })
-            }catch(error ){
-                console.log(error)
-            }
-        }
-        const wishlistButton = document.getElementById('wishlist-button');
-        const wishlistIcon =wishlistButton?.querySelector('.wishlist-icon');
-        if(wishlistButton){
-            wishlistButton.addEventListener('click',async function () {
-                const productId = this.dataset.productId;
-                try{
-                    const response = await fetch('/account/wishlist',{
-                        method:'POST',
-                        headers:{'Content-Type':'application/json','Accept':'application/json'},
-                        body:JSON.stringify({productId:productId,variantId:selectedVariantId})
-                })
-                const result = await response.json();
-                if(!response.ok){
-                    showToastMessage(result.message,'error');
-                    if(result.redirect){
-                        setTimeout(() => {
-                            window.location.href= result.redirect;
-                        }, 1500);
-                    }
-                    return;
-                }
-                showToastMessage(result.message,'success');
-                wishlistButton.classList.add('checked');
-                const wishlistIcon = wishlistButton.querySelector('.wishlist-icon');
-                if(wishlistIcon){wishlistIcon.textContent='♥'};
-                }catch(error){
-                    console.log(error)
-                    showToastMessage(error.message,'error');
-                }
-            })
-        }
-        function showToastMessage(message,type){
-        const toast = document.getElementById('toastMessage');
-        const text = document.getElementById('toastMessageText');
-         console.log('MESSAGE:', message);
-         console.log('TYPE:', type);
-        text.textContent = message;
-        toast.classList.remove('success','error','show')
-        toast.classList.add(type);
-        toast.classList.add('show')
-        setTimeout(() => {
-            toast.classList.remove('show')
-            toast.classList.remove('success')
-            toast.classList.remove('error')
-        }, 4000);
-        }
-    </script>
-</body>
-
+    <script src="/user/js/productDetails.js"></script>
+  </body>
 </html>

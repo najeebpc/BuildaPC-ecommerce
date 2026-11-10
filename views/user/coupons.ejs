@@ -1,153 +1,113 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Available Coupons</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="/user/css/home.css">
-    <link rel="stylesheet" href="/user/css/accounts.css">
-    <link rel="stylesheet" href="/user/css/coupons.css">
-</head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/user/css/home.css" />
+    <link rel="stylesheet" href="/user/css/accounts.css" />
+    <link rel="stylesheet" href="/user/css/coupons.css" />
+  </head>
 
-<body>
-
-    <!-- HEADER -->
+  <body>
     <%- include('../../views/partials/user/header.ejs') %>
 
     <main class="account-page">
-        <div class="account-layout">
+      <div class="account-layout">
+        <%- include( '../../views/partials/user/accounts-sidebar.ejs', { active: 'coupons' } ) %>
 
-            <!-- ACCOUNT SIDEBAR -->
-            <%- include(
-                '../../views/partials/user/accounts-sidebar.ejs',
-                { active: 'coupons' }
-            ) %>
+        <section class="account-content">
+          <div class="coupon-page-header">
+            <h2 class="account-page-title">Available Coupons</h2>
+            <p>Discover coupons and save on your next order.</p>
+          </div>
 
-            <!-- COUPONS CONTENT -->
-            <section class="account-content">
+          <div class="coupon-list">
+            <% if (coupons && coupons.length > 0) { %> <% coupons.forEach(coupon => { %> <% const
+            discountText = coupon.discountType === 'percentage' ? `${coupon.discountValue}% OFF` :
+            `₹${Number(coupon.discountValue).toLocaleString('en-IN')} OFF`; let description =
+            coupon.discountType === 'percentage' ? `Get ${coupon.discountValue}% off on your next
+            order` : `Get ₹${Number(coupon.discountValue).toLocaleString('en-IN')} off on your next
+            order`; if (coupon.minOrderAmount > 0) { description += ` above
+            ₹${Number(coupon.minOrderAmount).toLocaleString('en-IN')}`; } if (coupon.discountType
+            === 'percentage' && coupon.maxDiscount != null) { description += `. Maximum discount
+            ₹${Number(coupon.maxDiscount).toLocaleString('en-IN')}`; } %>
+            <article class="coupon-card">
+              <div class="coupon-card-header">
+                <div>
+                  <span class="coupon-discount"> <%= discountText %> </span>
 
-                <div class="coupon-page-header">
-                    <h2 class="account-page-title">Available Coupons</h2>
-                    <p>Discover coupons and save on your next order.</p>
+                  <h3><%= coupon.code %></h3>
                 </div>
-
-                <!-- COUPON LIST -->
-                <div class="coupon-list">
-                    <% if (coupons && coupons.length > 0) { %>
-                        <% coupons.forEach(coupon => { %>
-                            <%
-                                const discountText = coupon.discountType === 'percentage'
-                                    ? `${coupon.discountValue}% OFF`
-                                    : `₹${Number(coupon.discountValue).toLocaleString('en-IN')} OFF`;
-
-                                let description = coupon.discountType === 'percentage'
-                                    ? `Get ${coupon.discountValue}% off on your next order`
-                                    : `Get ₹${Number(coupon.discountValue).toLocaleString('en-IN')} off on your next order`;
-
-                                if (coupon.minOrderAmount > 0) {
-                                    description += ` above ₹${Number(coupon.minOrderAmount).toLocaleString('en-IN')}`;
-                                }
-
-                                if (coupon.discountType === 'percentage' && coupon.maxDiscount != null) {
-                                    description += `. Maximum discount ₹${Number(coupon.maxDiscount).toLocaleString('en-IN')}`;
-                                }
-                            %>
-                            <article class="coupon-card">
-
-                                <div class="coupon-card-header">
-                                    <div>
-                                        <span class="coupon-discount">
-                                            <%= discountText %>
-                                        </span>
-
-                                        <h3><%= coupon.code %></h3>
-                                    </div>
-
-                                    <!-- <span class="coupon-badge">Available</span> -->
-                                </div>
-                                <p class="coupon-description">
-                                    <%= description %>.
-                                </p>
-                                <div class="coupon-details">
-                                    <div class="coupon-detail">
-                                        <span>Minimum purchase</span>
-                                        <strong>
-                                            ₹<%= Number(coupon.minOrderAmount).toLocaleString('en-IN') %>
-                                        </strong>
-                                    </div>
-                                    <div class="coupon-detail">
-                                        <span>Valid until</span>
-                                        <strong>
-                                            <%= new Date(coupon.expiryDate).toLocaleDateString('en-IN', {
+              </div>
+              <p class="coupon-description"><%= description %>.</p>
+              <div class="coupon-details">
+                <div class="coupon-detail">
+                  <span>Minimum purchase</span>
+                  <strong> ₹<%= Number(coupon.minOrderAmount).toLocaleString('en-IN') %> </strong>
+                </div>
+                <div class="coupon-detail">
+                  <span>Valid until</span>
+                  <strong>
+                    <%= new Date(coupon.expiryDate).toLocaleDateString('en-IN', {
                                                 day: '2-digit',
                                                 month: 'short',
                                                 year: 'numeric'
                                             }) %>
-                                        </strong>
-                                    </div>
-                                </div>
-                                <div class="coupon-card-actions">
-                                    <button
-                                        type="button"
-                                        class="copy-coupon-btn"
-                                        data-code="<%= coupon.code %>">
-                                        Copy Code
-                                    </button>
-                                </div>
-                            </article>
-                        <% }) %>
-
-                    <% } else { %>
-
-                        <!-- EMPTY COUPONS STATE -->
-                        <div class="coupon-empty-state">
-                            <div class="coupon-empty-icon">%</div>
-                            <h3>No Coupons Available</h3>
-                            <p>
-                                There are no available coupons right now.
-                                Please check again later.
-                            </p>
-
-                            <a href="/products" class="coupon-shop-btn">
-                                Continue Shopping
-                            </a>
-                        </div>
-
-                    <% } %>
-
+                  </strong>
                 </div>
+              </div>
+              <div class="coupon-card-actions">
+                <button type="button" class="copy-coupon-btn" data-code="<%= coupon.code %>">
+                  Copy Code
+                </button>
+              </div>
+            </article>
+            <% }) %>
 
-            </section>
-        </div>
+            <% } else { %>
+
+            <div class="coupon-empty-state">
+              <div class="coupon-empty-icon">%</div>
+              <h3>No Coupons Available</h3>
+              <p>There are no available coupons right now. Please check again later.</p>
+
+              <a href="/products" class="coupon-shop-btn"> Continue Shopping </a>
+            </div>
+
+            <% } %>
+          </div>
+        </section>
+      </div>
     </main>
 
-    <!-- FOOTER -->
     <%- include('../../views/partials/user/footer.ejs') %>
 
     <script>
-        document.querySelectorAll('.copy-coupon-btn').forEach(button => {
-            button.addEventListener('click', async function () {
-                const code = this.dataset.code;
+      document.querySelectorAll('.copy-coupon-btn').forEach((button) => {
+        button.addEventListener('click', async function () {
+          const code = this.dataset.code;
 
-                try {
-                    await navigator.clipboard.writeText(code);
-                    showToastMessage('Coupon code copied successfully', 'success');
-                } catch (error) {
-                    showToastMessage('Unable to copy coupon code', 'error');
-                }
-            });
+          try {
+            await navigator.clipboard.writeText(code);
+            showToastMessage('Coupon code copied successfully', 'success');
+          } catch (error) {
+            showToastMessage('Unable to copy coupon code', 'error');
+          }
         });
-
-
+      });
     </script>
-
-</body>
+  </body>
 </html>

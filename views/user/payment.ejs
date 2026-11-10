@@ -1,513 +1,209 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Payment | BuildaPC</title>
 
-    <link rel="stylesheet" href="/user/css/home.css">
-    <link rel="stylesheet" href="/user/css/payment.css">
-</head>
-<body>
-    <!-- Header -->
+    <link rel="stylesheet" href="/user/css/home.css" />
+    <link rel="stylesheet" href="/user/css/payment.css" />
+  </head>
+  <body>
     <%- include('../../views/partials/user/header.ejs') %>
     <main class="payment-page">
-        <!-- =========================================
-             CHECKOUT PROGRESS
-        ========================================== -->
-        <div class="checkout-progress">
-            <!-- Order Summary -->
-            <div class="progress-step completed">
-                <div class="progress-circle">
-                    ✓
-                </div>
-                <span>
-                    Order Summary
-                </span>
-            </div>
-            <!-- Progress Line -->
-            <div class="progress-line active"></div>
-            <!-- Payment -->
-            <div class="progress-step active">
-                <div class="progress-circle">
-                    2
-                </div>
-                <span>
-                    Payment
-                </span>
-            </div>
+      <div class="checkout-progress">
+        <div class="progress-step completed">
+          <div class="progress-circle">✓</div>
+          <span> Order Summary </span>
         </div>
-        <!-- =========================================
-             PAYMENT CONTENT
-        ========================================== -->
-        <div class="payment-container">
-            <!-- =====================================
-                 LEFT SIDE
-            ====================================== -->
-            <div class="payment-left">
-                <h1 class="payment-title">
-                    Select Payment Method
-                </h1>
-                <!-- =================================
-                     PAYMENT METHODS
-                ================================== -->
-                <div class="payment-methods">
-                    <!-- CASH ON DELIVERY -->
-                    <div
-                        class="payment-method selected"
-                        data-payment-method="cod"
-                    >
-                        <div class="payment-method-icon">
-                            <span class="payment-radio"></span>
-                            <svg
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                            >
-                                <rect
-                                    x="3"
-                                    y="6"
-                                    width="18"
-                                    height="12"
-                                    rx="2"
-                                ></rect>
-                                <circle
-                                    cx="12"
-                                    cy="12"
-                                    r="2"
-                                ></circle>
-                            </svg>
-                        </div>
-                        <div class="payment-method-content">
-                            <h3>
-                                Cash on Delivery
-                            </h3>
-                            <p class="payment-method-subtitle">
-                                Pay when your order is delivered
-                            </p>
-                            <div class="payment-method-info">
-                                <p>
-                                    - You can pay via Cash/UPI/Card when your
-                                    order is delivered
-                                </p>
-                                <p>
-                                    - Please keep exact change ready for a
-                                    smooth delivery experience
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                   
-                <!-- ONLINE PAYMENT -->
-                <div class="payment-method" data-payment-method="online"
-                >
-                <div class="payment-method-content">
+
+        <div class="progress-line active"></div>
+        <!-- Payment -->
+        <div class="progress-step active">
+          <div class="progress-circle">2</div>
+          <span> Payment </span>
+        </div>
+      </div>
+
+      <div class="payment-container">
+        <div class="payment-left">
+          <h1 class="payment-title">Select Payment Method</h1>
+
+          <div class="payment-methods">
+            <div class="payment-method selected" data-payment-method="cod">
+              <div class="payment-method-icon">
+                <span class="payment-radio"></span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="6" width="18" height="12" rx="2"></rect>
+                  <circle cx="12" cy="12" r="2"></circle>
+                </svg>
+              </div>
+              <div class="payment-method-content">
+                <h3>Cash on Delivery</h3>
+                <p class="payment-method-subtitle">Pay when your order is delivered</p>
+                <div class="payment-method-info">
+                  <p>- You can pay via Cash/UPI/Card when your order is delivered</p>
+                  <p>- Please keep exact change ready for a smooth delivery experience</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="payment-method" data-payment-method="online">
+              <div class="payment-method-content">
                 <h3>Online Payment</h3>
 
-                <p class="payment-method-subtitle">
-                Choose your preferred payment gateway
-                </p>
+                <p class="payment-method-subtitle">Choose your preferred payment gateway</p>
 
-                <!-- Selectable Razorpay gateway -->
                 <div class="payment-gateways">
-                <div
-                class="payment-gateway"
-                data-payment-gateway="razorpay"
-                role="button"
-                tabindex="0"
-                aria-pressed="false"
-                >
-                <span class="gateway-radio"></span>
+                  <div
+                    class="payment-gateway"
+                    data-payment-gateway="razorpay"
+                    role="button"
+                    tabindex="0"
+                    aria-pressed="false"
+                  >
+                    <span class="gateway-radio"></span>
 
-                <div class="gateway-logo razorpay-logo">
-                    R
-                </div>
+                    <div class="gateway-logo razorpay-logo">R</div>
 
-                <div class="gateway-content">
-                    <h4>Razorpay</h4>
-                    <p>UPI, Cards, Net Banking and more</p>
+                    <div class="gateway-content">
+                      <h4>Razorpay</h4>
+                      <p>UPI, Cards, Net Banking and more</p>
+                    </div>
+                  </div>
                 </div>
-                </div>
-                </div>
-                </div>
-                </div>
-                </div>
-                         
-                <!-- WALLET PAYMENT -->
-                <div class="payment-method" data-payment-method="wallet">
-                <div class="payment-method-icon">
-                <span class="payment-radio"></span>
-                <svg
+              </div>
+            </div>
+          </div>
+
+          <div class="payment-method" data-payment-method="wallet">
+            <div class="payment-method-icon">
+              <span class="payment-radio"></span>
+              <svg
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                >
+              >
                 <rect x="3" y="5" width="18" height="15" rx="2"></rect>
                 <path d="M3 9h18"></path>
                 <path d="M16 14h2"></path>
-                </svg>
-                </div>
+              </svg>
+            </div>
 
-                <div class="payment-method-content">
-                 <h3>Wallet</h3>
-                <p class="payment-method-subtitle">
-                Pay using your BuildaPC wallet balance
-                </p>
+            <div class="payment-method-content">
+              <h3>Wallet</h3>
+              <p class="payment-method-subtitle">Pay using your BuildaPC wallet balance</p>
 
-                <p class="wallet-payment-balance">
+              <p class="wallet-payment-balance">
                 Available balance:
                 <strong>
-                ₹<%= Number(walletBalance || 0).toLocaleString('en-IN', {
+                  ₹<%= Number(walletBalance || 0).toLocaleString('en-IN', {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
                 }) %>
                 </strong>
-                </p>
-            
-    </div>
-</div>
-</div>
-            <!-- =====================================
-                 RIGHT SIDE
-            ====================================== -->
-            
-<!-- =====================================
-     RIGHT SIDE
-====================================== -->
-<aside class="payment-summary">
-    <h2 class="payment-summary-title">
-        Order Summary
-    </h2>
+              </p>
+            </div>
+          </div>
+        </div>
 
-    <!-- Subtotal -->
-    <div class="payment-total-row">
-        <span>Subtotal (<%= totalItems %> items)</span>
-        <span class="payment-total-price">
-            ₹<%= Number(subtotal).toLocaleString('en-IN') %>
-        </span>
-    </div>
+        <aside class="payment-summary">
+          <h2 class="payment-summary-title">Order Summary</h2>
 
-    <!-- Shipping -->
-    <div class="payment-total-row">
-        <span>Shipping Charge</span>
-        <span class="shipping-free">Free</span>
-    </div>
+          <div class="payment-total-row">
+            <span
+              >Subtotal (<%= totalItems %>
+              items)</span
+            >
+            <span class="payment-total-price">
+              ₹<%= Number(subtotal).toLocaleString('en-IN') %>
+            </span>
+          </div>
 
-    <!-- Coupon Discount -->
-    <% if (appliedCoupon) { %>
-        <div class="payment-total-row">
+          <!-- Shipping -->
+          <div class="payment-total-row">
+            <span>Shipping Charge</span>
+            <span class="shipping-free">Free</span>
+          </div>
+
+          <!-- Coupon Discount -->
+          <% if (appliedCoupon) { %>
+          <div class="payment-total-row">
             <span>Coupon (<%= appliedCoupon.code %>)</span>
             <span class="payment-total-price coupon-discount">
-                −₹<%= Number(discount).toLocaleString('en-IN') %>
+              −₹<%= Number(discount).toLocaleString('en-IN') %>
             </span>
-        </div>
-    <% } %>
+          </div>
+          <% } %>
 
-    <div class="summary-divider"></div>
+          <div class="summary-divider"></div>
 
-    <!-- Final Total -->
-    <div class="payment-total-row">
-        <strong>Total Payable</strong>
-        <strong class="payment-total-price">
-            ₹<%= Number(totalAmount).toLocaleString('en-IN') %>
-        </strong>
-    </div>
+          <!-- Final Total -->
+          <div class="payment-total-row">
+            <strong>Total Payable</strong>
+            <strong class="payment-total-price">
+              ₹<%= Number(totalAmount).toLocaleString('en-IN') %>
+            </strong>
+          </div>
 
-    <!-- Information -->
-    <div class="payment-summary-info">
-        <div class="summary-info-item">
-            <span class="summary-check">✓</span>
-            <span>Your order is eligible for free delivery</span>
-        </div>
+          <!-- Information -->
+          <div class="payment-summary-info">
+            <div class="summary-info-item">
+              <span class="summary-check">✓</span>
+              <span>Your order is eligible for free delivery</span>
+            </div>
 
-        <div class="summary-info-item">
-            <span class="summary-check">✓</span>
-            <span>All items in stock and ready to ship</span>
-        </div>
-    </div>
+            <div class="summary-info-item">
+              <span class="summary-check">✓</span>
+              <span>All items in stock and ready to ship</span>
+            </div>
+          </div>
 
-    <!-- Place Order -->
-    <button
-        type="button"
-        id="placeOrderBtn"
-        class="place-order-btn"
-    >
-        Place Order
-    </button>
+          <!-- Place Order -->
+          <button type="button" id="placeOrderBtn" class="place-order-btn">Place Order</button>
 
-    <!-- Back -->
-    <a href="/checkout" class="back-summary-link">
-        Back to Order Summary
-    </a>
-</aside>
-
-        </div>
+          <!-- Back -->
+          <a href="/checkout" class="back-summary-link"> Back to Order Summary </a>
+        </aside>
+      </div>
     </main>
     <!-- Payment Failure Modal -->
-<div id="paymentFailureModal" class="payment-failure-overlay" hidden>
-    <div class="payment-failure-modal" role="dialog"
-         aria-modal="true" aria-labelledby="failureTitle">
-
+    <div id="paymentFailureModal" class="payment-failure-overlay" hidden>
+      <div
+        class="payment-failure-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="failureTitle"
+      >
         <div class="failure-icon">!</div>
 
         <h2 id="failureTitle">Order Failed</h2>
-        <p id="failureMessage">
-            Your payment could not be processed at this time.
-        </p>
+        <p id="failureMessage">Your payment could not be processed at this time.</p>
 
         <div class="failure-reasons">
-            <p>Possible reasons:</p>
-            <ul id="failureReasons"></ul>
+          <p>Possible reasons:</p>
+          <ul id="failureReasons"></ul>
         </div>
 
         <button type="button" id="retryPaymentBtn" class="failure-retry-btn">
-            ↻ &nbsp; Try Payment Again
+          ↻ &nbsp; Try Payment Again
         </button>
 
-        <button type="button" id="differentPaymentBtn"
-                class="failure-secondary-btn">
-            Use Different Payment Method
+        <button type="button" id="differentPaymentBtn" class="failure-secondary-btn">
+          Use Different Payment Method
         </button>
-        <button type="button" id="returnToCartBtn"
-                class="failure-back-btn">
-            ← &nbsp; Return to Cart
+        <button type="button" id="returnToCartBtn" class="failure-back-btn">
+          ← &nbsp; Return to Cart
         </button>
+      </div>
     </div>
-</div>
     <!-- Footer -->
     <%- include('../../views/partials/user/footer.ejs') %>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <script>
-        const paymentMethods =document.querySelectorAll('.payment-method');
-        const paymentGateways = document.querySelectorAll('.payment-gateway');
-
-        let selectedPaymentMethod = 'cod';
-        let selectedPaymentGateway = 'null';
-        paymentMethods.forEach(method => {
-            method.addEventListener('click', function () {
-                paymentMethods.forEach(item => {
-                    item.classList.remove('selected');
-
-                });
-                paymentGateways.forEach(gateway=>{
-                    gateway.classList.remove('selected');
-                    gateway.setAttribute('aria-pressed','false');
-                });
-                this.classList.add('selected');
-                selectedPaymentMethod =this.dataset.paymentMethod;
-                selectedPaymentGateway = null;
-                    
-                console.log('Selected payment method:',selectedPaymentMethod);
-            });
-        });
-        paymentGateways.forEach(gateway=>{
-            function selectGateway(){
-                paymentMethods.forEach(method=>{
-                    method.classList.remove('selected');
-                });
-                paymentGateways.forEach(item=>{
-                    item.classList.remove('selected');
-                    item.setAttribute('aria-pressed','false');
-                });
-                gateway.classList.add('selected');
-                gateway.setAttribute('aria-pressed','true');
-                selectedPaymentMethod='online';
-                selectedPaymentGateway = gateway.dataset.paymentGateway;
-                console.log('selected payment method',selectedPaymentMethod);
-                console.log('selected payment gateway',selectedPaymentGateway);
-            }
-            gateway.addEventListener('click',function(event){
-                event.stopPropagation();
-                selectGateway();
-            })
-        })
-        const placeOrderBtn =document.getElementById('placeOrderBtn');
-     if (placeOrderBtn) {
-        placeOrderBtn.addEventListener('click',  async function () {
-            const urlParams =new URLSearchParams(  window.location.search );
-            const addressId = urlParams.get('addressId');
-            if (!addressId) {
-                showToastMessage(  'Delivery address is required', 'error');
-                return;
-            }
-            if (!selectedPaymentMethod) {
-                showToastMessage('Please select a payment method', 'error');
-                return;
-            }
-            placeOrderBtn.disabled = true;
-            placeOrderBtn.textContent = 'Placing Order...';
-            try {
-                if(selectedPaymentMethod==='cod'){
-                const response =await fetch('/order',
-                        {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type':  'application/json', 'Accept': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                addressId,
-                                paymentMethod:  selectedPaymentMethod
-                            })
-                        }
-                    );
-                const result = await response.json();
-                if (!response.ok ||!result.success ) {
-                    showToastMessage( result.message ||'Unable to place order', 'error' );
-                    placeOrderBtn.disabled =   false;
-                    placeOrderBtn.textContent ='Place Order';
-                    return;
-                }
-                window.location.href = `/order-success/${result.orderId}`;
-                return;
-                }
-                if(selectedPaymentMethod ==='wallet'){
-                    const response = await fetch('/order',{
-                        method:'POST',
-                        headers:{'Content-Type':'application/json','Accept':'application/json'},
-                        body:JSON.stringify({addressId,paymentMethod:selectedPaymentMethod})
-                    });
-                    const result = await response.json();
-                    if(!response.ok||!result.success){
-                        showToastMessage(result.message,'error');
-                        placeOrderBtn.disabled=false;
-                        placeOrderBtn.textContent='Place Order';
-                        return;
-                    }
-                    window.location.href = `/order-success/${result.orderId}`;
-                    return;
-                }
-                if(selectedPaymentMethod==='online'){
-                    if(typeof Razorpay ==='undefined'){
-                        throw new Error('Payment service could not be loaded. Please try again');
-                    }
-                    const response = await fetch('/order/online/create',{
-                        method:'POST',
-                        headers:{'Content-type':'application/json','Accept':'application/json'},
-                        body:JSON.stringify({addressId})
-                    });
-                    const result = await response.json();
-                    if(!response.ok||!result.success){
-                        throw new Error(result.message);
-                    }
-                    const options = {
-                        key:result.key,
-                        amount:result.amount,
-                        currency:result.currency,
-                        name:'BuildaPC',
-                        description:'Order payment',
-                        order_id:result.razorpayOrderId,
-                        handler:async function (paymentResponse) {
-                            try{
-                                placeOrderBtn.textContent='Verifying Payment...';
-                                const verifyResponse = await fetch('/order/online/verify',{
-                                    method:'POST',
-                                    headers:{'Content-Type':'application/json','Accept':'application/json'},
-                                    body:JSON.stringify({
-                                        addressId,
-                                        razorpay_order_id:paymentResponse.razorpay_order_id,
-                                        razorpay_payment_id:paymentResponse.razorpay_payment_id,
-                                        razorpay_signature:paymentResponse.razorpay_signature
-                                    })
-                                });
-                                
-                                
-                                const verifyResult = await verifyResponse.json();
-                                
-                                if(!verifyResponse.ok||!verifyResult.success){
-                                    throw new Error(verifyResult.message||'payment verification failed');
-                                }
-                                window.location.href=`/order-success/${verifyResult.orderId}`;
-                            }catch(error){
-                                console.log('Payment verification error' , error);
-                                showToastMessage(error.message,'error');
-                                placeOrderBtn.disabled=false;
-                                placeOrderBtn.textContent='Retry Payment';
-                            }
-                        },
-
-                        modal:{
-                            ondismiss:function(){
-                                placeOrderBtn.disabled=false;
-                                placeOrderBtn.textContent= 'Place Order';
-                            }
-                        },
-                        theme:{color:'#2563eb'}
-                    };
-                    const razorpayCheckout = new Razorpay(options);
-                    razorpayCheckout.on('payment.failed',function(response){
-                        const error = response.error||{};
-                        showPaymentFailureModal({
-                            message:'Your payment could not be processed at this time.',
-                            reasons:[
-                                error.description||'The payment was declined or could not be completed.',
-                                'Please check your payment details or try another payment method.'
-                            ]
-                        });
-                        placeOrderBtn.disabled = false;
-                        placeOrderBtn.textContent = 'Retry Payment';
-                    });
-                    razorpayCheckout.open();
-                }
-            } catch (error) {
-                console.log( 'Place order error:',  error);
-                showToastMessage(error.message||'Unable to place order','error');
-                placeOrderBtn.disabled =false;
-                placeOrderBtn.textContent =  'Place Order';
-            }
-        }
-    );
-}
-function showPaymentFailureModal(failure){
-    const modal = document.getElementById('paymentFailureModal');
-    const message = document.getElementById('failureMessage');
-    const reasonsList = document.getElementById('failureReasons');
-    message.textContent=failure.message||'Your payment could not be processed at this time';
-    reasonsList.replaceChildren();
-    const reasons = Array.isArray(failure.reasons)
-        ?failure.reasons:[];
-    reasons.forEach(reason=>{
-        const li = document.createElement('li');
-        li.textContent =reason;
-        reasonsList.appendChild(li);
-    });
-    modal.hidden = false;
-}
-function hidePaymentFailureModal(){
-    document.getElementById('paymentFailureModal').hidden=true;
-}
-document.getElementById('retryPaymentBtn').addEventListener('click',()=>{
-    hidePaymentFailureModal();
-    placeOrderBtn.click();
-});
-document.getElementById('differentPaymentBtn').addEventListener('click',()=>{
-    hidePaymentFailureModal();
-
-});
-document.getElementById('returnToCartBtn').addEventListener('click',()=>{
-    window.location.href='/cart';
-})
-function showToastMessage(message,type){
-        const toast = document.getElementById('toastMessage');
-        const text = document.getElementById('toastMessageText');
-         console.log('MESSAGE:', message);
-         console.log('TYPE:', type);
-        text.textContent = message;
-        toast.classList.remove('success','error','show')
-        toast.classList.add(type);
-        toast.classList.add('show')
-        setTimeout(() => {
-            toast.classList.remove('show')
-            toast.classList.remove('success')
-            toast.classList.remove('error')
-        }, 4000);
-    }
-    </script>
-</body>
-
+    <script src="/user/js/payment.js"></script>
+  </body>
 </html>

@@ -1,27 +1,23 @@
-/* ===== User Management Card ===== */
-
 .user-card {
   background-color: #ffffff;
   border-radius: 10px;
   padding: 20px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 .page-title {
-    margin: 0 0 3px;
-    color: #111827;
-    font-size: 28px;
-    font-weight: 700;
-    line-height: 1.25;
-    letter-spacing: -0.6px;
+  margin: 0 0 3px;
+  color: #111827;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.6px;
 }
 .page-subtitle {
-    margin: 0;
-    color: #6b7280;
-    font-size: 14px;
-    line-height: 1.5;
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.5;
 }
-
-/* ===== Search ===== */
 
 .user-search {
   margin-bottom: 20px;
@@ -32,7 +28,7 @@
   max-width: 420px;
   padding: 10px 14px;
   border-radius: 8px;
-  border: 1px solid #E5E7EB;
+  border: 1px solid #e5e7eb;
   font-size: 14px;
 }
 .search-form {
@@ -44,7 +40,7 @@
   padding: 8px 16px;
   border-radius: 8px;
   border: none;
-  background-color: #2563EB;
+  background-color: #2563eb;
   color: #fff;
   font-size: 14px;
   font-weight: 500;
@@ -52,11 +48,11 @@
 }
 
 .search-btn:hover {
-  background-color: #1D4ED8;
+  background-color: #1d4ed8;
 }
 
 .clear-search {
-  color: #2563EB;
+  color: #2563eb;
   font-size: 14px;
   text-decoration: none;
   font-weight: 500;
@@ -70,7 +66,7 @@
 }
 
 .user-table thead {
-  background-color: #F3F4F6;
+  background-color: #f3f4f6;
 }
 
 .user-table th {
@@ -79,23 +75,23 @@
   font-size: 13px;
   font-weight: 600;
   color: #374151;
-  border-bottom: 1px solid #E5E7EB;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .user-table td {
   padding: 14px 12px;
   font-size: 14px;
   color: #374151;
-  border-bottom: 1px solid #E5E7EB;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .user-table tbody tr:hover {
-  background-color: #F9FAFB;
+  background-color: #f9fafb;
 }
 
 .empty-row {
   text-align: center;
-  color: #9CA3AF;
+  color: #9ca3af;
 }
 
 /* ===== Actions ===== */
@@ -107,7 +103,7 @@
 }
 
 .view-link {
-  color: #2563EB;
+  color: #2563eb;
   font-weight: 500;
   text-decoration: none;
 }
@@ -115,7 +111,7 @@
 .block-btn {
   background: none;
   border: none;
-  color: #EF4444;
+  color: #ef4444;
   font-weight: 500;
   cursor: pointer;
 }
@@ -123,7 +119,7 @@
 .unblock-btn {
   background: none;
   border: none;
-  color: #22C55E;
+  color: #22c55e;
   font-weight: 500;
   cursor: pointer;
 }
@@ -137,8 +133,8 @@
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.45);
-  display:none;
+  background: rgba(0, 0, 0, 0.45);
+  display: none;
   justify-content: center;
   align-items: center;
   z-index: 1000;
@@ -156,7 +152,7 @@
   display: flex;
   justify-content: space-between;
   padding: 16px 20px;
-  border-bottom: 2px solid #2563EB;
+  border-bottom: 2px solid #2563eb;
 }
 
 .modal-header h3 {
@@ -180,8 +176,8 @@
 .warning-icon {
   width: 60px;
   height: 60px;
-  background: #FEE2E2;
-  color: #EF4444;
+  background: #fee2e2;
+  color: #ef4444;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -206,7 +202,7 @@
 .cancel-btn {
   padding: 8px 18px;
   border-radius: 8px;
-  background: #E5E7EB;
+  background: #e5e7eb;
   border: none;
   cursor: pointer;
 }
@@ -220,11 +216,11 @@
 }
 
 .confirm-btn.block {
-  background: #DC2626;
+  background: #dc2626;
 }
 
 .confirm-btn.unblock {
-  background: #22C55E;
+  background: #22c55e;
 }
 /* ================= Pagination ================= */
 
@@ -232,7 +228,7 @@
   display: flex;
   gap: 8px;
   margin-top: 25px;
-  justify-content:center; /* right aligned like admin panels */
+  justify-content: center;
 }
 
 .pagination a {
@@ -248,19 +244,21 @@
   font-weight: 500;
 
   color: #374151;
-  background-color: #F3F4F6;
+  background-color: #f3f4f6;
   border-radius: 8px;
-  border: 1px solid #E5E7EB;
+  border: 1px solid #e5e7eb;
 
-  transition: background-color 0.2s, color 0.2s;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
 }
 
 .pagination a:hover {
-  background-color: #E5E7EB;
+  background-color: #e5e7eb;
 }
 
 .pagination a.active {
-  background-color: #2563EB; /* same blue as sidebar active */
+  background-color: #2563eb;
   color: #fff;
-  border-color: #2563EB;
+  border-color: #2563eb;
 }

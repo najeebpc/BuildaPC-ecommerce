@@ -1,6 +1,4 @@
-
 .form {
-  
   margin-top: 20px;
 }
 
@@ -10,7 +8,6 @@
   gap: 10px;
 }
 
-/* Address Card */
 .address-page-title-row {
   display: flex;
   justify-content: space-between;
@@ -38,11 +35,6 @@
   margin-left: 10px;
 }
 
-
-/* =========================
-   Address Form
-========================= */
-
 #addressForm {
   margin-top: 20px;
 }
@@ -52,8 +44,6 @@
   font-size: 18px;
   font-weight: 600;
 }
-
-/* Form inputs */
 
 #addressForm input,
 #addressForm select {
@@ -73,16 +63,14 @@
   font-size: 14px;
 
   outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
-
-/* Placeholder */
 
 #addressForm input::placeholder {
   color: #9ca3af;
 }
-
-/* Focus */
 
 #addressForm input:focus,
 #addressForm select:focus {
@@ -90,14 +78,10 @@
   box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.08);
 }
 
-/* Select */
-
 #addressForm select {
   cursor: pointer;
   color: #374151;
 }
-
-/* Two-column fields */
 
 #addressForm .row-2 {
   display: grid;
@@ -105,14 +89,10 @@
   gap: 12px;
 }
 
-/* Don't add extra margin inside row */
-
 #addressForm .row-2 input,
 #addressForm .row-2 select {
   margin-bottom: 0;
 }
-
-/* Form buttons */
 
 .form-actions {
   display: flex;
@@ -124,8 +104,181 @@
   min-width: 90px;
 }
 
-/* Mobile */
+.set-default {
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
 
+.set-default:hover {
+  text-decoration: underline;
+}
+
+.address-modal-overlay {
+  display: none;
+
+  position: fixed;
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.45);
+
+  align-items: center;
+  justify-content: center;
+
+  z-index: 9999;
+}
+
+.address-modal-box {
+  width: 420px;
+  max-width: calc(100% - 40px);
+
+  background: #fff;
+
+  border-radius: 10px;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+
+  overflow: hidden;
+}
+
+
+
+.address-modal-header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 18px 20px;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.address-modal-header h3 {
+  margin: 0;
+
+  font-size: 18px;
+  font-weight: 600;
+
+  color: #111827;
+}
+
+.address-modal-close {
+  border: none;
+  background: transparent;
+
+  font-size: 26px;
+
+  color: #6b7280;
+
+  cursor: pointer;
+
+  line-height: 1;
+}
+
+.address-modal-close:hover {
+  color: #111827;
+}
+
+
+
+.address-modal-body {
+  padding: 25px 20px;
+
+  text-align: center;
+}
+
+.address-warning-icon {
+  font-size: 40px;
+
+  margin-bottom: 12px;
+}
+
+.address-modal-body p {
+  margin: 0;
+
+  color: #4b5563;
+
+  font-size: 14px;
+
+  line-height: 1.5;
+}
+
+
+
+.address-modal-footer {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  padding: 15px 20px;
+
+  border-top: 1px solid #e5e7eb;
+
+  background: #f9fafb;
+}
+
+
+
+.address-cancel-btn {
+  padding: 9px 16px;
+
+  border: 1px solid #d1d5db;
+
+  border-radius: 6px;
+
+  background: #fff;
+
+  color: #374151;
+
+  font-size: 14px;
+
+  cursor: pointer;
+}
+
+.address-cancel-btn:hover {
+  background: #f3f4f6;
+}
+
+.address-confirm-btn {
+  padding: 9px 16px;
+
+  border: none;
+
+  border-radius: 6px;
+
+  background: #dc2626;
+
+  color: #fff;
+
+  font-size: 14px;
+
+  cursor: pointer;
+}
+
+.address-confirm-btn:hover {
+  background: #b91c1c;
+}
+.address-message {
+  display: none;
+  margin-top: 8px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.address-message.success {
+  display: block;
+  color: #198754;
+}
+
+.address-message.error {
+  display: block;
+  color: #dc3545;
+}
 @media (max-width: 600px) {
   #addressForm .row-2 {
     grid-template-columns: 1fr;
@@ -141,197 +294,4 @@
     align-items: flex-start;
     gap: 15px;
   }
-}
-.set-default {
-    color: #2563eb;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-}
-
-.set-default:hover {
-    text-decoration: underline;
-}
-/* ================================
-   DELETE ADDRESS MODAL
-================================ */
-
-.address-modal-overlay {
-    display: none;
-
-    position: fixed;
-    inset: 0;
-
-    background: rgba(0, 0, 0, 0.45);
-
-    align-items: center;
-    justify-content: center;
-
-    z-index: 9999;
-}
-
-
-.address-modal-box {
-    width: 420px;
-    max-width: calc(100% - 40px);
-
-    background: #fff;
-
-    border-radius: 10px;
-
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-
-    overflow: hidden;
-}
-
-
-/* Header */
-
-.address-modal-header {
-    display: flex;
-
-    align-items: center;
-    justify-content: space-between;
-
-    padding: 18px 20px;
-
-    border-bottom: 1px solid #e5e7eb;
-}
-
-
-.address-modal-header h3 {
-    margin: 0;
-
-    font-size: 18px;
-    font-weight: 600;
-
-    color: #111827;
-}
-
-
-.address-modal-close {
-    border: none;
-    background: transparent;
-
-    font-size: 26px;
-
-    color: #6b7280;
-
-    cursor: pointer;
-
-    line-height: 1;
-}
-
-
-.address-modal-close:hover {
-    color: #111827;
-}
-
-
-/* Body */
-
-.address-modal-body {
-    padding: 25px 20px;
-
-    text-align: center;
-}
-
-
-.address-warning-icon {
-    font-size: 40px;
-
-    margin-bottom: 12px;
-}
-
-
-.address-modal-body p {
-    margin: 0;
-
-    color: #4b5563;
-
-    font-size: 14px;
-
-    line-height: 1.5;
-}
-
-
-/* Footer */
-
-.address-modal-footer {
-    display: flex;
-
-    justify-content: flex-end;
-
-    gap: 10px;
-
-    padding: 15px 20px;
-
-    border-top: 1px solid #e5e7eb;
-
-    background: #f9fafb;
-}
-
-
-/* Cancel button */
-
-.address-cancel-btn {
-    padding: 9px 16px;
-
-    border: 1px solid #d1d5db;
-
-    border-radius: 6px;
-
-    background: #fff;
-
-    color: #374151;
-
-    font-size: 14px;
-
-    cursor: pointer;
-}
-
-
-.address-cancel-btn:hover {
-    background: #f3f4f6;
-}
-
-
-/* Delete button */
-
-.address-confirm-btn {
-    padding: 9px 16px;
-
-    border: none;
-
-    border-radius: 6px;
-
-    background: #dc2626;
-
-    color: #fff;
-
-    font-size: 14px;
-
-    cursor: pointer;
-}
-
-
-.address-confirm-btn:hover {
-    background: #b91c1c;
-}
-.address-message {
-    display:none;
-    margin-top: 8px;
-    margin-bottom: 15px;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.address-message.success {
-    display: block;
-    color: #198754;
-}
-
-.address-message.error {
-    display: block;
-    color: #dc3545;
 }

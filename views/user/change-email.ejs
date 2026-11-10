@@ -1,11 +1,10 @@
-<link rel="stylesheet" href="/user/css/accounts.css">
+<link rel="stylesheet" href="/user/css/accounts.css" />
 <div class="center-page">
-
   <div class="email-card">
     <h3>Change Email</h3>
 
     <% if (message) { %>
-      <p class="error-text"><%= message %></p>
+    <p class="error-text"><%= message %></p>
     <% } %>
 
     <form action="/account/change-email" method="POST">
@@ -23,11 +22,4 @@
       <button class="btn-primary">Send OTP</button>
     </form>
   </div>
-
 </div>
-
-
-
-
-
-

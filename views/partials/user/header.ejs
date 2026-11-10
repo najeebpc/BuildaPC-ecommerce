@@ -1,85 +1,62 @@
-
-
-  <!-- ========== NAVBAR ========== -->
-  <header class="top-nav">
-    <div class="nav-container">
-
-      <!-- LEFT: logo + links -->
-      <div class="nav-left">
-        <a href="/" class="logo">
-          <span class="logo-blue">Builda</span>PC
-        </a>
-        <nav class="nav-links">
-          <a href="/">Home</a>
-          <a href="/products">PC Components</a>
-          <a href="/products/preBuilt">Pre-built PCs</a>
-        </nav>
-      </div>
-      <div class="nav-center">
-    <form action="/products" method="GET" class="nav-search">
-        <input
-            type="text"
-            name="search"
-            value="<%= typeof search !== 'undefined' ? search : '' %>"
-            placeholder="Search for products..."
-        >
-        <button type="submit" class="search-button">
-            <img
-                src="/user/icons/search.svg"
-                class="search-icon"
-                alt="Search"
-            >
-        </button>
-    </form>
-</div>
-    
-      <!-- RIGHT: account + cart -->
-      <div class="nav-right">
-
-        <!-- account dropdown wrapper -->
-        <div class="account-wrapper">
-          <button class="account-btn" type="button">
-            <!-- your real svg here -->
-            <img src="/user/icons/account.svg" class="nav-icon-img" alt="user" />
-
-            <!-- dynamic account text -->
-            <span class="account-text">
-              <% if (user) { %>
-                <%= user.name %>
-              <% } else { %>
-                Login
-              <% } %>
-              
-            </span>
-
-            <img src="/user/icons/chevron-down.svg" class="chevron-icon" alt="">
-          </button>
-
-          <!-- dropdown menu -->
-          <div class="account-dropdown">
-            <% if (!user) { %>
-              <a href="/login">Login</a>
-              <a href="/signup">Sign Up</a>
-            <% } %>
-            <% if (user) { %>
-              <a href="/account">Account Settings</a>
-              <a href="/account/orders">My Orders</a>
-              <a href="/account/wishlist">Wishlist</a>
-              <a href="/account/coupons">Coupons</a>
-              <a href="/logout">Logout</a>
-            <% } %>
-          </div>
-        </div>
-
-        <!-- cart -->
-        <a href="/cart" class="nav-cart">
-          <img src= "/user/icons/cart.svg" class="nav-icon-img" alt="cart" />
-          <span>Cart</span>
-          <!-- <span class="cart-badge">3</span> -->
-        </a>
-      </div>
-
+<header class="top-nav">
+  <div class="nav-container">
+    <div class="nav-left">
+      <a href="/" class="logo"> <span class="logo-blue">Builda</span>PC </a>
+      <nav class="nav-links">
+        <a href="/">Home</a>
+        <a href="/products">PC Components</a>
+        <a href="/products/preBuilt">Pre-built PCs</a>
+      </nav>
     </div>
-  </header>
-  <%- include('../partials/user/toast') %>
+    <div class="nav-center">
+      <form action="/products" method="GET" class="nav-search">
+        <input
+          type="text"
+          name="search"
+          value="<%= typeof search !== 'undefined' ? search : '' %>"
+          placeholder="Search for products..."
+        />
+        <button type="submit" class="search-button">
+          <img src="/user/icons/search.svg" class="search-icon" alt="Search" />
+        </button>
+      </form>
+    </div>
+    <div class="nav-right">
+      <div class="account-wrapper">
+        <button class="account-btn" type="button">
+          <img src="/user/icons/account.svg" class="nav-icon-img" alt="user" />
+          <span class="account-text">
+            <% if (user) { %> <%= user.name %> <% } else { %> Login <% } %>
+          </span>
+          <img src="/user/icons/chevron-down.svg" class="chevron-icon" alt="" />
+        </button>
+        <div class="account-dropdown">
+          <% if (!user) { %>
+          <a href="/login">Login</a>
+          <a href="/signup">Sign Up</a>
+          <% } %>
+          <% if (user) { %>
+          <a href="/account">Account Settings</a>
+          <a href="/account/orders">My Orders</a>
+          <a href="/account/wishlist">Wishlist</a>
+          <a href="/account/coupons">Coupons</a>
+          <a href="/logout">Logout</a>
+          <% } %>
+        </div>
+      </div>
+      <a href="/account/wishlist" class="nav-cart">
+        <img src="/user/icons/wishlist.svg" class="nav-icon-img" title="wishlist" alt="cart" />
+        <span></span>
+      </a>
+      <a href="/cart" class="nav-cart">
+        <img src="/user/icons/cart.svg" class="nav-icon-img" alt="cart" />
+        <span>Cart</span>
+        <% if(cartCount>0){ %>
+        <span class="cart-count" id="cartCount"> <%=cartCount%> </span>
+        <%} %>
+      </a>
+    </div>
+  </div>
+</header>
+<%- include('../partials/user/toast') %>
 <script src="/user/js/toast.js"></script>

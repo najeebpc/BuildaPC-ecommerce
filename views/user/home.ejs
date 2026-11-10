@@ -1,113 +1,109 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>BuildaPC - Home</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <title>BuildaPC - Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
 
-  <link rel="stylesheet" href="/user/css/home.css">
-</head>
-<body>
-  <%-include("../../views/partials/user/header.ejs")%>
-  <!-- ========== HERO ========== -->
-  <section class="hero">
-    <div class="hero-inner">
-      <div class="hero-text">
-        <h1>Build Your Ultimate PC</h1>
-        <p>
-         Customize your dream PC with premium components or choose from our expertly crafted pre-built systems. 
-         Welcome to BuildaPC, where we eliminate the guesswork from high-performance computing. 
-         We offer a carefully curated inventory of the latest processors, graphics cards, and accessories, 
-         giving you the power to tailor every detail of your machine. Whether you are a dedicated professional or an avid gamer, 
-         start exploring our unmatched selection today and build a machine designed for pure excellence.
-        </p>
-        <a href="/products" class="btn-primary">Start Building Now</a>
-      </div>
+    <link rel="stylesheet" href="/user/css/home.css" />
+  </head>
+  <body>
+    <%-include("../../views/partials/user/header.ejs")%>
 
-      <div class="hero-image">
-        <!-- replace with your PC hero image -->
-        <img src="user/images/hero image.avif" alt="Custom PC" />
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== SHOP BY CATEGORY ========== -->
-  <section class="section section-light">
-    <div class="section-inner">
-      <h2 class="section-title">Shop by Category</h2>
-
-      <div class="category-grid">
-        <div class="category-card">
-          <img src="user/icons/monitor.svg" class="category-icon" alt="Monitors" />
-          <span>Monitors</span>
+    <section class="hero">
+      <div class="hero-inner">
+        <div class="hero-text">
+          <h1>Build Your Ultimate PC</h1>
+          <p>
+            Customize your dream PC with premium components or choose from our expertly crafted
+            pre-built systems. Welcome to BuildaPC, where we eliminate the guesswork from
+            high-performance computing. We offer a carefully curated inventory of the latest
+            processors, graphics cards, and accessories, giving you the power to tailor every detail
+            of your machine. Whether you are a dedicated professional or an avid gamer, start
+            exploring our unmatched selection today and build a machine designed for pure
+            excellence.
+          </p>
+          <a href="/products" class="btn-primary">Start Building Now</a>
         </div>
 
-        <div class="category-card">
-          <img src="user/icons/monitor.svg" class="category-icon" alt="Processors" />
-          <span>Processors</span>
-        </div>
-
-        <div class="category-card">
-          <img src="user/icons/storage.svg" class="category-icon" alt="Storage" />
-          <span>Storage</span>
-        </div>
-
-        <div class="category-card">
-          <img src="user/icons/graphicsCard.svg" class="category-icon" alt="Graphics Cards" />
-          <span>Graphics Cards</span>
+        <div class="hero-image">
+          <img src="user/images/hero image.avif" alt="Custom PC" />
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ========== FEATURED BUILDS ========== -->
-  <section class="section">
-    <div class="section-inner">
-      <h2 class="section-title">Featured Builds</h2>
+    <section class="section section-light">
+      <div class="section-inner">
+        <h2 class="section-title">Shop by Category</h2>
 
-      <div class="builds-grid">
-        <!-- card 1 -->
-        <article class="build-card">
-          <div class="build-image">
-            <img src="user/images/featured1.png" alt="Gaming Beast">
-          </div>
-          <div class="build-body">
-            <h3>Gaming Beast</h3>
-            <p class="build-price">₹125,000</p>
-            <a href="/products" class="btn-secondary">View Details</a>
-          </div>
-        </article>
+        <div class="category-grid">
+          <% if (categories && categories.length > 0) { %> <% categories.forEach(category => { let
+          icon = 'component.svg' ; const name = category.name.toLowerCase(); if
+          (name.includes('CPU') || name.includes('cpu')) { icon = 'processor.svg'; } else if
+          (name.includes('storage') || name.includes('ssd') || name.includes('hard disk')) { icon =
+          'storage.svg'; } else if (name.includes('graphic') || name.includes('gpu') ||
+          name.includes('video card')) { icon = 'graphicsCard.svg'; } else if
+          (name.includes('monitor') || name.includes('display')) { icon = 'monitor.svg'; }else
+          if(name.includes('keyboard')){ icon = 'keyboard.svg'; }else
+          if(name.includes('motherboard')){ icon = 'motherboard.svg'; }else
+          if(name.includes('ram')||name.includes('memory')){ icon = 'ram.svg'; }else
+          if(name.includes('power supply')||name.includes('psu')){ icon = 'powersupply.svg'; } %>
 
-        <!-- card 2 -->
-        <article class="build-card">
-          <div class="build-image">
-            <img src="user/images/featured2.png" alt="Content Creator Pro">
-          </div>
-          <div class="build-body">
-            <h3>Content Creator Pro</h3>
-            <p class="build-price">₹150,000</p>
-            <a href="/products" class="btn-secondary">View Details</a>
-          </div>
-        </article>
+          <a href="/products?category=<%= category._id %>" class="category-card">
+            <img src="/user/icons/<%= icon %>" class="category-icon" alt="<%= category.name %>" />
 
-        <!-- card 3 -->
-        <article class="build-card">
-          <div class="build-image">
-            <img src="user/images/fetatured3.png" alt="Workstation Ultra">
-          </div>
-          <div class="build-body">
-            <h3>Workstation Ultra</h3>
-            <p class="build-price">₹180,000</p>
-            <a href="/products" class="btn-secondary">View Details</a>
-          </div>
-        </article>
+            <span><%= category.name %></span>
+          </a>
+
+          <% }) %>
+
+          <% } else { %>
+
+          <p>No categories available.</p>
+
+          <% } %>
+        </div>
       </div>
-    </div>
-  </section>
-  <%-include("../../views/partials/user/footer.ejs")%>
-</body>
+    </section>
+
+    <section class="section">
+      <div class="section-inner">
+        <h2 class="section-title">Featured Products</h2>
+
+        <div class="builds-grid">
+          <% if (featuredProducts && featuredProducts.length > 0) { %> <%
+          featuredProducts.forEach(product => { %>
+
+          <article class="build-card">
+            <div class="build-image">
+              <img src="<%= product.primaryImage %>" alt="<%= product.name %>" />
+            </div>
+
+            <div class="build-body">
+              <h3><%= product.name %></h3>
+
+              <a href="/product/<%= product._id %>" class="btn-secondary"> View Details </a>
+            </div>
+          </article>
+
+          <% }) %>
+
+          <% } else { %>
+
+          <p>No products available at the moment.</p>
+
+          <% } %>
+        </div>
+      </div>
+    </section>
+
+    <%-include("../../views/partials/user/footer.ejs")%>
+  </body>
 </html>
