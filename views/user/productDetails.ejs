@@ -305,7 +305,9 @@
           </div>
           <textarea id="reviewComment" placeholder="Write your review..."></textarea>
 
-          <button type="button" id="submitReview">Submit Review</button>
+          <button type="button" id="submitReview" data-product-id="<%=product._id%>">
+            Submit Review
+          </button>
           <p id="reviewMessage"></p>
         </div>
         <% } else{ %>
@@ -344,13 +346,6 @@
                 <div class="related-product-price">
                   ₹<%= Number(relatedProduct.basePrice).toLocaleString('en-IN') %>
                 </div>
-                <button
-                  type="button"
-                  class="related-cart-button"
-                  data-product-id="<%= relatedProduct._id %>"
-                >
-                  Add to Cart
-                </button>
               </div>
             </article>
             <% } %>

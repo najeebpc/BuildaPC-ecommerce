@@ -143,8 +143,9 @@ if (submitReview) {
   submitReview.addEventListener('click', async function () {
     const comment = document.getElementById('reviewComment').value.trim();
     const message = document.getElementById('reviewMessage');
+    const productId = submitReview.dataset.productId;
     try {
-      const response = await fetch('/product/<%=product._id%>/reviews', {
+      const response = await fetch(`/product/${productId}/reviews`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ rating: selectedRating, comment: comment }),
