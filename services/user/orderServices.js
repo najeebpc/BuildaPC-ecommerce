@@ -25,7 +25,7 @@ const getOrderPricing = async (userId, couponCode = null) => {
     coupon = await couponServices.validateCoupon(couponCode, subtotal);
     discount = coupon.discount || 0;
   }
-  const totalAmount = Math.round((subtotal - discount).toFixed(2));
+  const totalAmount = Math.round((subtotal - discount)*100)/100;
   let allocatedDiscount = 0;
   const updatedOrderItems = orderItems.map((item, index) => {
     const itemTotal = item.price * item.quantity;
@@ -208,7 +208,7 @@ const createPaidOnlineOrder = async (userId, addressId, razorpayOrderId, razorpa
   const totalAmount = Number(notes.totalAmount);
   const couponId = notes.couponId || null;
   const appliedCouponCode = notes.couponCode || null;
-
+ 
   if (
     !Number.isFinite(subtotal) ||
     !Number.isFinite(couponDiscount) ||
