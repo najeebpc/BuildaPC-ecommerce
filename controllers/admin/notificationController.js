@@ -1,4 +1,3 @@
-const MESSAGES = require('../../constants/messages');
 const STATUS = require('../../constants/statusCode');
 const notificationServices = require('../../services/admin/notificationServices');
 
@@ -9,7 +8,7 @@ const getNotifications = async (req, res) => {
       success: true,
       notifications,
     });
-  } catch (error) {
+  } catch {
     return res.status(STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: 'Failed to load notifications',

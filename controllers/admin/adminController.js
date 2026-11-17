@@ -1,5 +1,4 @@
 const User = require('../../model/userSchema');
-const mongoose = require('mongoose');
 const MESSAGES = require('../../constants/messages');
 const STATUS = require('../../constants/statusCode');
 const bcrypt = require('bcrypt');
@@ -46,7 +45,7 @@ const login = async (req, res) => {
     }
     req.session.admin = admin;
     res.redirect('/admin/dashboard');
-  } catch (error) {
+  } catch {
     return res.redirect('/admin/login');
   }
 };
@@ -87,7 +86,7 @@ const forgotPassword = async (req, res) => {
     req.session.adminResetEmail = adminEmail;
     req.session.adminOtpPurpose = 'ADMIN-RESET-PASSWORD';
     return res.redirect('/admin/verify-otp');
-  } catch (error) {
+  } catch {
     return res.redirect('/admin/forgot-password');
   }
 };
@@ -193,7 +192,7 @@ const resendOtp = async (req, res) => {
       message: MESSAGES.OTP_SENT,
       expiresAt: newOtpData.expiresAt,
     });
-  } catch (error) {
+  } catch {
     return res.status(STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: MESSAGES.SOMETHING_WENT_WRONG,
@@ -227,7 +226,7 @@ const changePassword = async (req, res) => {
       field: 'passChange',
     };
     res.redirect('/admin/login');
-  } catch (error) {
+  } catch {
     res.redirect('/admin/change-password');
   }
 };

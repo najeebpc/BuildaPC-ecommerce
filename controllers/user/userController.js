@@ -23,7 +23,7 @@ const loadHomepage = async (req, res) => {
       user = await userServices.findUserById(req.session.user);
     }
     return res.render('user/home', { user, featuredProducts, categories });
-  } catch (error) {
+  } catch {
     res.status(STATUS.INTERNAL_SERVER_ERROR).send('Server error');
   }
 };
@@ -165,13 +165,12 @@ const verifyOtp = async (req, res) => {
       if (!email) {
         return res.status(STATUS.BAD_REQUEST).json({
           success: false,
-          message: MESSAGE.SESSION_EXPIRED,
+          message: MESSAGES.SESSION_EXPIRED,
         });
       }
       const otpData = await Otp.findOne({ email: email, purpose: 'SIGNUP' });
 
       if (!otpData) {
-        console.log('dont have otp');
         return res.status(STATUS.BAD_REQUEST).json({
           success: false,
           message: MESSAGES.OTP_INVALID,
@@ -442,7 +441,7 @@ const login = async (req, res) => {
     }
     req.session.user = user;
     res.redirect('/');
-  } catch (error) {
+  } catch {
     req.session.loginError = {
       message: MESSAGES.SOMETHING_WENT_WRONG,
     };
@@ -493,7 +492,7 @@ const forgotPassword = async (req, res) => {
     req.session.resetEmail = email;
     req.session.otpPurpose = 'RESET-PASSWORD';
     res.redirect('/verify-otp');
-  } catch (error) {
+  } catch {
     res.redirect('/forgot-password');
   }
 };
@@ -533,7 +532,7 @@ const changePassword = async (req, res) => {
       field: 'passChange',
     }),
       res.redirect('/login'));
-  } catch (error) {
+  } catch {
     res.redirect('/change-password');
   }
 };

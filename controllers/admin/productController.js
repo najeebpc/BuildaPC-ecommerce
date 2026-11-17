@@ -140,7 +140,7 @@ const updateProduct = async (req, res) => {
     if (!existingProduct) {
       return res.status(STATUS.BAD_REQUEST).json({
         filed: 'name',
-        message: MESSAGE.PRODUCT_NOT_FOUND,
+        message: MESSAGES.PRODUCT_NOT_FOUND,
       });
     }
     if (!name || name.trim() === '') {
@@ -330,7 +330,7 @@ const deleteProductVariant = async (req, res) => {
       success: true,
       message: MESSAGES.VARIANT_DELETE,
     });
-  } catch (error) {
+  } catch  {
     return res.status(STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: MESSAGES.VARIANT_DELETE_FAILED,

@@ -1,5 +1,4 @@
 const User = require('../../model/userSchema');
-const mongoose = require('mongoose');
 
 const loadUsers = async (req, res) => {
   try {
@@ -20,7 +19,6 @@ const loadUsers = async (req, res) => {
       .sort({ created_at: -1 })
       .skip((page - 1) * limit)
       .limit(limit);
-
     const totalPages = Math.ceil(totalUsers / limit);
     res.render('admin/users', {
       users,
@@ -30,7 +28,7 @@ const loadUsers = async (req, res) => {
       active: 'users',
       admin,
     });
-  } catch (error) {
+  } catch {
     res.redirect('/admin/dashboard');
   }
 };
@@ -41,7 +39,7 @@ const blockUser = async (req, res) => {
       isBlocked: true,
     });
     res.redirect('/admin/users');
-  } catch (error) {
+  } catch {
     res.redirect('/admin/users');
   }
 };
@@ -52,7 +50,7 @@ const unblockUser = async (req, res) => {
       isBlocked: false,
     });
     res.redirect('/admin/users');
-  } catch (error) {
+  } catch {
     res.redirect('admin/users');
   }
 };

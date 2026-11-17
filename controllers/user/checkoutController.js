@@ -23,7 +23,7 @@ const loadCheckout = async (req, res) => {
           req.session.appliedCoupon.code,
           subtotal,
         );
-      } catch (error) {
+      } catch {
         delete req.session.appliedCoupn;
       }
     }
@@ -73,8 +73,7 @@ const loadPayment = async (req, res) => {
     if (!items || items.length === 0) {
       return res.redirect('/cart');
     }
-    const { subtotal, origignalSubtotal, totalOfferDiscount } =
-      await pricingServices.calculateCartSubtotal(userId);
+    const { subtotal} = await pricingServices.calculateCartSubtotal(userId);
     let appliedCoupon = null;
     let discount = 0;
     if (req.session.appliedCoupon?.code) {
@@ -84,7 +83,7 @@ const loadPayment = async (req, res) => {
           subtotal,
         );
         discount = appliedCoupon.discount;
-      } catch (error) {
+      } catch {
         delete req.session.appliedCoupon;
       }
     }

@@ -116,8 +116,6 @@ const deleteAddressModal = document.getElementById('deleteAddressModal');
 const closeAddressModal = document.getElementById('closeAddressModal');
 const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
 const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-const addressModalTitle = document.getElementById('addressModalTilte');
-const addressModalText = document.getElementById('addressModalText');
 const addressList = document.getElementById('addressList');
 
 let selectedAddressId = null;

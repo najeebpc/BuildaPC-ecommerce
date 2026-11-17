@@ -137,7 +137,7 @@ const removeFromCart = async (userId, cartItemId) => {
 const updateCartQuantity = async (userId, cartItemId, quantity) => {
   const cart = await Cart.findOne({ userId });
   if (!cart) {
-    throw new Error(MESSAGE.CART_NOT_FOUND);
+    throw new Error(MESSAGES.CART_NOT_FOUND);
   }
   const cartItem = cart.items.id(cartItemId);
   if (!cartItem) {
@@ -199,7 +199,7 @@ const validateCartForCheckout = async (userId) => {
         isActive: true,
       });
       if (!variant) {
-        throw new Error(MESSAGE.PRODUCT_VARIANT_NOT_AVAILABLE);
+        throw new Error(MESSAGES.PRODUCT_VARIANT_NOT_AVAILABLE);
       }
       stock = variant.stock;
     }

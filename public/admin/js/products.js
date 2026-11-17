@@ -377,7 +377,7 @@ async function saveProduct() {
       window.location.reload();
     }, 1500);
   } catch (error) {
-    productMessage = textContent = 'Something went wrong. Please try again';
+    productMessage.textContent = 'Something went wrong. Please try again';
     productMessage.classList.add('error');
     setProductSavingState(false);
   }

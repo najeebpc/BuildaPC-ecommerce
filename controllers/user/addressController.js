@@ -1,5 +1,3 @@
-const Address = require('../../model/addressSchema');
-const User = require('../../model/userSchema.js');
 const userServices = require('../../services/user/userServices');
 const addressServices = require('../../services//user/addressServices');
 const STATUS = require('../../constants/statusCode');
@@ -66,7 +64,7 @@ const getAddress = async (req, res) => {
     }
     res.json(address);
   } catch (error) {
-    console.log('error getting address');
+    console.log('error getting address',error);
     res.status(STATUS.NOT_FOUND).json(MESSAGES.SOMETHING_WENT_WRONG);
   }
 };

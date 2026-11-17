@@ -9,7 +9,7 @@ const loadCoupons = async (req, res) => {
       coupons,
       admin,
     });
-  } catch (error) {
+  } catch {
     res.redirect('/admin/dashboard');
   }
 };

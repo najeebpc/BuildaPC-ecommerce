@@ -41,7 +41,7 @@ document.querySelectorAll('.cart-wishlist-btn').forEach((button) => {
         method: 'DELETE',
         headers: { Accept: 'application/json' },
       });
-      const cartResult = await cartResponse.json();
+      await cartResponse.json();
       if (!cartResponse) {
         return;
       }
@@ -103,14 +103,12 @@ cartItems.forEach((cartItem) => {
       quantityDisplay.textContent = newQuantity;
       updateCartTotal();
       updateCartItemCount();
-    } catch (error) {
-
+    } catch {
       showToastMessage('failed to updated quantity', 'error');
     }
   });
   increaseButton.addEventListener('click', async function () {
     let quantity = Number(quantityDisplay.textContent);
-    const maxQuantity = Math.min(stock, Max_Cart_Quantity);
     const newQuantity = quantity + 1;
     if (quantity >= stock) {
       showToastMessage(`Only ${stock} item${stock > 1 ? 's' : ''} available`, 'warning');
@@ -209,7 +207,7 @@ if (proceedToCheckoutBtn) {
         return;
       }
       window.location.href = '/checkout';
-    } catch (error) {
+    } catch {
       showToastMessage('Unable to proceed to checkout', 'error');
     }
   });

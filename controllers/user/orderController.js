@@ -1,6 +1,5 @@
 const orderServices = require('../../services/user/orderServices');
 const incoiceServices = require('../../services/user/invoiceServices');
-const paymentServices = require('../../services/user/paymentServices');
 const crypto = require('crypto');
 const MESSAGES = require('../../constants/messages');
 const STATUS = require('../../constants/statusCode');
@@ -130,7 +129,7 @@ const loadOrderSuccess = async (req, res) => {
       order,
       user,
     });
-  } catch (error) {
+  } catch {
     return res.redirect('/');
   }
 };
@@ -143,7 +142,7 @@ const loadOrders = async (req, res) => {
       orders,
       user,
     });
-  } catch (error) {
+  } catch {
     return res.redirect('/account');
   }
 };
@@ -231,7 +230,7 @@ const returnOrderItem = async (req, res) => {
     const userId = req.session.user._id;
     const { orderId, itemId } = req.params;
     const { returnReason } = req.body;
-    const updatedOrder = await orderServices.returnOrderItem(userId, orderId, itemId, returnReason);
+    await orderServices.returnOrderItem(userId, orderId, itemId, returnReason);
     return res.status(STATUS.OK).json({
       success: true,
       message: MESSAGES.RETURN_REQUESTED,

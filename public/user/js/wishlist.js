@@ -1,4 +1,4 @@
-const addToCart = async (productId, variantId = nll) => {
+const addToCart = async (productId, variantId = null) => {
   try {
     const response = await fetch('/cart', {
       method: 'POST',

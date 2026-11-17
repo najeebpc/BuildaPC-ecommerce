@@ -1,5 +1,4 @@
 const cartServices = require('../../services/user/cartServices');
-const userServices = require('../../services/user/userServices');
 const MESSAGES = require('../../constants/messages');
 const STATUS = require('../../constants/statusCode');
 const loadCart = async (req, res) => {

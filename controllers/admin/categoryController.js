@@ -167,7 +167,7 @@ const deleteCategory = async (req, res) => {
     console.log(error);
     return res.status(STATUS.INTERNAL_SERVER_ERROR).json({
       success: false,
-      message: MESSAGE.MESSAGE.CATEGORY_DELETE_FAILED,
+      message: MESSAGES.MESSAGE.CATEGORY_DELETE_FAILED,
     });
   }
 };

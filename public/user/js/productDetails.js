@@ -45,7 +45,6 @@ variantOptions.forEach((option) => {
     this.classList.add('selected');
     selectedVariantId = this.dataset.variantId;
     selectedVariantStock = Number(this.dataset.stock);
-    const selectedVariantPrice = Number(this.dataset.price);
     quantity = 1;
     if (quantityDisplay) {
       quantityDisplay.textContent = quantity;
@@ -92,7 +91,6 @@ variantOptions.forEach((option) => {
 
   });
 });
-const quantitySection = document.getElementById('quantitySection');
 const quantityDisplay = document.getElementById('quantity');
 const decreaseButton = document.getElementById('decreaseQuantity');
 const increaseButton = document.getElementById('increaseQuantity');
@@ -105,7 +103,6 @@ if (variantOptions.length > 0) {
 const Max_cart_Quantity = 5;
 
 if (decreaseButton && increaseButton) {
-  const thumbnails = document.querySelectorAll('.thumbnail');
   decreaseButton.addEventListener('click', function () {
     if (quantity > 1) {
       quantity--;

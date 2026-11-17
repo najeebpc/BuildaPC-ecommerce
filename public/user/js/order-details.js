@@ -145,7 +145,7 @@ confirmCancelItem.addEventListener('click', async function () {
     setTimeout(() => {
       window.location.reload();
     }, 1000);
-  } catch (error) {
+  } catch {
     showToastMessage('Unable to cancel item', 'error');
     confirmCancelItem.disabled = false;
     confirmCancelItem.textContent = 'Confirm Cancellation';

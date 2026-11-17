@@ -1,10 +1,10 @@
 let selectedAddressId = document.body.dataset.selectedAddressId||'';
 const changeAddressBtn = document.getElementById('changeAddressBtn');
+const checkoutAddressList = document.getElementById('checkoutAddressList');
 
 if (changeAddressBtn) {
   changeAddressBtn.addEventListener('click', function () {
-    const checkoutAddressList = document.getElementById('checkoutAddressList');
-
+    
     if (!checkoutAddressList) return;
 
     checkoutAddressList.classList.toggle('show');
@@ -64,7 +64,7 @@ if (continuePaymentBtn) {
       }
       console.log('selected addressId', selectedAddressId);
       window.location.href = `/checkout/payment?addressId=${selectedAddressId}`;
-    } catch (error) {
+    } catch {
       showToastMessage('Unable to continue to payment', 'error');
     }
   });
@@ -504,7 +504,7 @@ applyCouponBtn.addEventListener('click', async () => {
       discount: result.coupon.discount,
       payableAmount: result.coupon.payableAmount,
     });
-  } catch (error) {
+  } catch {
     showCouponMessage('Unable to apply coupon. Please try again.', 'error');
   } finally {
     applyCouponBtn.disabled = false;
@@ -517,7 +517,7 @@ removeCouponBtn.addEventListener('click', async () => {
       method: 'POST',
       headers: { Accept: 'application/json' },
     });
-    const result = await response.json();
+    await response.json();
     if (!response.ok) {
       showCouponMessage('Unable to remove coupon', 'error');
       return;
@@ -526,7 +526,7 @@ removeCouponBtn.addEventListener('click', async () => {
     applyCouponBtn.disabled = false;
     couponInput.disabled = false;
     couponMessage.hidden = true;
-  } catch (error) {
+  } catch {
     showCouponMessage('Unable to remove coupon. try again', 'error');
   } finally {
     removeCouponBtn.disabled = false;

@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const timer = document.getElementById('timer');
   const resendLink = document.getElementById('resend-Link');
   const timerText = document.getElementById('timer-text');
   const otpMessage = document.getElementById('otpMessage');

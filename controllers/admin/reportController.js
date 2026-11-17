@@ -1,6 +1,5 @@
 const reportServices = require('../../services/admin/reportServices');
 const STATUS = require('../../constants/statusCode');
-const MESSAGES = require('../../constants/messages');
 const loadSalesReport = async (req, res) => {
   try {
     const { from, to, period } = reportServices.getReportDates(req.query);

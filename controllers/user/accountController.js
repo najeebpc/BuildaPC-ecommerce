@@ -1,5 +1,3 @@
-const User = require('../../model/userSchema');
-const STATUS = require('../../constants/statusCode');
 const MESSAGES = require('../../constants/messages');
 const bcrypt = require('bcrypt');
 const Otp = require('../../model/otpSchema');
@@ -26,7 +24,7 @@ const loadAccount = async (req, res) => {
       user,
       active: 'account',
     });
-  } catch (error) {
+  } catch {
     res.redirect('/');
   }
 };
@@ -56,7 +54,7 @@ const updateProfile = async (req, res) => {
     });
     req.session.profileSuccess = MESSAGES.PROFILE_UPDATED;
     return res.redirect('/account');
-  } catch (error) {
+  } catch {
     res.redirect('/account');
   }
 };
@@ -79,7 +77,7 @@ const uploadProfileImage = async (req, res) => {
     await userServices.updateProfileImage(userId, req.file.filename);
     req.session.profileSuccess = MESSAGES.IMG_ADDED;
     return res.redirect('/account');
-  } catch (error) {
+  } catch {
     req.session.message = MESSAGES.IMG_ERROR;
     req.session.field = 'image';
     return res.redirect('/account');

@@ -13,7 +13,6 @@ const MESSAGES = {
   SESSION_EXPIRED: 'Session expired',
   SOMETHING_WENT_WRONG: 'Something went wrong',
   ALL_FIELD: 'All fields are required',
-  USER_NOT_FOUND: 'Account not found',
   INVALID_PASSWORD: 'Incorrect password',
   GOOGLE_LOGIN_REQUIRED: 'Please sign in using Google',
   PASSWORD_CHANGED: 'Password changed successfully! You can now log in with your new credentials.',
@@ -126,7 +125,6 @@ const MESSAGES = {
   WISHLIST_ADDED: 'Product added to wishlist',
   WISHLIST_REMOVED: 'Product removed form wishlist',
   //cart message
-  PRODUCT_NOT_AVAILABLE: 'Product is not availabe',
   PRODUCT_VARIANT_NOT_AVAILABLE: 'Product variant is not available',
   PRODCUT_OUT_OF_STOCK: 'Produt is out of stock',
   QUANTITY_NOT_AVAILABLE: 'Requested quantity is not available',
